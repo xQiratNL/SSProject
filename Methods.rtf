@@ -1,0 +1,135 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf760
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Delimiter: \'93;\'94\
+Port number: \'931337\'94\
+0,0,0 is the back, left corner\
+TimeOut = USERQUIT (20 seconds)\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\i\fs48 \cf0 Client
+\i0\fs24 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+
+\b Connect to server\
+
+\b0 1. 		HELLO <Username> [Chat] [Leaderboard] [Challenge]\
+\
+
+\b Start a game\
+
+\b0 1a. 		PLAY HUMAN <Number of players> [Dimension]\
+1b. 		PLAY COMPUTER <Number of players> [Dimension]\
+\
+3a.		READY\
+3b.		DECLINE\
+\
+
+\b Playing a game\
+
+\b0 1. 		MAKEMOVE <x> <y> <z>\
+\
+
+\b Chat
+\b0 \
+		BROADCAST <text>\
+		WHISPER <username> <text>\
+		CHATUSERS\
+		GAMECHAT <text>\
+\
+
+\b Challenge\
+
+\b0 		CHALLENGE <Username> [Username 1] \'85 [Username n]\
+		ACCEPT\
+		CHALLENGEDECLINE\
+		STATUS <Username>\
+		AVAILABLE\
+\
+
+\b Leaderboard\
+
+\b0 		LEADERBOARD\
+\
+
+\b Password	\
+
+\b0 		PASSWORD <hash of password>\
+\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\i\fs48 \cf0 Server
+\i0\fs24 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf0 \
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\b \cf0 Connect to server\
+
+\b0 2a. 		HELLO [Chat] [Leaderboard] [Challenge]\
+2b. 		ERR_USERNAME_TAKEN\
+\
+
+\b Start a game\
+
+\b0 2a.		WAIT\
+2b.		READY <Username1> <Username2> [Username 3] \'85 [Username n]\
+in case of DECLINE, go to 2a\
+\
+
+\b Playing a game\
+
+\b0 1. 		REQUESTMOVE <Username>\
+2a. 		SETMOVE <Username> <x> <y> <z>\
+2b. 		ERR_INVALIDMOVE <x> <y> <z>\
+2c.		ERR_NOTYOURTURN\
+3a.		GAMEOVER [Username of winner]\
+3b.		ERR_USERQUIT <Username of quitter>\
+\
+
+\b Chat
+\b0 \
+		BROADCAST <Username who did sent the message> <text> (voor iedereen op de server)\
+		WHISPER <Username who did sent the message> <text> (voor 1 user)\
+		CHATUSERS <Username (of the one who requested it)> [Username 1] \'85 [Username n]\
+		GAMECHAT <user> <text> (voor iedereen in de game)\
+		ERR_USERNOTFOUNDCHAT\
+		ERR_USERHASNOCHAT\
+		ERR_NOTINAGAME\
+\
+
+\b Challenge\
+
+\b0 		CHALLENGED <Username> [Username 1] \'85 [Username n]\
+		CANCELLED <USERNAME>\
+		ERR_USERNOTFOUNDCHALLENGE <Username> [Username 1] \'85 [Username n]\
+		ERR_USERINGAME <Username> [Username 1] \'85 [Username n]\
+		ERR_USERHASNOCHALLENGE <Username> [Username 1] \'85 [Username n]\
+		STATUS <Username> AVAILABLE/NOT\
+		AVAILABLE [Username 1] \'85 [Username n]\
+\
+
+\b Leaderboard\
+
+\b0 		LEADERBOARD <Username> <points> (send this command multiple times)\
+\
+
+\b Password\
+
+\b0 		REQUESTPASSWORD\
+		ACCESSGRANTED\
+		ERR_ACCESSDENIED\
+		REGISTERED\
+		\
+		if username is not taken, it automatically creates an account when you sent a password. You get both the Access granted & the registered message\
+\
+
+\b Other\
+
+\b0 		ERR_COMMANDNOTRECOGNIZED <Command>}
