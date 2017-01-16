@@ -1,17 +1,15 @@
 package connectfour;
 
 public class Game {
-
-	//TODO: add hasWinner and GameOver (from tictactoe board).
 	
 	private Board board;
 	private Player[] players;
-	private int currentPlayer;
+	private int currentPlayerIndex;
 	
 	public Game(Player[] players) {
 		board = new Board();
 		this.players = players;
-		currentPlayer = 0;
+		currentPlayerIndex = 0;
 	}
 	
 	public boolean hasWinner() {
@@ -26,5 +24,9 @@ public class Game {
 	
 	public boolean gameOver() {
 		return board.isFull() || this.hasWinner();
+	}
+	
+	public Player currentPlayer() {
+		return players[currentPlayerIndex];
 	}
 }
