@@ -10,8 +10,8 @@ public class ComputerPlayer extends Player {
      * Creates a new ComputerPlayer object.
      * 
      */	
-	public ComputerPlayer(String name, Mark mark, Strategy strategy) {
-		super(name, mark, strategy);
+	public ComputerPlayer(Mark mark, Strategy strategy) {
+		super(strategy.getName(), mark);
 		this.strategy = strategy;
 		this.mark = mark;
 	}

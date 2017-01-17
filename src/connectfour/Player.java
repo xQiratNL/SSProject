@@ -23,28 +23,6 @@ public abstract class Player {
 		this.name = name;
 		this.mark = mark;
 	}
-
-    /*@
-    	requires name != null;
-    	requires mark != null;
-    	requires strategy != null;
-    	ensures this.getName() == name;
-    	ensures this.getMark() == mark;
-     */
-	// If the player has a smart strategy, then the name of this ComputerPlayer is changed to Tariq or Rutger :)
-	public Player(String name, Mark mark, Strategy strategy) {
-		if (strategy.getName().equals("Smart")) {
-			int nameChoice = (int) (Math.random() * 2);
-			if (nameChoice == 0) {
-				this.name = "Tariq";
-			} else {
-				this.name = "Rutger";
-			}
-		} else {
-			this.name = name;
-		}
-		this.mark = mark;
-	}
 	
     // -- Queries ----------------------------------------------------
 
