@@ -6,8 +6,8 @@ public class Game {
 	private Player[] players;
 	private int currentPlayerIndex;
 	
-	public Game(Player[] players) {
-		board = new Board();
+	public Game(Player[] players, int dim) {
+		board = new Board(dim);
 		this.players = players;
 		currentPlayerIndex = 0;
 	}
