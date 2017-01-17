@@ -5,8 +5,8 @@ import java.util.Set;
 
 public class SmartStrategy implements Strategy {
 
-	String name;
-	String[] computerNames = {"Tariq", "Rutger"};
+	private String name;
+	private String[] computerNames = {"Tariq", "Rutger"};
 	
 	public SmartStrategy() {
 		this.name = computerNames[(int) (Math.random()*computerNames.length)];
@@ -27,17 +27,23 @@ public class SmartStrategy implements Strategy {
 			}
 		}
 		
-		// Pick a random field from the set (thus a random empty field)
-		int setMove = 0;
-		int r = (int) (Math.random() * set.size());
-		int i = 0;
+		int setMove = -1;
+		Board bCopy;
+		// check for guaranteed win of this player.
 		for (Integer s : set) {
-			if (r == i) {
-		    	setMove = s;
-		    	break;
-		    }
-			i++;
+			bCopy = board.deepCopy();
+			bCopy.setField(s, mark);
+			if (bCopy.hasWinner()) {
+				setMove = s;
+				break;
+			}
 		}
+		
+		// no guaranteed win. Block opponent?
+
+
+		// Opponent cannot win, so make smartest move
+
 		return setMove;
 	}
 

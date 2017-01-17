@@ -2,8 +2,8 @@ package connectfour;
 
 public class ComputerPlayer extends Player {
 
-	Strategy strategy;
-	Mark mark;
+	private Strategy strategy;
+	private Mark mark;
 	
     // -- Constructor -----------------------------------------------
     /**

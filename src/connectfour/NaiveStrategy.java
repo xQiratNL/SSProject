@@ -5,8 +5,8 @@ import java.util.Set;
 
 public class NaiveStrategy implements Strategy {
 
-	String name;
-	String[] computerNames = {"Henk", "Toos", "Frans", "Lisa", "Emma",
+	private String name;
+	private String[] computerNames = {"Henk", "Toos", "Frans", "Lisa", "Emma",
 			"Ide", "Daniel", "Naomi", "Anne", "Piet", "Arend", "Tom"};
 	
 	public NaiveStrategy() {
