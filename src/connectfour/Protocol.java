@@ -54,9 +54,9 @@ public interface Protocol {
 	* 6. Client: Make move with the coordinates
 	* MAKEMOVE <x> <y> <z>
 	* 7. Server will either send setmove when the move was valid to everyone; invalid move when it was invalid to the user, or not your turn when it was not his turn.
-* SETMOVE <username> <x> <y> <z>
-* ERROR_INVALIDMOVE <x> <y> <z>
-* ERROR_NOTYOURTURN
+	* SETMOVE <username> <x> <y> <z>
+	* ERROR_INVALIDMOVE <x> <y> <z>
+	* ERROR_NOTYOURTURN
 	* 8. Server: when the game is not over, the server requests a new move. When the game is over its told to both players, and when there is a winner this name is added. 
 	* GAMEOVER [username of winner]
 	* When someone quits the game an error is send and user moves back to the lobby
@@ -153,7 +153,7 @@ public interface Protocol {
 	public static final String DECLINED = "DECLINED";
 	
 	
-	/* --------------------------- Leader board ----------------------------------	 */
+	/* --------------------------- Leaderboard ----------------------------------	 */
 	/**
 	* 1.Client sends leader board to the server  
 	* LEADERBOARD
