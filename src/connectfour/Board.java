@@ -404,7 +404,13 @@ public class Board {
 	
 	public String toString() {
 		String tabs = "\t\t\t\t\t";
+		for (int i = 4; i < dim; i++) {
+			tabs += "\t";
+		}
 		String string = "\t\t";
+		for (int z = 0; z < dim; z++) {
+			string += "z=" + z + tabs;
+		}
 		
 		String[][] status = boardStatus();
 		//print numbering
@@ -431,12 +437,5 @@ public class Board {
 	
 	public int getSize() {
 		return size;
-	}
-	
-	public static void main(String[] args) {
-		//Board board =  new Board(5, new HumanPlayer(), new HumanPlayer());
-		//board.setField(21, Mark.XX);
-		//board.setField(60, Mark.OO);
-		//System.out.println(board.toString());
 	}
 }
