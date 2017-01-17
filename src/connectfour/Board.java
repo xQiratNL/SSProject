@@ -2,18 +2,21 @@ package connectfour;
 
 public class Board {
 	
-	public static final int DIM = 4;
-	public static final int SIZE = DIM * DIM * DIM;
+	public static final int FOUR = 4;
 	//TODO: Add other statics.
 
+	private int dim;
+	private int size;
 	private Mark[] fields;
 	
 	//--Constructors--------
 	/**
 	 * Creates board with empty marks.
 	 */
-	public Board() {
-		fields = new Mark[DIM * DIM * DIM];
+	public Board(int dim) {
+		this.dim = dim;
+		this.size = dim * dim * dim;
+		fields = new Mark[size];
 		reset();
 	}
 	
@@ -21,7 +24,7 @@ public class Board {
 	 * Sets content of all fields to EMPTY;
 	 */
 	public void reset() {
-		for (int i = 0; i < SIZE; i++) {
+		for (int i = 0; i < size; i++) {
 			fields[i] = Mark.EMPTY;
 		}
 	}
@@ -30,7 +33,7 @@ public class Board {
 	 * @return deep copy of this board.
 	 */
 	public Board deepCopy() {
-		Board newBoard = new Board();
+		Board newBoard = new Board(dim);
 		newBoard.fields = this.fields.clone();
 		return newBoard;
 	}
@@ -40,15 +43,15 @@ public class Board {
 	 * @param x, x-coordinate
 	 * @param y, y-coordinate
 	 * @param z, z-coordinate
-	 * @return 0<=index<SIZE
+	 * @return 0<=index<size
 	 */
 	public int index(int x, int y, int z) {
-		return DIM * DIM * z + DIM * y + x;
+		return dim * dim * z + dim * y + x;
 	}
 	
 	public int[] coordinates(int index) {
-		int z = index / DIM * DIM;
-		int y = (index - z) / DIM;
+		int z = index / dim * dim;
+		int y = (index - z) / dim;
 		int x = index - z - y;
 		int[] coordinates = {x, y, z};
 		return coordinates;
@@ -62,7 +65,7 @@ public class Board {
 	 * @return true if valid.
 	 */
 	public boolean isField(int x, int y, int z) {
-		return 0 <= index(x, y, z) && index(x, y, z) < SIZE;
+		return 0 <= index(x, y, z) && index(x, y, z) < size;
 	}
 	
 	/**
@@ -92,7 +95,7 @@ public class Board {
 	 * @return true if board is full.
 	 */
 	public boolean isFull() {
-		for (int i = 0; i < SIZE; i++) {
+		for (int i = 0; i < size; i++) {
 			if (fields[i].isEmpty()) {
 				return false;
 			}
@@ -116,17 +119,15 @@ public class Board {
 	}
 	
 	public boolean hasRow(Mark mark) {
-		for (int z = 0; z < DIM; z++) {
-			for (int y = 0; y < DIM; y++) {
+		for (int z = 0; z < dim; z++) {
+			for (int y = 0; y < dim; y++) {
 				int nrMark = 0;
-				for (int x = 0; x < DIM; x++) {
+				for (int x = 0; x < dim; x++) {
 					if (getField(x, y, z).equals(mark)) {
 						nrMark++;
-					} else {
-						break;
 					}
 				}
-				if (nrMark == DIM) {
+				if (nrMark >= FOUR) {
 					return true;
 				}
 			}
@@ -136,17 +137,15 @@ public class Board {
 	}
 	
 	public boolean hasColumn(Mark mark) {
-		for (int z = 0; z < DIM; z++) {
-			for (int x = 0; x< DIM; x++) {
+		for (int z = 0; z < dim; z++) {
+			for (int x = 0; x< dim; x++) {
 				int nrMark = 0;
-				for (int y = 0; y < DIM; y++) {
+				for (int y = 0; y < dim; y++) {
 					if (getField(x, y, z).equals(mark)) {
 						nrMark++;
-					} else {
-						break;
 					}
 				}
-				if (nrMark == DIM) {
+				if (nrMark >= FOUR) {
 					return true;
 				}
 			}
@@ -156,17 +155,15 @@ public class Board {
 	}
 	
 	public boolean hasBar(Mark mark) {
-		for (int x = 0; x < DIM; x++) {
-			for (int y = 0; y < DIM; y++) {
+		for (int x = 0; x < dim; x++) {
+			for (int y = 0; y < dim; y++) {
 				int nrMark = 0;
-				for (int z = 0; z < DIM; z++) {
+				for (int z = 0; z < dim; z++) {
 					if (getField(x, y, z).equals(mark)) {
 						nrMark++;
-					} else {
-						break;
 					}
 				}
-				if (nrMark == DIM) {
+				if (nrMark >= FOUR) {
 					return true;
 				}
 			}
@@ -176,30 +173,26 @@ public class Board {
 	}
 	
 	public boolean hasZDiagonal(Mark mark) {
-		for (int z = 0; z < DIM; z++) {
+		for (int z = 0; z < dim; z++) {
 			int nrMark = 0;
-			for (int i = 0; i < DIM; i++) {
+			for (int i = 0; i < dim; i++) {
 				if (getField(i, i, z).equals(mark)) {
 					nrMark++;
-				} else {
-					break;
 				}
 			}
-			if (nrMark == DIM) {
+			if (nrMark >= FOUR) {
 				return true;
 			}
 		}
 		//other diagonal
-		for (int z = 0; z < DIM; z++) {
+		for (int z = 0; z < dim; z++) {
 			int nrMark = 0;
-			for (int i = 0; i < DIM; i++) {
-				if (getField(i, DIM - 1 - i, z).equals(mark)) {
+			for (int i = 0; i < dim; i++) {
+				if (getField(i, dim - 1 - i, z).equals(mark)) {
 					nrMark++;
-				} else {
-					break;
 				}
 			}
-			if (nrMark == DIM) {
+			if (nrMark >= FOUR) {
 				return true;
 			}
 		}
@@ -208,30 +201,26 @@ public class Board {
 	}
 	
 	public boolean hasYDiagonal(Mark mark) {
-		for (int y = 0; y < DIM; y++) {
+		for (int y = 0; y < dim; y++) {
 			int nrMark = 0;
-			for (int i = 0; i < DIM; i++) {
+			for (int i = 0; i < dim; i++) {
 				if (getField(i, y, i).equals(mark)) {
 					nrMark++;
-				} else {
-					break;
 				}
 			}
-			if (nrMark == DIM) {
+			if (nrMark >= FOUR) {
 				return true;
 			}
 		}
 		//other diagonal
-		for (int y = 0; y < DIM; y++) {
+		for (int y = 0; y < dim; y++) {
 			int nrMark = 0;
-			for (int i = 0; i < DIM; i++) {
-				if (getField(i, y , DIM - 1 - i).equals(mark)) {
+			for (int i = 0; i < dim; i++) {
+				if (getField(i, y , dim - 1 - i).equals(mark)) {
 					nrMark++;
-				} else {
-					break;
 				}
 			}
-			if (nrMark == DIM) {
+			if (nrMark >= FOUR) {
 				return true;
 			}
 		}
@@ -240,30 +229,26 @@ public class Board {
 	}
 	
 	public boolean hasXDiagonal(Mark mark) {
-		for (int x = 0; x < DIM; x++) {
+		for (int x = 0; x < dim; x++) {
 			int nrMark = 0;
-			for (int i = 0; i < DIM; i++) {
+			for (int i = 0; i < dim; i++) {
 				if (getField(x, i, i).equals(mark)) {
 					nrMark++;
-				} else {
-					break;
 				}
 			}
-			if (nrMark == DIM) {
+			if (nrMark >= FOUR) {
 				return true;
 			}
 		}
 		//other diagonal
-		for (int x = 0; x < DIM; x++) {
+		for (int x = 0; x < dim; x++) {
 			int nrMark = 0;
-			for (int i = 0; i < DIM; i++) {
-				if (getField(x, i , DIM - 1 - i).equals(mark)) {
+			for (int i = 0; i < dim; i++) {
+				if (getField(x, i , dim - 1 - i).equals(mark)) {
 					nrMark++;
-				} else {
-					break;
 				}
 			}
-			if (nrMark == DIM) {
+			if (nrMark >= FOUR) {
 				return true;
 			}
 		}
@@ -274,50 +259,42 @@ public class Board {
 	public boolean hasCrossDiagonal(Mark mark) {
 		int nrMark = 0;
 		//first diagonal
-		for (int i = 0; i < DIM; i++) {
+		for (int i = 0; i < dim; i++) {
 			if (getField(i, i, i).equals(mark)) {
 				nrMark++;
-			} else {
-				break;
 			}
 		}
-		if (nrMark == DIM) {
+		if (nrMark >= FOUR) {
 			return true;
 		}
 		
 		//second diagonal
-		for (int i = 0; i < DIM; i++) {
-			if (getField(i, i, DIM - 1 - i).equals(mark)) {
+		for (int i = 0; i < dim; i++) {
+			if (getField(i, i, dim - 1 - i).equals(mark)) {
 				nrMark++;
-			} else {
-				break;
 			}
 		}
-		if (nrMark == DIM) {
+		if (nrMark >= FOUR) {
 			return true;
 		}
 		
 		//third diagonal
-		for (int i = 0; i < DIM; i++) {
-			if (getField(i, DIM - 1 - i, i).equals(mark)) {
+		for (int i = 0; i < dim; i++) {
+			if (getField(i, dim - 1 - i, i).equals(mark)) {
 				nrMark++;
-			} else {
-				break;
 			}
 		}
-		if (nrMark == DIM) {
+		if (nrMark >= FOUR) {
 			return true;
 		}
 		
 		//fourth diagonal
-		for (int i = 0; i < DIM; i++) {
-			if (getField(i, DIM - 1 - i, DIM - 1 - i).equals(mark)) {
+		for (int i = 0; i < dim; i++) {
+			if (getField(i, dim - 1 - i, dim - 1 - i).equals(mark)) {
 				nrMark++;
-			} else {
-				break;
 			}
 		}
-		if (nrMark == DIM) {
+		if (nrMark >= FOUR) {
 			return true;
 		}
 		
@@ -327,5 +304,13 @@ public class Board {
 	public String toString() {
 		//TODO: implementation of toString.
 		return null;
+	}
+	
+	public int getDim() {
+		return dim;
+	}
+	
+	public int getSize() {
+		return size;
 	}
 }
