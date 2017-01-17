@@ -37,8 +37,8 @@ public class Board {
 			line += "+---";
 		}
 		//set numbering
-		numbering = String[dim];
-		
+		numbering = new String[dim];
+		for ()
 	}
 	
 	/**
@@ -87,6 +87,10 @@ public class Board {
 	 */
 	public boolean isField(int x, int y, int z) {
 		return 0 <= index(x, y, z) && index(x, y, z) < size;
+	}
+	
+	public boolean isField(int index) {
+		return 0 <= index && index < size;
 	}
 	
 	/**
