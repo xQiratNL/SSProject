@@ -95,7 +95,7 @@ public class Board {
 	 */
 	public void reset() {
 		for (int i = 0; i < size; i++) {
-			fields[i] = new Mark();
+			fields[i] = Mark.EMPTY;
 		}
 	}
 	/**
@@ -205,8 +205,6 @@ public class Board {
 		return hasRow(mark) || hasColumn(mark) || hasBar(mark) || hasXDiagonal(mark) || hasYDiagonal(mark) || hasZDiagonal(mark) || hasCrossDiagonal(mark);
 	}
 	
-	
-	//TODO: fix check for has****
 	public boolean hasRow(Mark mark) {
 		for (int z = 0; z < dim; z++) {
 			for (int y = 0; y < dim; y++) {
@@ -439,9 +437,5 @@ public class Board {
 	
 	public int getSize() {
 		return size;
-	}
-	
-	public Player[] getPlayers() {
-		return players;
 	}
 }
