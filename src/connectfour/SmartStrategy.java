@@ -41,10 +41,10 @@ public class SmartStrategy implements Strategy {
 		
 		// no guaranteed win. Block opponent?
 		// loop through all the players and determine if it is possbile that another player wins.
-		while (setMove == -1 && players...) {
+		if (setMove == -1) {
 			for (Integer s : set) {
 				bCopy = board.deepCopy();
-				bCopy.setField(s, m.other());
+				bCopy.setField(s, mark.other());
 				if (bCopy.hasWinner()) {
 					setMove = s;
 					break;
@@ -52,8 +52,24 @@ public class SmartStrategy implements Strategy {
 			}			
 		}
 
-		// Opponent cannot win, so make smartest move
-
+		// Opponent cannot win, so check if the middle field is empty.
+		if (setMove == -1 && board.isEmptyField((board.getDim()-1)/2, (board.getDim()-1)/2, (board.getDim()-1)/2)) {
+			setMove = board.index((board.getDim()-1)/2, (board.getDim()-1)/2, (board.getDim()-1)/2);
+		}
+		
+		// Middle field is not empty, so select a random field.
+		if (setMove == -1) {
+			int r = (int) (Math.random() * set.size());
+			int i = 0;
+			for (Integer s : set) {
+				if (r == i) {
+					setMove = s;
+					break;
+				}
+				i++;
+			}
+		}
+		
 		return setMove;
 	}
 
