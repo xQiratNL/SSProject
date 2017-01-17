@@ -17,4 +17,7 @@ public class Game {
 	}
 	
 	//TODO: add start, play, makemove etc.
+	public static void main(String[] args) {
+		
+	}
 }
