@@ -34,7 +34,7 @@ public abstract class Player {
 	// If the player has a smart strategy, then the name of this ComputerPlayer is changed to Tariq or Rutger :)
 	public Player(String name, Mark mark, Strategy strategy) {
 		if (strategy.getName().equals("Smart")) {
-			int nameChoice = (int) Math.floor(Math.random() * 2);
+			int nameChoice = (int) (Math.random() * 2);
 			if (nameChoice == 0) {
 				this.name = "Tariq";
 			} else {
