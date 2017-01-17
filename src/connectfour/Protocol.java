@@ -10,7 +10,7 @@ import java.util.HashMap;
  * @version 1.1 (11-01-2017),Eclipse: 4.6.1
  */
 
-// When a message contains <> you should fill it in yourself. When a message contains [] it’s optional. E.g. connecting with the server with username Pietje18 and extension challenge would look like: HELLO + DELIMITER + “Pietje”+ DELIMITER + EXT_CHALLENGE
+// When a message contains <> you should fill it in yourself. When a message contains [] it's optional. E.g. connecting with the server with username Pietje18 and extension challenge would look like: HELLO + DELIMITER + â€œPietjeâ€�+ DELIMITER + EXT_CHALLENGE
 
 public interface Protocol {
 	
