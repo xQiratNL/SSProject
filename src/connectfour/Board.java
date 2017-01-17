@@ -3,8 +3,11 @@ package connectfour;
 public class Board {
 	
 	public static final int FOUR = 4;
-	//TODO: Add other statics.
+	private static final String GRID_DELIM = "     ";
+	private static final String FIELD_DELIM = " | ";
 
+	private String[] numbering;
+	private String line;
 	private int dim;
 	private int size;
 	private Mark[] fields;
@@ -12,12 +15,30 @@ public class Board {
 	//--Constructors--------
 	/**
 	 * Creates board with empty marks.
+	 * Requires dim>=4.
 	 */
+	//@ dim>=4;
 	public Board(int dim) {
 		this.dim = dim;
 		this.size = dim * dim * dim;
 		fields = new Mark[size];
+		numbering();
 		reset();
+	}
+	
+	/**
+	 * Creates the numbering of the field.
+	 * @return String which represents the numbering.
+	 */
+	public void numbering() {
+		//set line
+		line = "---";
+		for (int i = 1; i < dim; i++) {
+			line += "+---";
+		}
+		//set numbering
+		numbering = String[dim];
+		
 	}
 	
 	/**
@@ -90,6 +111,10 @@ public class Board {
 		return getField(x, y, z).isEmpty();
 	}
 	
+	public boolean isEmptyField(int index) {
+		return fields[index].isEmpty();
+	}
+	
 	/**
 	 * Returns true if board is full.
 	 * @return true if board is full.
@@ -112,6 +137,15 @@ public class Board {
 	 */
 	public void setField(int x, int y, int z, Mark mark) {
 		fields[index(x, y, z)] = mark;
+	}
+	
+	/**
+	 * Sets field index to mark.
+	 * @param index, index of field to change.
+	 * @param mark, mark of player
+	 */
+	public void setField(int index, Mark mark) {
+		fields[index] = mark;
 	}
 	
 	public boolean isWinner(Mark mark) {
