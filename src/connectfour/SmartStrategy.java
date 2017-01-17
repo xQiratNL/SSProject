@@ -40,7 +40,17 @@ public class SmartStrategy implements Strategy {
 		}
 		
 		// no guaranteed win. Block opponent?
-
+		// loop through all the players and determine if it is possbile that another player wins.
+		while (setMove == -1 && players...) {
+			for (Integer s : set) {
+				bCopy = board.deepCopy();
+				bCopy.setField(s, m.other());
+				if (bCopy.hasWinner()) {
+					setMove = s;
+					break;
+				}
+			}			
+		}
 
 		// Opponent cannot win, so make smartest move
 
