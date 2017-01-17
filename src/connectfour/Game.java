@@ -7,7 +7,7 @@ public class Game {
 	private int currentPlayerIndex;
 	
 	public Game(Player[] players, int dim) {
-		this.board = new Board(dim, players);
+		this.board = new Board(dim);
 		this.players = players;
 		currentPlayerIndex = 0;
 	}

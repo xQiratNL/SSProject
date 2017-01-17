@@ -2,7 +2,6 @@ package connectfour;
 
 public class Board {
 	
-	public static final int FOUR = 4;
 	private static final String GRID_DELIM = "\t";
 	private static final String FIELD_DELIM = "\t| ";
 
@@ -11,7 +10,6 @@ public class Board {
 	private int dim;
 	private int size;
 	private Mark[] fields;
-	private Player[] players;
 	
 	//--Constructors--------
 	/**
@@ -19,8 +17,7 @@ public class Board {
 	 * Requires dim>=4.
 	 */
 	//@ dim>=4;
-	public Board(int dim, Player[] players) {
-		this.players = players;
+	public Board(int dim) {
 		this.dim = dim;
 		this.size = dim * dim * dim;
 		fields = new Mark[size];
@@ -103,7 +100,7 @@ public class Board {
 	 * @return deep copy of this board.
 	 */
 	public Board deepCopy() {
-		Board newBoard = new Board(dim, players);
+		Board newBoard = new Board(dim);
 		newBoard.fields = this.fields.clone();
 		return newBoard;
 	}
@@ -212,9 +209,11 @@ public class Board {
 				for (int x = 0; x < dim; x++) {
 					if (getField(x, y, z).equals(mark)) {
 						nrMark++;
+					} else {
+						break;
 					}
 				}
-				if (nrMark >= FOUR) {
+				if (nrMark == dim) {
 					return true;
 				}
 			}
@@ -230,9 +229,11 @@ public class Board {
 				for (int y = 0; y < dim; y++) {
 					if (getField(x, y, z).equals(mark)) {
 						nrMark++;
+					} else {
+						break;
 					}
 				}
-				if (nrMark >= FOUR) {
+				if (nrMark == dim) {
 					return true;
 				}
 			}
@@ -248,9 +249,11 @@ public class Board {
 				for (int z = 0; z < dim; z++) {
 					if (getField(x, y, z).equals(mark)) {
 						nrMark++;
+					} else {
+						break;
 					}
 				}
-				if (nrMark >= FOUR) {
+				if (nrMark == dim) {
 					return true;
 				}
 			}
@@ -265,9 +268,11 @@ public class Board {
 			for (int i = 0; i < dim; i++) {
 				if (getField(i, i, z).equals(mark)) {
 					nrMark++;
+				} else {
+					break;
 				}
 			}
-			if (nrMark >= FOUR) {
+			if (nrMark == dim) {
 				return true;
 			}
 		}
@@ -277,9 +282,11 @@ public class Board {
 			for (int i = 0; i < dim; i++) {
 				if (getField(i, dim - 1 - i, z).equals(mark)) {
 					nrMark++;
+				} else {
+					break;
 				}
 			}
-			if (nrMark >= FOUR) {
+			if (nrMark == dim) {
 				return true;
 			}
 		}
@@ -293,9 +300,11 @@ public class Board {
 			for (int i = 0; i < dim; i++) {
 				if (getField(i, y, i).equals(mark)) {
 					nrMark++;
+				} else {
+					break;
 				}
 			}
-			if (nrMark >= FOUR) {
+			if (nrMark == dim) {
 				return true;
 			}
 		}
@@ -305,9 +314,11 @@ public class Board {
 			for (int i = 0; i < dim; i++) {
 				if (getField(i, y , dim - 1 - i).equals(mark)) {
 					nrMark++;
+				} else {
+					break;
 				}
 			}
-			if (nrMark >= FOUR) {
+			if (nrMark == dim) {
 				return true;
 			}
 		}
@@ -321,9 +332,11 @@ public class Board {
 			for (int i = 0; i < dim; i++) {
 				if (getField(x, i, i).equals(mark)) {
 					nrMark++;
+				} else {
+					break;
 				}
 			}
-			if (nrMark >= FOUR) {
+			if (nrMark == dim) {
 				return true;
 			}
 		}
@@ -333,9 +346,11 @@ public class Board {
 			for (int i = 0; i < dim; i++) {
 				if (getField(x, i , dim - 1 - i).equals(mark)) {
 					nrMark++;
+				} else {
+					break;
 				}
 			}
-			if (nrMark >= FOUR) {
+			if (nrMark == dim) {
 				return true;
 			}
 		}
@@ -349,9 +364,11 @@ public class Board {
 		for (int i = 0; i < dim; i++) {
 			if (getField(i, i, i).equals(mark)) {
 				nrMark++;
+			} else {
+				break;
 			}
 		}
-		if (nrMark >= FOUR) {
+		if (nrMark == dim) {
 			return true;
 		}
 		
@@ -359,9 +376,11 @@ public class Board {
 		for (int i = 0; i < dim; i++) {
 			if (getField(i, i, dim - 1 - i).equals(mark)) {
 				nrMark++;
+			} else {
+				break;
 			}
 		}
-		if (nrMark >= FOUR) {
+		if (nrMark == dim) {
 			return true;
 		}
 		
@@ -369,9 +388,11 @@ public class Board {
 		for (int i = 0; i < dim; i++) {
 			if (getField(i, dim - 1 - i, i).equals(mark)) {
 				nrMark++;
+			} else {
+				break;
 			}
 		}
-		if (nrMark >= FOUR) {
+		if (nrMark == dim) {
 			return true;
 		}
 		
@@ -379,9 +400,11 @@ public class Board {
 		for (int i = 0; i < dim; i++) {
 			if (getField(i, dim - 1 - i, dim - 1 - i).equals(mark)) {
 				nrMark++;
+			} else {
+				break;
 			}
 		}
-		if (nrMark >= FOUR) {
+		if (nrMark == dim) {
 			return true;
 		}
 		
@@ -389,13 +412,11 @@ public class Board {
 	}
 	
 	public boolean hasWinner() {
-		for (Player player: players) {
-			if (this.isWinner(player.getMark())) {
-				return true;
-			}
+		if (this.isWinner(Mark.OO) || this.isWinner(Mark.XX)) {
+			return true;
+		} else {
+			return false;
 		}
-		//no winner
-		return false;
 	}
 	
 	public boolean gameOver() {
