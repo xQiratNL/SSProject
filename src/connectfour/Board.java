@@ -3,14 +3,15 @@ package connectfour;
 public class Board {
 	
 	public static final int FOUR = 4;
-	private static final String GRID_DELIM = "     ";
-	private static final String FIELD_DELIM = " | ";
+	private static final String GRID_DELIM = "\t";
+	private static final String FIELD_DELIM = "\t| ";
 
-	private String[] numbering;
+	private String[][] numbering;
 	private String line;
 	private int dim;
 	private int size;
 	private Mark[] fields;
+	private Player[] players;
 	
 	//--Constructors--------
 	/**
@@ -18,7 +19,8 @@ public class Board {
 	 * Requires dim>=4.
 	 */
 	//@ dim>=4;
-	public Board(int dim) {
+	public Board(int dim, Player[] players) {
+		this.players = players;
 		this.dim = dim;
 		this.size = dim * dim * dim;
 		fields = new Mark[size];
@@ -32,13 +34,60 @@ public class Board {
 	 */
 	public void numbering() {
 		//set line
-		line = "---";
+		line = "--------";
 		for (int i = 1; i < dim; i++) {
-			line += "+---";
+			line += "+-------";
 		}
 		//set numbering
-		numbering = new String[dim];
-		for ()
+		numbering = new String[dim][2 * dim - 1];
+		int index = 0;
+		for (int z = 0; z < dim; z++) {
+			//xy-plane
+			for (int y = 0; y < dim; y++ ) {
+				//one line
+				String newLine = " ";
+				for (int x = 0; x < dim; x++) {
+					newLine += index;
+					if (! (x == dim - 1)) {
+						newLine += FIELD_DELIM;
+					} else {
+						newLine += "\t";
+					}
+					index++;
+				}
+				newLine += " ";
+				numbering[z][2 * y] = newLine;
+				if (!(y == dim - 1)) {
+					numbering[z][2* y + 1] = line;
+				}
+			}
+		}
+	}
+	
+	public String[][] boardStatus() {
+		//set numbering
+		String[][] status = new String[dim][2 * dim - 1];
+		for (int z = 0; z < dim; z++) {
+			//xy-plane
+			for (int y = 0; y < dim; y++ ) {
+				//one line
+				String newLine = " ";
+				for (int x = 0; x < dim; x++) {
+					newLine += getField(x, y, z);
+					if (! (x == dim - 1)) {
+						newLine += FIELD_DELIM;
+					} else {
+						newLine += "\t";
+					}
+				}
+				newLine += " ";
+				status[z][2 * y] = newLine;
+				if (!(y == dim - 1)) {
+					status[z][2* y + 1] = line;
+				}
+			}
+		}
+		return status;
 	}
 	
 	/**
@@ -54,7 +103,7 @@ public class Board {
 	 * @return deep copy of this board.
 	 */
 	public Board deepCopy() {
-		Board newBoard = new Board(dim);
+		Board newBoard = new Board(dim, players);
 		newBoard.fields = this.fields.clone();
 		return newBoard;
 	}
@@ -339,9 +388,41 @@ public class Board {
 		return false;
 	}
 	
+	public boolean hasWinner() {
+		for (Player player: players) {
+			if (this.isWinner(player.getMark())) {
+				return true;
+			}
+		}
+		//no winner
+		return false;
+	}
+	
+	public boolean gameOver() {
+		return this.isFull() || this.hasWinner();
+	}
+	
 	public String toString() {
-		//TODO: implementation of toString.
-		return null;
+		String tabs = "\t\t\t\t\t";
+		String string = "\t\t";
+		
+		String[][] status = boardStatus();
+		//print numbering
+		for (int lineNr = 0; lineNr < 2 * dim -1; lineNr++) {
+			for (int z = 0; z < dim; z++) {
+				string += numbering[z][lineNr] + GRID_DELIM;
+			}
+			string += "\n";
+		}
+		string += "\n";
+		//print status
+		for (int lineNr = 0; lineNr < 2 * dim -1; lineNr++) {
+			for (int z = 0; z < dim; z++) {
+				string += status[z][lineNr] + GRID_DELIM;
+			}
+			string += "\n";
+		}
+		return string;
 	}
 	
 	public int getDim() {
@@ -350,5 +431,12 @@ public class Board {
 	
 	public int getSize() {
 		return size;
+	}
+	
+	public static void main(String[] args) {
+		//Board board =  new Board(5, new HumanPlayer(), new HumanPlayer());
+		//board.setField(21, Mark.XX);
+		//board.setField(60, Mark.OO);
+		//System.out.println(board.toString());
 	}
 }
