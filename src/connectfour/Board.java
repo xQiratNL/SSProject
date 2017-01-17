@@ -433,6 +433,8 @@ public class Board {
 			string += "z=" + z + tabs;
 		}
 		
+		string += "\n\n";
+		
 		String[][] status = boardStatus();
 		//print numbering
 		for (int lineNr = 0; lineNr < 2 * dim -1; lineNr++) {
@@ -459,4 +461,10 @@ public class Board {
 	public int getSize() {
 		return size;
 	}
+	
+	/**public static void main(String[] args) {
+		Board board = new Board(4);
+		System.out.println(board.toString());
+	}
+	*/
 }
