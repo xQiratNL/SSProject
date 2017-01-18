@@ -117,9 +117,9 @@ public class Board {
 	}
 	
 	public int[] coordinates(int index) {
-		int z = index / dim * dim;
-		int y = (index - z) / dim;
-		int x = index - z - y;
+		int z = index / (dim * dim);
+		int y = (index - z * dim * dim) / dim;
+		int x = index - z * dim * dim - y * dim;
 		int[] coordinates = {x, y, z};
 		return coordinates;
 	}
@@ -481,9 +481,11 @@ public class Board {
 		return size;
 	}
 	
+	/**
 	public static void main(String[] args) {
 		Board board = new Board(4);
 		System.out.println(board.toString());
 	}
+	*/
 	
 }
