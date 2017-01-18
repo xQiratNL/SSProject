@@ -15,6 +15,8 @@ public class Board {
 	/**
 	 * Creates board with empty marks.
 	 * Requires dim>=4.
+	 * 
+	 * @param dim dimension of the board
 	 */
 	//@ dim>=4;
 	public Board(int dim) {
