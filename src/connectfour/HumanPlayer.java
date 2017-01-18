@@ -32,20 +32,30 @@ public class HumanPlayer extends Player {
      * done using the standard input/output. \
      * 
      * @param board the game board
-     * @return the player's chosen field
+     * @return the player's chosen field (index)
      */
     public int determineMove(Board board) {
         String prompt = "> " + getName() + " (" + getMark().toString() + ")"
                 + ", what is your choice? ";
-        int choice = readInt(prompt);
-        boolean valid = board.isField(choice) && board.isEmptyField(choice);
+        int move = readInt(prompt);
+        int[] xyz = board.coordinates(move);
+        boolean valid = board.isValidMove(xyz[0], xyz[1], board.getDim());   
         while (!valid) {
-            System.out.println("ERROR: field " + choice
+            System.out.println("ERROR: field " + move
                     + " is no valid choice.");
-            choice = readInt(prompt);
-            valid = board.isField(choice) && board.isEmptyField(choice);
+            move = readInt(prompt);
+          //  valid = board.isValidMove(xyz[0], xyz[1], board.getDim());
+            
+            for (int i = 0; i < board.getDim(); i++) {
+            	valid = board.isValidMove(xyz[0], xyz[1], i);
+            	if (valid) {
+            		break;
+            	}
+            }      
+            
         }
-        return choice;
+        
+        return move;
     }
 
     /**
