@@ -21,8 +21,11 @@ public class SmartStrategy implements Strategy {
 	public int determineMove(Board board, Mark mark) {
 		Set<Integer> set = new HashSet<Integer>();
 		// Add all empty fields to a set.
-		for (int i = 0; i < board.getSize(); i++) {
-			if (board.isEmptyField(i)) {
+
+	//	for (int i = board.getSize() - (board.getDim() * board.getDim()); i < board.getSize(); i++) {
+		for (int i = 0; i < board.getDim() * board.getDim(); i++) {
+			int[] xyz = board.coordinates(i);
+			if (board.isEmptyField(xyz[0], xyz[1], board.getDim() - 1)) {
 				set.add(i);
 			}
 		}
@@ -32,7 +35,8 @@ public class SmartStrategy implements Strategy {
 		// check for guaranteed win of this player.
 		for (Integer s : set) {
 			bCopy = board.deepCopy();
-			bCopy.setField(s, mark);
+			int field = Player.fall(bCopy, s);
+			bCopy.setField(field, mark);
 			if (bCopy.hasWinner()) {
 				setMove = s;
 				break;
@@ -40,11 +44,12 @@ public class SmartStrategy implements Strategy {
 		}
 		
 		// no guaranteed win. Block opponent?
-		// loop through all the players and determine if it is possbile that another player wins.
+		// loop through all the players and determine if it is possible that another player wins.
 		if (setMove == -1) {
 			for (Integer s : set) {
 				bCopy = board.deepCopy();
-				bCopy.setField(s, mark.other());
+				int field = Player.fall(bCopy, s);
+				bCopy.setField(field, mark.other());
 				if (bCopy.hasWinner()) {
 					setMove = s;
 					break;
@@ -54,7 +59,8 @@ public class SmartStrategy implements Strategy {
 
 		// Opponent cannot win, so check if the middle field is empty.
 		if (setMove == -1 && board.isEmptyField((board.getDim()-1)/2, (board.getDim()-1)/2, (board.getDim()-1)/2)) {
-			setMove = board.index((board.getDim()-1)/2, (board.getDim()-1)/2, (board.getDim()-1)/2);
+			setMove = board.index((board.getDim()-1)/2, (board.getDim()-1)/2, 0);
+			System.out.println("evaluating middle fields");
 		}
 		
 		// Middle field is not empty, so select a random field.
@@ -68,6 +74,7 @@ public class SmartStrategy implements Strategy {
 				}
 				i++;
 			}
+			System.out.println("random move");
 		}
 		
 		return setMove;

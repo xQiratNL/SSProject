@@ -22,7 +22,7 @@ public class NaiveStrategy implements Strategy {
 	public int determineMove(Board board, Mark mark) {
 		Set<Integer> set = new HashSet<Integer>();
 		// Add all empty fields to a set.
-		for (int i = 0; i < board.getSize(); i++) {
+		for (int i = 0; i < board.getDim() * board.getDim(); i++) {
 			if (board.isEmptyField(i)) {
 				set.add(i);
 			}

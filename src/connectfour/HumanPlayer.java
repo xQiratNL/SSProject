@@ -40,11 +40,12 @@ public class HumanPlayer extends Player {
         int move = readInt(prompt);
         int[] xyz = board.coordinates(move);
        // boolean valid = board.isValidMove(xyz[0], xyz[1], (board.getDim() - 1));   
-        boolean valid = move <= (board.getDim() * board.getDim() - 1) && board.isEmptyField(xyz[0], xyz[1], board.getDim() - 1);
+        boolean valid = move < (board.getDim() * board.getDim()) && board.isEmptyField(xyz[0], xyz[1], board.getDim() - 1);
         while (!valid) {
             System.out.println("ERROR: field " + move
                     + " is no valid choice.");
             move = readInt(prompt);
+            xyz = board.coordinates(move);
             valid = move <= (board.getDim() * board.getDim() - 1) && board.isEmptyField(xyz[0], xyz[1], board.getDim() - 1);
         }
         return fall(board, move);

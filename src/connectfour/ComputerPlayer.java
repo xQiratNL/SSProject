@@ -24,6 +24,6 @@ public class ComputerPlayer extends Player {
      */
 	@Override
 	public int determineMove(Board board) {
-		return strategy.determineMove(board, mark);
+		return fall(board, strategy.determineMove(board, mark));
 	}
 }

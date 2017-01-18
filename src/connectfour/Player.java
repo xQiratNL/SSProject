@@ -75,9 +75,9 @@ public abstract class Player {
      * Makes a move fall. e.g. gets the fallen position for a move.
      * 
      * @param board the current board
-     * @param move	the move on the x,y plane
+     * @param move	the move on the x,y plane (index)
      */
-    public int fall(Board board, int move) {
+    public static int fall(Board board, int move) {
 		int[] xyz = board.coordinates(move);
 		int zcoord = 0;
 		boolean valid = board.isValidMove(xyz[0], xyz[1], zcoord);
