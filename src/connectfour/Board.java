@@ -5,7 +5,7 @@ public class Board {
 	private static final String GRID_DELIM = "\t";
 	private static final String FIELD_DELIM = "\t| ";
 
-	private String[][] numbering;
+	private String[] numbering;
 	private String line;
 	private int dim;
 	private int size;
@@ -28,7 +28,7 @@ public class Board {
 	}
 	
 	/**
-	 * Creates the numbering of the field.
+	 * Creates the numbering of the fields in the xy-plane.
 	 * @return String which represents the numbering.
 	 */
 	public void numbering() {
@@ -38,27 +38,25 @@ public class Board {
 			line += "+-------";
 		}
 		//set numbering
-		numbering = new String[dim][2 * dim - 1];
+		numbering = new String[2 * dim - 1];
 		int index = 0;
-		for (int z = 0; z < dim; z++) {
-			//xy-plane
-			for (int y = 0; y < dim; y++ ) {
-				//one line
-				String newLine = " ";
-				for (int x = 0; x < dim; x++) {
-					newLine += index;
-					if (! (x == dim - 1)) {
-						newLine += FIELD_DELIM;
-					} else {
-						newLine += "\t";
-					}
-					index++;
+		//xy-plane
+		for (int y = 0; y < dim; y++ ) {
+			//one line
+			String newLine = " ";
+			for (int x = 0; x < dim; x++) {
+				newLine += index;
+				if (! (x == dim - 1)) {
+					newLine += FIELD_DELIM;
+				} else {
+					newLine += "\t";
 				}
-				newLine += " ";
-				numbering[z][2 * y] = newLine;
-				if (!(y == dim - 1)) {
-					numbering[z][2* y + 1] = line;
-				}
+				index++;
+			}
+			newLine += " ";
+			numbering[2 * y] = newLine;
+			if (!(y == dim - 1)) {
+				numbering[2* y + 1] = line;
 			}
 		}
 	}
@@ -443,26 +441,28 @@ public class Board {
 	}
 	
 	public String toString() {
+		
+		String string = "Numbering: \n \n";
+		
+		String[][] status = boardStatus();
+		//print numbering
+		for (int lineNr = 0; lineNr < 2 * dim -1; lineNr++) {
+				string += numbering[lineNr];
+			string += "\n";
+		}
+		string += "\n";
+		
+		//print z indices
 		String tabs = "\t\t\t\t\t";
 		for (int i = 4; i < dim; i++) {
 			tabs += "\t";
 		}
-		String string = "\t\t";
+		string += "\t\t";
 		for (int z = 0; z < dim; z++) {
 			string += "z=" + z + tabs;
 		}
 		
 		string += "\n\n";
-		
-		String[][] status = boardStatus();
-		//print numbering
-		for (int lineNr = 0; lineNr < 2 * dim -1; lineNr++) {
-			for (int z = 0; z < dim; z++) {
-				string += numbering[z][lineNr] + GRID_DELIM;
-			}
-			string += "\n";
-		}
-		string += "\n";
 		//print status
 		for (int lineNr = 0; lineNr < 2 * dim -1; lineNr++) {
 			for (int z = 0; z < dim; z++) {
@@ -481,9 +481,9 @@ public class Board {
 		return size;
 	}
 	
-	/**public static void main(String[] args) {
+	public static void main(String[] args) {
 		Board board = new Board(4);
 		System.out.println(board.toString());
 	}
-	*/
+	
 }
