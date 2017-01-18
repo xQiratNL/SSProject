@@ -39,7 +39,8 @@ public class HumanPlayer extends Player {
                 + ", what is your choice? ";
         int move = readInt(prompt);
         int[] xyz = board.coordinates(move);
-        boolean valid = board.isValidMove(xyz[0], xyz[1], board.getDim());   
+       // boolean valid = board.isValidMove(xyz[0], xyz[1], (board.getDim() - 1));   
+        boolean valid = false;
         while (!valid) {
             System.out.println("ERROR: field " + move
                     + " is no valid choice.");
