@@ -34,12 +34,16 @@ public class ClientHandler implements Runnable {
 		while (!sock.isClosed()) {
     		try {
 				if (in.ready()) {
-					tui.println(in.readLine());
+					processInput(in.readLine());
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
     	}
+	}
+	
+	public void processInput(String input) {
+		tui.println(input);
 	}
 }
