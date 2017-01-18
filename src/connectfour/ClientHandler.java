@@ -31,5 +31,15 @@ public class ClientHandler implements Runnable {
 			e.printStackTrace();
 		}
 		
+		while (!sock.isClosed()) {
+    		try {
+				if (in.ready()) {
+					tui.println(in.readLine());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
 	}
 }
