@@ -168,6 +168,23 @@ public class Board {
 	}
 	
 	/**
+	 * Boolean value stating whether or not the move was valid.
+	 * @param x, x-coordinate
+	 * @param y, y-coordinate
+	 * @param z, z-coordinate
+	 * @return true if field exists, is empty and z=0 or field below not empty.
+	 */
+	public boolean isValidMove(int x, int y, int z) {
+		if(!(isField(x, y, z) && isEmptyField(x, y, z))) {
+			return false;
+		} else if (z == 0 || !(isEmptyField(x , y, z - 1))){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
 	 * Returns true if board is full.
 	 * @return true if board is full.
 	 */
