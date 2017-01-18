@@ -66,5 +66,26 @@ public abstract class Player {
         int index = determineMove(board);
         board.setField(index, getMark());
     }
+ 
+    /*@
+    	requires board != null & !board.isFull();
+    	requires move < board.getDim() * board.getDim();
+     */
+    /**
+     * Makes a move fall. e.g. gets the fallen position for a move.
+     * 
+     * @param board the current board
+     * @param move	the move on the x,y plane
+     */
+    public int fall(Board board, int move) {
+		int[] xyz = board.coordinates(move);
+		int zcoord = 0;
+		boolean valid = board.isValidMove(xyz[0], xyz[1], zcoord);
+		while (!valid) {
+			valid = board.isValidMove(xyz[0], xyz[1], (++zcoord));
+		}
+		
+    	return board.index(xyz[0], xyz[1], zcoord);
+    }
     
 }
