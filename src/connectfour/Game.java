@@ -1,6 +1,6 @@
 package connectfour;
 
-public class Game {
+public class Game implements Runnable {
 	
 	private Board board;
 	private Player[] players;
@@ -16,8 +16,28 @@ public class Game {
 		return players[currentPlayerIndex];
 	}
 	
-	//TODO: add start, play, makemove etc.
+	//TODO: implement and make start, play, makemove etc.
+	
+	public void start() {
+		
+	}
+	
+	private void reset() {
+		currentPlayerIndex = 0;
+		board.reset();
+	}
+	
+	private void play() {
+		
+	}
+	
 	public static void main(String[] args) {
+		
+	}
+
+	@Override
+	public void run() {
+		//TODO: implement
 		
 	}
 }
