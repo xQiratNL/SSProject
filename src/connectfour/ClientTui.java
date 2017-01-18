@@ -28,8 +28,8 @@ public class ClientTui implements Runnable {
 	public void run() {
     	while (!sock.isClosed()) {
     		try {
-				if (in.ready()) {
-					System.out.println(in.readLine());
+				if (in.ready()) {	
+					processInput(in.readLine());
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -40,8 +40,8 @@ public class ClientTui implements Runnable {
 	
     /**
      * Reads a string from the console and sends this string over
-     * the socket-connection to the Peer process.
-     * On Peer.EXIT the method ends
+     * the socket-connection to the ClientTui process.
+     * On "exit" the method ends
      */
     public void handleTerminalInput() {
 		String input = "";
@@ -84,5 +84,10 @@ public class ClientTui implements Runnable {
         }
 
         return (antw == null) ? "" : antw;
+    }
+    
+    private void processInput(String input) {
+    	System.out.println(input);
+    	//TODO: switch - case
     }
 }
