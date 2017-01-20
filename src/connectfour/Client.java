@@ -35,10 +35,9 @@ public class Client {
     		System.out.println("ERROR: could not create a socket on " + addr
     				+ " and port " + Protocol.PORTNUMBER);
     	}
-
-    	//TODO: Socket >> TUI
     	
-        // create Peer object and start the two-way communication
+        // create ClientTui object in a new thread and start the two-way communication.
+    	// The new thread is created to maintain two process at a time. The output and input.
     	ClientTui tui = new ClientTui(sock);
         Thread streamInputHandler = new Thread(tui);
         streamInputHandler.start();
