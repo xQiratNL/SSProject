@@ -43,7 +43,61 @@ public class ClientHandler implements Runnable {
     	}
 	}
 	
+	public void writeOutput(String output) {
+		tui.println("Server says:" + output);
+		try {
+			out.write(output);
+			out.newLine();
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void processInput(String input) {
-		tui.println(input);
+		tui.println("User says:"  + input);
+		// TODO Wrong input commands
+		String[] splitInput = input.split(Protocol.DELIMITER);
+		switch (splitInput[0]) {
+			case Protocol.HELLO:
+				hello(splitInput);
+				break;
+			case Protocol.PLAY:
+				play(splitInput);
+				break;
+			case Protocol.READY:
+				ready();
+				break;
+			case Protocol.DECLINE:
+				decline();
+				break;
+			case Protocol.MAKEMOVE:
+				makeMove(splitInput);
+				break;
+			default:
+				//wrong command given
+				writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
+		}
+	}
+	
+	public void hello(String[] input) {
+		
+	}
+	
+	public void play(String[] input) {
+		
+	}
+	
+	public void ready() {
+		
+	}
+	
+	public void decline() {
+		
+	}
+	
+	public void makeMove(String[] input) {
+		
 	}
 }
