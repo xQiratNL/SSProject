@@ -108,7 +108,7 @@ public class ClientTui implements Runnable {
     	Scanner scanner = new Scanner(input);
     	String command = scanner.next();
     	System.out.println(input);
-    	//TODO: Add methods or functions
+    	//TODO: Add methods or functions, (VAN TARIQ: je kan beter naar de static variabele verwijzen, ipv de string, dit voorkomt problemen als het protocol wordt gewijzigd.
     	switch (command) {
     		
     		// Connect to a server:
