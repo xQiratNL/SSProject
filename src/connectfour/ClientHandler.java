@@ -7,7 +7,7 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-public class ClientHandler implements Runnable {
+public class ClientHandler extends Thread {
 	
 	private Server server;
 	private Socket sock;
@@ -84,18 +84,34 @@ public class ClientHandler implements Runnable {
 	
 	public void hello(String[] input) {
 		//TODO No username given (maybe)
-		if (server.getUsernames().contains(input[1])) {
+		if (server.getUsers().values().contains(input[1])) {
 			writeOutput(Protocol.ERROR_USERNAMETAKEN);
 		} else {
 			username = input[1];
-			server.addUsername(username);
+			server.addUser(this, username);
 			writeOutput(Protocol.HELLO + Protocol.DELIMITER + Server.EXT);
 		}
 	}
 	
 	public void play(String[] input) {
-		
+		//TODO: no second argument (maybe) or wrong third
+		int dim = Protocol.DIM;
+		if (input.length == 3) {
+			dim = Integer.parseInt(input[2]);
+		}
+		if (input[1] == Protocol.HUMAN) {
+			if (server.popFirstWaitingUser(dim) == null) {
+				writeOutput(Protocol.WAIT);
+			} else {
+				//TODO: initialize game
+			}			
+		} else if (input[1] == Protocol.COMPUTER) {
+			//TODO: initialize game
+		} else {
+			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
+		}
 	}
+	
 	
 	public void ready() {
 		
@@ -107,5 +123,9 @@ public class ClientHandler implements Runnable {
 	
 	public void makeMove(String[] input) {
 		
+	}
+	
+	public String getUsername() {
+		return username;
 	}
 }
