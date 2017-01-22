@@ -14,6 +14,7 @@ public class ClientHandler implements Runnable {
 	private ServerTui tui;
 	private BufferedReader in;
 	private BufferedWriter out;
+	private String username = "";
 
 	public ClientHandler(Server server, Socket sock, ServerTui tui) {
 		this.server = server;
@@ -44,7 +45,7 @@ public class ClientHandler implements Runnable {
 	}
 	
 	public void writeOutput(String output) {
-		tui.println("Server says:" + output);
+		tui.println("Server replies to user " + username + " :" + output);
 		try {
 			out.write(output);
 			out.newLine();
@@ -56,8 +57,8 @@ public class ClientHandler implements Runnable {
 	}
 	
 	public void processInput(String input) {
-		tui.println("User says:"  + input);
-		// TODO Wrong input commands
+		tui.println("User " + username +" says:"  + input);
+		// TODO Wrong input commands (maybe)
 		String[] splitInput = input.split(Protocol.DELIMITER);
 		switch (splitInput[0]) {
 			case Protocol.HELLO:
@@ -82,7 +83,14 @@ public class ClientHandler implements Runnable {
 	}
 	
 	public void hello(String[] input) {
-		
+		//TODO No username given (maybe)
+		if (server.getUsernames().contains(input[1])) {
+			writeOutput(Protocol.ERROR_USERNAMETAKEN);
+		} else {
+			username = input[1];
+			server.addUsername(username);
+			writeOutput(Protocol.HELLO + Protocol.DELIMITER + Server.EXT);
+		}
 	}
 	
 	public void play(String[] input) {
