@@ -27,7 +27,7 @@ public class Server {
 			while (true) {
 				Socket sock = ssock.accept();
 				tui.println("New client " + ++i +  " has connected");
-				new Thread(new ClientHandler(this, sock, tui)).start();;
+				new ClientHandler(this, sock, tui).start();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

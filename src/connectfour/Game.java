@@ -1,6 +1,6 @@
 package connectfour;
 
-public class Game implements Runnable {
+public class Game extends Thread {
 	
 	private Board board;
 	private Player[] players;
@@ -38,6 +38,5 @@ public class Game implements Runnable {
 	@Override
 	public void run() {
 		//TODO: implement
-		
 	}
 }

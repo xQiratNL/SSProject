@@ -15,6 +15,11 @@ public class ComputerPlayer extends Player {
 		this.strategy = strategy;
 		this.mark = mark;
 	}
+	
+	public ComputerPlayer(Mark mark) {
+		super("Computer", mark);
+		//TODO: correct implementation
+	}
 
     /**
      * Determines the field for the next move.

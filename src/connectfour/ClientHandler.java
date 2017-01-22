@@ -15,6 +15,7 @@ public class ClientHandler extends Thread {
 	private BufferedReader in;
 	private BufferedWriter out;
 	private String username = "";
+	private Game game;
 
 	public ClientHandler(Server server, Socket sock, ServerTui tui) {
 		this.server = server;
@@ -22,6 +23,8 @@ public class ClientHandler extends Thread {
 		this.tui = tui;
 	}
 
+	//TODO check concurrency
+	
 	@Override
 	public void run() {
 		try {
@@ -44,7 +47,7 @@ public class ClientHandler extends Thread {
     	}
 	}
 	
-	public void writeOutput(String output) {
+	public synchronized void writeOutput(String output) {
 		tui.println("Server replies to user " + username + " :" + output);
 		try {
 			out.write(output);
@@ -100,29 +103,55 @@ public class ClientHandler extends Thread {
 			dim = Integer.parseInt(input[2]);
 		}
 		if (input[1] == Protocol.HUMAN) {
-			if (server.popFirstWaitingUser(dim) == null) {
+			ClientHandler opponent = server.popFirstWaitingUser(dim);
+			if (opponent.equals(null)) {
 				writeOutput(Protocol.WAIT);
 			} else {
-				//TODO: initialize game
+				game = newGame(opponent, dim);
+				opponent.setGame(game);
+				String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + opponent.getUsername() + Protocol.DELIMITER;
+				writeOutput(msg);
+				opponent.writeOutput(msg);
 			}			
 		} else if (input[1] == Protocol.COMPUTER) {
-			//TODO: initialize game
+			game = newGame(dim);
+			String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + "ComputerPlayer" + Protocol.DELIMITER;
+			writeOutput(msg);
 		} else {
 			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 		}
 	}
-	
+	//TODO: 20 second time-out 
 	
 	public void ready() {
-		
+		//TODO: implement
 	}
 	
 	public void decline() {
-		
+		//TODO: implement
 	}
 	
 	public void makeMove(String[] input) {
-		
+		//TODO: implement
+	}
+	
+	
+	//TODO: random X/O (maybe)
+	public Game newGame(int dim) {
+		HumanPlayer playerOne = new HumanPlayer(this.username, Mark.XX);
+		ComputerPlayer playerTwo = new ComputerPlayer(Mark.OO);
+		return new Game(new Player[] {playerOne, playerTwo}, dim);
+	}
+	
+	//TODO: random X/O (maybe)
+	public Game newGame(ClientHandler opponent, int dim) {
+		HumanPlayer playerOne = new HumanPlayer(this.username, Mark.XX);
+		HumanPlayer playerTwo = new HumanPlayer(opponent.getUsername(), Mark.OO);
+		return new Game(new Player[] {playerOne, playerTwo}, dim);
+	}
+	
+	public void setGame(Game game) {
+		this.game = game;
 	}
 	
 	public String getUsername() {
