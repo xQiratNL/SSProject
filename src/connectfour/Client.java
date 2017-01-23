@@ -11,7 +11,14 @@ import java.util.Scanner;
 public class Client {
     private static final String USAGE
     = "usage: java connectfour.Client <address>";
-
+    private static final String COMMANDS
+	= "hello <username>;[chat];[leaderboard];[challenge] \n"
+	+ "play human [dimension] \n"
+	+ "play computer [dimension] \n"
+	+ "ready \n"
+	+ "decline \n"
+	+ "make move <x>;<y>;<z>";
+    
     public Client(String InetAdress) {
     	try {
 			this.start(InetAdress);
@@ -71,24 +78,25 @@ public class Client {
      */
     public void processInput(String input) {
     	Scanner scanner = new Scanner(input);
+    	scanner.useDelimiter(Protocol.DELIMITER);
     	String command = scanner.next();
-    	System.out.println(input);
     	switch (command) {
     		
     		// Connect to a server:
     		case Protocol.HELLO:
-    			//do this
+    			System.out.println("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled!");
     			break;
     		case Protocol.ERROR_USERNAMETAKEN:
-    			//do this
+    			System.out.println("This username is already taken, try again!");
     			break;
     		
     		// Starting a game
     		case Protocol.WAIT:
-    			//do this
+    			System.out.println("You are currently waiting for a game...");
     			break;
     		case Protocol.READY:
-    			//do this
+    			scanner.next();
+    			System.out.println("You have entered a game with " + scanner.next() + ". Are you ready? (usage: READY/DECLINE)");
     			break;
     		
     		// Playing a game
@@ -99,16 +107,20 @@ public class Client {
     			//do this
     			break;
     		case Protocol.ERROR_INVALIDMOVE:
-    			//do this
+    			System.out.println("A move on (" + scanner.next() + ", " + scanner.next() + ", " + scanner.next() + ") is an invalid move! Please try again.");
     			break;
     		case Protocol.ERROR_NOTYOURTURN:
-    			//do this
+    			System.out.println("Hold on there, cowboy! It isn't your turn yet!");
     			break;
     		case Protocol.GAMEOVER:
-    			//do this
+    			if (scanner.hasNext()) {
+    				System.out.println("Game over! user " + scanner.next() + " has won the game");
+    			} else {
+    				System.out.println("Game over! Ended in a draw.");
+    			}
     			break;
     		case Protocol.ERROR_USERQUIT:
-    			//do this
+    			System.out.println("User " + scanner.next() + " is a chicken. He cowarded out!");
     			break;
     		
     			
@@ -145,7 +157,7 @@ public class Client {
     		// Other
     		case Protocol.ERROR_COMMAND_NOT_RECOGNIZED:
     			System.out.println("Command not recognized!");
-    			//TODO: make usage function
+    			System.out.println(COMMANDS);
     			break;
     	}
     }

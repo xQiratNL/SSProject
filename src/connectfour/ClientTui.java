@@ -44,6 +44,7 @@ public class ClientTui implements Runnable {
     	while (!input.equals("exit")) {
 			input = readString();
 			try {
+				input = reformInput(input);
 				if (!input.equals("exit")) {
 					out.write(input);
 					out.newLine();
@@ -57,7 +58,21 @@ public class ClientTui implements Runnable {
 	}
 	
     	
-    /**
+    private String reformInput(String input) {        
+        if (input.startsWith("hello ")) {
+        	input = input.replaceFirst("hello ", "HELLO;");
+        } else if (input.startsWith("play human ")) {
+        	input = input.replaceFirst("play human ", "PLAY;HUMAN;");
+        } else if (input.startsWith("play computer ")) {
+        	input = input.replaceFirst("play computer ", "PLAY;COMPUTER;");
+        } else if (input.startsWith("make move ")) {
+        	input = input.replaceFirst("make move ", "MAKEMOVE;");
+        }
+    	return input;		
+	}
+
+
+	/**
      * Closes the connection, the sockets will be terminated.
      */
     public void shutDown() {
