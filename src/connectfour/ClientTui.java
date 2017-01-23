@@ -73,7 +73,12 @@ public class ClientTui implements Runnable {
         	input = input.replaceFirst("play computer ", "PLAY;COMPUTER;");
         } else if (input.startsWith("make move ")) {
         	input = input.replaceFirst("make move ", "MAKEMOVE;");
+        } else if (input.startsWith("ready")) {
+        	input = input.replaceFirst("ready", "READY");
+        } else if (input.startsWith("decline")) {
+        	input = input.replaceFirst("decline", "DECLINE");
         }
+        
     	return input;		
 	}
 

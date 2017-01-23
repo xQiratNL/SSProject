@@ -96,7 +96,7 @@ public class Client {
     			break;
     		case Protocol.READY:
     			scanner.next();
-    			System.out.println("You have entered a game with " + scanner.next() + ". Are you ready? (usage: READY/DECLINE)");
+    			System.out.println("You have entered a game with " + scanner.next() + ". Are you ready? (usage: ready/decline)");
     			break;
     		
     		// Playing a game
