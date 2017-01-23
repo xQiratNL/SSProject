@@ -57,10 +57,16 @@ public class ClientTui implements Runnable {
 		}
 	}
 	
-    	
+    /**
+     * Changes input given by the user in the TUI to a readable command for the server.
+     * 
+     * @param input input to handle.
+     * @return
+     */
     private String reformInput(String input) {        
         if (input.startsWith("hello ")) {
         	input = input.replaceFirst("hello ", "HELLO;");
+        	//TODO: make hello command automated: check if chat/leaderboard/... is enabled and apply that to the HELLO mehtod
         } else if (input.startsWith("play human ")) {
         	input = input.replaceFirst("play human ", "PLAY;HUMAN;");
         } else if (input.startsWith("play computer ")) {
