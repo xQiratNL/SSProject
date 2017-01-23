@@ -104,7 +104,7 @@ public class ClientHandler extends Thread {
 		if (input.length == 3) {
 			dim = Integer.parseInt(input[2]);
 		}
-		if (input[1] == Protocol.HUMAN) {
+		if (input[1].equals(Protocol.HUMAN)) {
 			ClientHandler opponent = server.popFirstWaitingUser(dim);
 			if (opponent.equals(null)) {
 				writeOutput(Protocol.WAIT);
@@ -115,7 +115,7 @@ public class ClientHandler extends Thread {
 				writeOutput(msg);
 				opponent.writeOutput(msg);
 			}			
-		} else if (input[1] == Protocol.COMPUTER) {
+		} else if (input[1].equals(Protocol.COMPUTER)) {
 			game = newGame(dim);
 			String computername = "computerplayer";
 			for (Player p : game.getPlayers()) {
