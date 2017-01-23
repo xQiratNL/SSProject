@@ -9,6 +9,7 @@ public class Game extends Thread {
 	private Player[] players;
 	private int currentPlayerIndex;
 	private Timer timer;
+	private boolean moveMade = false;
 	
 	public Game(Player[] players, int dim) {
 		this.board = new Board(dim);
@@ -28,15 +29,44 @@ public class Game extends Thread {
 		currentPlayerIndex = 0;
 		board.reset();
 	}
+	
+	private void makeMove(Player player, int field) {
+		board.setField(field, player.getMark());
+	}
+	
+	public void makeMove(String username, int x, int y, int z) {
+		for (Player p: players) {
+			if (p.getName().equals(username)) {
+				board.setField(x, y, z, p.getMark());
+			}
+		}
+			
+	}
 
 	@Override
 	public void run() {
 		while (!board.gameOver()) {
-			for (Player player: players) {
-				player.makeMove(currentPlayer(), board);
+			if (currentPlayer() instanceof ComputerPlayer) {
+				makeMove(currentPlayer(), ((ComputerPlayer) currentPlayer()).determineMove(board));
+			} else {
+				for (Player p: players) {
+					if (p instanceof HumanPlayer) {
+						((HumanPlayer) p).requestMove(currentPlayer(), board);
+					}
+				}
+				setTimeout();
+				
+				//TODO: improve this
+				while(!moveMade) {
+					//keep waiting
+				}
 			}
 			currentPlayerIndex = (currentPlayerIndex + 1) % 2;
 		}
+	}
+	
+	public void moveMade() {
+		moveMade = true;
 	}
 	
 	public void setTimeout() {

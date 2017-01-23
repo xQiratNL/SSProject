@@ -27,7 +27,6 @@ public class ComputerPlayer extends Player {
      * @param board the current game board
      * @return the player's choice
      */
-	@Override
 	public int determineMove(Board board) {
 		return fall(board, strategy.determineMove(board, mark));
 	}

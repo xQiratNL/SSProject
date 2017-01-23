@@ -40,32 +40,8 @@ public abstract class Player {
 		return mark;
 	}
 	
-    /*@
-    	requires board != null & !board.isFull();
-    	ensures board.isField(\result) & board.isEmptyField(\result);
-    */
-    /**
-     * Determines the field for the next move.
-     * 
-     * @param board the current game board
-     * @return the player's choice
-     */
-    public abstract int determineMove(Board board);
     
     // -- Commands ---------------------------------------------------
-
-    /*@
-       requires board != null & !board.isFull();
-     */
-    /**
-     * Makes a move (index, from determineMove(board)) on the board.
-     * 
-     * @param board the current board
-     */
-    public void makeMove(Board board) {
-        int index = determineMove(board);
-        board.setField(index, getMark());
-    }
  
     /*@
     	requires board != null & !board.isFull();

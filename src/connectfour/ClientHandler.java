@@ -111,7 +111,7 @@ public class ClientHandler extends Thread {
 			} else {
 				game = newGame(opponent, dim);
 				opponent.setGame(game);
-				String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + opponent.getUsername() + Protocol.DELIMITER;
+				String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + opponent.getUsername();
 				writeOutput(msg);
 				opponent.writeOutput(msg);
 			}			
@@ -123,13 +123,12 @@ public class ClientHandler extends Thread {
 					computername = p.getName();
 				}
 			}
-			String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + computername + Protocol.DELIMITER;
+			String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + computername;
 			writeOutput(msg);
 		} else {
 			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 		}
 	}
-	//TODO: 20 second time-out 
 	
 	public void ready() {
 		game.start();
@@ -144,7 +143,15 @@ public class ClientHandler extends Thread {
 	}
 	
 	public void makeMove(String[] input) {
-		//TODO: implement
+		//TODO: input by wrong user, or wrong input.
+		if (input.length == 4) {
+			int x = Integer.parseInt(input[1]);
+			int y = Integer.parseInt(input[2]);
+			int z = Integer.parseInt(input[3]);
+			game.makeMove(username, x, y, z);
+		} else {
+			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
+		}
 	}
 	
 	
