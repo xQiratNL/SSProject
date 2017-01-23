@@ -4,6 +4,8 @@ import java.util.Scanner;
 
 public class HumanPlayer extends Player {
 
+	
+	private ClientHandler handler;
     // -- Constructors -----------------------------------------------
 
     /*@
@@ -16,10 +18,16 @@ public class HumanPlayer extends Player {
      * Creates a new human player object.
      * 
      */
-    public HumanPlayer(String name, Mark mark) {
-        super(name, mark);
+    public HumanPlayer(ClientHandler handler, Mark mark) {
+        super(handler.getUsername(), mark);
+        this.handler = handler;
     }
 
+    // -- Queries ----------------------------------------------------
+    public ClientHandler getHandler() {
+    	return handler;
+    }
+    
     // -- Commands ---------------------------------------------------
 
     /*@

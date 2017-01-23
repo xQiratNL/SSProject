@@ -16,6 +16,10 @@ public class Game extends Thread {
 		return players[currentPlayerIndex];
 	}
 	
+	public Player[] getPlayers() {
+		return players;
+	}
+	
 	//TODO: implement and make start, play, makemove etc.
 	
 	public void start() {

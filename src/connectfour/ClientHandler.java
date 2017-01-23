@@ -115,7 +115,13 @@ public class ClientHandler extends Thread {
 			}			
 		} else if (input[1] == Protocol.COMPUTER) {
 			game = newGame(dim);
-			String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + "ComputerPlayer" + Protocol.DELIMITER;
+			String computername = "computerplayer";
+			for (Player p : game.getPlayers()) {
+				if (p instanceof ComputerPlayer) {
+					computername = p.getName();
+				}
+			}
+			String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + computername + Protocol.DELIMITER;
 			writeOutput(msg);
 		} else {
 			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
@@ -133,20 +139,21 @@ public class ClientHandler extends Thread {
 	
 	public void makeMove(String[] input) {
 		//TODO: implement
+		
 	}
 	
 	
 	//TODO: random X/O (maybe)
 	public Game newGame(int dim) {
-		HumanPlayer playerOne = new HumanPlayer(this.username, Mark.XX);
+		HumanPlayer playerOne = new HumanPlayer(this, Mark.XX);
 		ComputerPlayer playerTwo = new ComputerPlayer(Mark.OO);
 		return new Game(new Player[] {playerOne, playerTwo}, dim);
 	}
 	
 	//TODO: random X/O (maybe)
 	public Game newGame(ClientHandler opponent, int dim) {
-		HumanPlayer playerOne = new HumanPlayer(this.username, Mark.XX);
-		HumanPlayer playerTwo = new HumanPlayer(opponent.getUsername(), Mark.OO);
+		HumanPlayer playerOne = new HumanPlayer(this, Mark.XX);
+		HumanPlayer playerTwo = new HumanPlayer(opponent, Mark.OO);
 		return new Game(new Player[] {playerOne, playerTwo}, dim);
 	}
 	
