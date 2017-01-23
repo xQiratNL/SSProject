@@ -1,6 +1,7 @@
 package connectfour;
 
 import java.net.Socket;
+
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -69,6 +70,7 @@ public class ClientHandler extends Thread {
 				break;
 			case Protocol.PLAY:
 				play(splitInput);
+				game.setTimeout();
 				break;
 			case Protocol.READY:
 				ready();
@@ -130,16 +132,19 @@ public class ClientHandler extends Thread {
 	//TODO: 20 second time-out 
 	
 	public void ready() {
-		//TODO: implement
+		game.start();
 	}
 	
 	public void decline() {
-		//TODO: implement
+		for (Player p: game.getPlayers()) {
+			if (p instanceof HumanPlayer && ((HumanPlayer) p).getHandler() == this) {
+				((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_USERQUIT + Protocol.DELIMITER + this.username);
+			}
+		}
 	}
 	
 	public void makeMove(String[] input) {
 		//TODO: implement
-		
 	}
 	
 	
