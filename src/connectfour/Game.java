@@ -8,7 +8,7 @@ public class Game extends Thread {
 	private Board board;
 	private Player[] players;
 	private int currentPlayerIndex;
-	private Timer timer;
+	private Timer timer = new Timer();
 	private boolean moveMade = false;
 	
 	public Game(Player[] players, int dim) {
@@ -24,11 +24,6 @@ public class Game extends Thread {
 	public Player[] getPlayers() {
 		return players;
 	}
-		
-	private void reset() {
-		currentPlayerIndex = 0;
-		board.reset();
-	}
 	
 	private void makeMove(Player player, int field) {
 		board.setField(field, player.getMark());
@@ -43,8 +38,10 @@ public class Game extends Thread {
 			
 	}
 
+	
 	@Override
 	public void run() {
+		timer.purge();
 		while (!board.gameOver()) {
 			if (currentPlayer() instanceof ComputerPlayer) {
 				makeMove(currentPlayer(), ((ComputerPlayer) currentPlayer()).determineMove(board));
@@ -60,6 +57,7 @@ public class Game extends Thread {
 				while(!moveMade) {
 					//keep waiting
 				}
+				timer.purge();
 			}
 			currentPlayerIndex = (currentPlayerIndex + 1) % 2;
 		}
@@ -67,6 +65,20 @@ public class Game extends Thread {
 	
 	public void moveMade() {
 		moveMade = true;
+	}
+	
+	public void setFirstTimeout() {
+		for (Player p: players) {
+			if (p instanceof HumanPlayer) {
+				ClientHandler handler = ((HumanPlayer) p).getHandler();
+				timer.schedule(new TimerTask() {
+					public void run() {
+						//TODO: maybe change this
+						handler.writeOutput(Protocol.GAMEOVER);
+					}
+				}, 20 * 1000);
+			}
+		}
 	}
 	
 	public void setTimeout() {

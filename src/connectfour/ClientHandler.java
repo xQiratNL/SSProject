@@ -49,7 +49,7 @@ public class ClientHandler extends Thread {
 	}
 	
 	public synchronized void writeOutput(String output) {
-		tui.println("Server replies to user " + username + " :" + output);
+		tui.println("Server replies to user " + username + ": " + output);
 		try {
 			out.write(output);
 			out.newLine();
@@ -70,7 +70,7 @@ public class ClientHandler extends Thread {
 				break;
 			case Protocol.PLAY:
 				play(splitInput);
-				game.setTimeout();
+				game.setFirstTimeout();
 				break;
 			case Protocol.READY:
 				ready();
@@ -143,7 +143,7 @@ public class ClientHandler extends Thread {
 	}
 	
 	public void makeMove(String[] input) {
-		//TODO: input by wrong user, or wrong input.
+		//TODO: input by wrong user, or wrong input, check valid move
 		if (input.length == 4) {
 			int x = Integer.parseInt(input[1]);
 			int y = Integer.parseInt(input[2]);
