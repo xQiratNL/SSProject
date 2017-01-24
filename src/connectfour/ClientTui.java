@@ -81,9 +81,8 @@ public class ClientTui implements Runnable {
         	input = input.replaceFirst("ready", "READY");
         } else if (input.startsWith("decline")) {
         	input = input.replaceFirst("decline", "DECLINE");
-        } else {
-        	input = "UNKNOWN_COMMAND";
         }
+        
     	return input;
 	}
 
