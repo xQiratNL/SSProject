@@ -27,9 +27,26 @@ public class GeniusStrategy extends Thread implements Strategy {
 			possibleMoves.add(Player.fall(board, i));
 		}
 		
+		for (int field: possibleMoves) {
+			Board boardCopy = board.deepCopy();
+			boardCopy.setField(field, mark);
+			if (determineWinner(boardCopy, mark) == mark) {
+				return field;
+			}
+		}
 		
-		
+		//TODO: help!!!
 		return move;
+	}
+	
+	public Mark determineWinner(Board board, Mark mark) {
+		if (board.isWinner(mark)) {
+			return mark;
+		} else if (board.isWinner(mark.other())) {
+			return mark.other();
+		} else {
+			
+		}
 	}
 
 }

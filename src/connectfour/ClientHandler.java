@@ -106,7 +106,7 @@ public class ClientHandler extends Thread {
 			}
 			status = ClientStatus.IN_LOBBY;
 		} else {
-			writeOutput(Protocol.ERROR_USERNAMETAKEN);
+			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 		}
 	}
 	
