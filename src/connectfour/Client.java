@@ -19,6 +19,12 @@ public class Client {
 	+ "decline \n"
 	+ "make move <x>;<y>;<z>";
     
+    private String player1; // first player
+    private String player2; // second player
+    private Mark myMark; // this player's mark
+    private ClientTui tui;
+    private Board board;
+    
     public Client(String InetAdress) {
     	try {
 			this.start(InetAdress);
@@ -52,7 +58,7 @@ public class Client {
     	
         // create ClientTui object in a new thread and start the two-way communication.
     	// The new thread is created to maintain one process: the output.
-    	ClientTui tui = new ClientTui(sock);
+    	tui = new ClientTui(sock);
         Thread streamInputHandler = new Thread(tui);
         streamInputHandler.start();
         
@@ -84,27 +90,53 @@ public class Client {
     		
     		// Connect to a server:
     		case Protocol.HELLO:
-    			System.out.println("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled!");
+    			System.out.println("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled! \n"
+    					+ "Use 'play human [dimension]' or 'play computer [dimension]' to begin a game agains a human player or a computer. \n\n");
+    			tui.usernameSet = true;
+    			tui.addCommands("play");
     			break;
     		case Protocol.ERROR_USERNAMETAKEN:
-    			System.out.println("This username is already taken, try again!");
+    			System.out.print("This username is already in use, please enter another username: ");
     			break;
     		
     		// Starting a game
     		case Protocol.WAIT:
     			System.out.println("You are currently waiting for a game...");
+    			//TODO: maybe add the command Decline? This way the user can stop waiting.
     			break;
     		case Protocol.READY:
-    			scanner.next();
-    			System.out.println("You have entered a game with " + scanner.next() + ". Are you ready? (usage: ready/decline)");
+    			player1 = scanner.next();
+    			player2 = scanner.next();
+    			String otherPlayer = player1;
+    			myMark = Mark.OO;
+    			if (player1 == tui.username) {
+    				otherPlayer = player2;
+    				myMark = Mark.XX;
+    			}
+    			System.out.println("You have entered a game with " + otherPlayer + ". Are you ready? (usage: ready/decline)");
+    			tui.removeCommands("play");
+    			tui.addCommands("ready", "decline");
     			break;
     		
     		// Playing a game
     		case Protocol.REQUESTMOVE:
-    			//do this
+				tui.removeCommands("ready", "decline");
+				tui.addCommands("move");
+    			String userInTurn = scanner.next();
+    			if (userInTurn.equals(tui.username)) {
+    				System.out.println(board.toString());
+    				System.out.println("It is your turn! Please make a move! (usage: move <index>)");
+    			} else {
+    				System.out.println("It is " + userInTurn + "'s turn! Please wait for your turn...");
+    			}
     			break;
     		case Protocol.SETMOVE:
-    			//do this
+    			String userInTurn1 = scanner.next();
+    			if (userInTurn1.equals(tui.username)) {
+    				board.setField(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), myMark);
+    			} else {
+    				board.setField(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), myMark.other());
+    			}
     			break;
     		case Protocol.ERROR_INVALIDMOVE:
     			System.out.println("A move on (" + scanner.next() + ", " + scanner.next() + ", " + scanner.next() + ") is an invalid move! Please try again.");
@@ -156,10 +188,12 @@ public class Client {
     		
     		// Other
     		case Protocol.ERROR_COMMAND_NOT_RECOGNIZED:
-    			System.out.println("Command not recognized!");
+    			System.out.println("Command has not been recognized by the server! Please use one of the commands below:");
     			System.out.println(COMMANDS);
     			break;
     	}
+    	
+    	scanner.close();
     }
     
     /** Starts a Client application. */
