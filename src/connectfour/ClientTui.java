@@ -63,24 +63,28 @@ public class ClientTui implements Runnable {
      * @param input input to handle.
      * @return
      */
-	//TODO: this doesn't work fully yet
     private String reformInput(String input) {        
         if (input.startsWith("hello ")) {
         	input = input.replaceFirst("hello ", "HELLO;");
         	//TODO: make hello command automated: check if chat/leaderboard/... is enabled and apply that to the HELLO mehtod
-        } else if (input.startsWith("play human")) {
+        } else if (input.startsWith("play human ")) {
         	input = input.replaceFirst("play human ", "PLAY;HUMAN;");
+        } else if (input.equals("play human")) {
+        	input = "PLAY;HUMAN;";
         } else if (input.startsWith("play computer ")) {
         	input = input.replaceFirst("play computer ", "PLAY;COMPUTER;");
+        } else if (input.equals("play computer")) {
+        	input = "PLAY;COMPUTER;";
         } else if (input.startsWith("make move ")) {
         	input = input.replaceFirst("make move ", "MAKEMOVE;");
         } else if (input.startsWith("ready")) {
         	input = input.replaceFirst("ready", "READY");
         } else if (input.startsWith("decline")) {
         	input = input.replaceFirst("decline", "DECLINE");
+        } else {
+        	input = "UNKNOWN_COMMAND";
         }
-        
-    	return input;		
+    	return input;
 	}
 
 
