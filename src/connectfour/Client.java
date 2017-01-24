@@ -12,12 +12,11 @@ public class Client {
     private static final String USAGE
     = "usage: java connectfour.Client <address>";
     private static final String COMMANDS
-	= "hello <username>;[chat];[leaderboard];[challenge] \n"
-	+ "play human [dimension] \n"
+	= "play human [dimension] \n"
 	+ "play computer [dimension] \n"
 	+ "ready \n"
 	+ "decline \n"
-	+ "make move <x>;<y>;<z>";
+	+ "move <index>";
     
     private String player1; // first player
     private String player2; // second player
