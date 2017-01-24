@@ -45,7 +45,8 @@ public class GeniusStrategy extends Thread implements Strategy {
 		} else if (board.isWinner(mark.other())) {
 			return mark.other();
 		} else {
-			
+			board.
+			determineMove()
 		}
 	}
 

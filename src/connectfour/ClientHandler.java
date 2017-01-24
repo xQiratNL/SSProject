@@ -96,7 +96,7 @@ public class ClientHandler extends Thread {
 	}
 	
 	public void hello(String[] input) {
-		if (input.length != 2) {
+		if (input.length == 2) {
 			if (server.getUsers().values().contains(input[1])) {
 				writeOutput(Protocol.ERROR_USERNAMETAKEN);
 			} else {
