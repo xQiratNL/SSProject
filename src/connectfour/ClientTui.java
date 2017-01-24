@@ -160,8 +160,11 @@ public class ClientTui implements Runnable {
             	input = input.replaceFirst("decline", "DECLINE");
             }
     	} else {
+    		System.out.println("You cannot use command (" + input + ") right now! Available commands: ");
+    		for (String c : availableCommands) {
+    			System.out.println(c);
+    		}
     		input = null;
-    		System.out.println("You cannot use this command right now!");
     	}
     
     	return input;

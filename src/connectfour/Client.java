@@ -108,7 +108,7 @@ public class Client {
     			player2 = scanner.next();
     			String otherPlayer = player1;
     			myMark = Mark.OO;
-    			if (player1 == tui.username) {
+    			if (player1.equals(tui.username)) {
     				otherPlayer = player2;
     				myMark = Mark.XX;
     			}
