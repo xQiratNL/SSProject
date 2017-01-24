@@ -10,7 +10,7 @@ public class ServerTui {
 	
 	public int askServerNumber() {
 		int portnumber = Protocol.PORTNUMBER;
-		//TODO: close scanner
+		@SuppressWarnings("resource") // you don't want to close system.in since it can't be opened again.
 		Scanner in = new Scanner(System.in);
 		boolean correctInput = false;
 		do {
