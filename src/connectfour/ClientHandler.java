@@ -100,6 +100,7 @@ public class ClientHandler extends Thread {
 	
 	public void play(String[] input) {
 		//TODO: no second argument (maybe) or wrong third
+		//TODO: wrong input at wrong moment
 		int dim = Protocol.DIM;
 		if (input.length == 3) {
 			dim = Integer.parseInt(input[2]);
