@@ -17,6 +17,8 @@ public class ClientHandler extends Thread {
 	private BufferedWriter out;
 	private String username = "";
 	private Game game;
+	public enum ClientStatus {CONNECTED, IN_LOBBY, IN_WAIT, IN_READY, IN_GAME};
+	private ClientStatus status = ClientStatus.CONNECTED;
 
 	public ClientHandler(Server server, Socket sock, ServerTui tui) {
 		this.server = server;
@@ -24,7 +26,6 @@ public class ClientHandler extends Thread {
 		this.tui = tui;
 	}
 
-	//TODO check concurrency
 	
 	@Override
 	public void run() {
@@ -32,8 +33,7 @@ public class ClientHandler extends Thread {
 			this.in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			this.out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			tui.println(e.getMessage());
 		}
 		
 		while (!sock.isClosed()) {
@@ -42,8 +42,7 @@ public class ClientHandler extends Thread {
 					processInput(in.readLine());
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				tui.println(e.getMessage());
 			}
     	}
 	}
@@ -55,32 +54,41 @@ public class ClientHandler extends Thread {
 			out.newLine();
 			out.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			tui.println(e.getMessage());
 		}
 	}
 	
 	public void processInput(String input) {
 		tui.println("User " + username +" says:"  + input);
-		// TODO Wrong input commands (maybe)
 		String[] splitInput = input.split(Protocol.DELIMITER);
 		switch (splitInput[0]) {
 			case Protocol.HELLO:
-				hello(splitInput);
-				break;
+				if (status == ClientStatus.CONNECTED) {
+					hello(splitInput);
+					break;
+				} //else command entered at wrong time
 			case Protocol.PLAY:
-				play(splitInput);
-				game.setFirstTimeout();
-				break;
+				if (status == ClientStatus.IN_LOBBY) {
+					play(splitInput);
+					game.setFirstTimeout();
+					break;
+				}
 			case Protocol.READY:
-				ready();
-				break;
+				if (status == ClientStatus.IN_READY) {
+					ready();
+					break;
+				}
 			case Protocol.DECLINE:
-				decline();
-				break;
+				//TODO: in wait
+				if (status == ClientStatus.IN_WAIT) {
+					decline();
+					break;
+				}
 			case Protocol.MAKEMOVE:
-				makeMove(splitInput);
-				break;
+				if (status == ClientStatus.IN_GAME) {
+					makeMove(splitInput);
+					break;
+				}
 			default:
 				//wrong command given
 				writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
@@ -88,50 +96,61 @@ public class ClientHandler extends Thread {
 	}
 	
 	public void hello(String[] input) {
-		//TODO No username given (maybe)
-		if (server.getUsers().values().contains(input[1])) {
-			writeOutput(Protocol.ERROR_USERNAMETAKEN);
+		if (input.length != 2) {
+			if (server.getUsers().values().contains(input[1])) {
+				writeOutput(Protocol.ERROR_USERNAMETAKEN);
+			} else {
+				username = input[1];
+				server.addUser(this, username);
+				writeOutput(Protocol.HELLO + Protocol.DELIMITER + Server.EXT);
+			}
+			status = ClientStatus.IN_LOBBY;
 		} else {
-			username = input[1];
-			server.addUser(this, username);
-			writeOutput(Protocol.HELLO + Protocol.DELIMITER + Server.EXT);
+			writeOutput(Protocol.ERROR_USERNAMETAKEN);
 		}
 	}
 	
 	public void play(String[] input) {
-		//TODO: no second argument (maybe) or wrong third
-		//TODO: wrong input at wrong moment
-		int dim = Protocol.DIM;
-		if (input.length == 3) {
-			dim = Integer.parseInt(input[2]);
-		}
-		if (input[1].equals(Protocol.HUMAN)) {
-			ClientHandler opponent = server.popFirstWaitingUser(dim);
-			if (opponent.equals(null)) {
-				writeOutput(Protocol.WAIT);
-			} else {
-				game = newGame(opponent, dim);
-				opponent.setGame(game);
-				String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + opponent.getUsername();
-				writeOutput(msg);
-				opponent.writeOutput(msg);
-			}			
-		} else if (input[1].equals(Protocol.COMPUTER)) {
-			game = newGame(dim);
-			String computername = "computerplayer";
-			for (Player p : game.getPlayers()) {
-				if (p instanceof ComputerPlayer) {
-					computername = p.getName();
-				}
+		if (input.length == 2 || input.length == 3) {
+			int dim = Protocol.DIM;
+			if (input.length == 3) {
+				dim = Integer.parseInt(input[2]);
 			}
-			String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + computername;
-			writeOutput(msg);
+			if (input[1].equals(Protocol.HUMAN)) {
+				ClientHandler opponent = server.popFirstWaitingUser(dim);
+				if (opponent.equals(null)) {
+					writeOutput(Protocol.WAIT);
+					status = ClientStatus.IN_WAIT;
+				} else {
+					game = newGame(opponent, dim);
+					opponent.setGame(game);
+					String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + opponent.getUsername();
+					writeOutput(msg);
+					opponent.writeOutput(msg);
+					status = ClientStatus.IN_READY;
+					opponent.setStatus(ClientStatus.IN_READY);
+				}			
+			} else if (input[1].equals(Protocol.COMPUTER)) {
+				game = newGame(dim);
+				String computername = "computerplayer";
+				for (Player p : game.getPlayers()) {
+					if (p instanceof ComputerPlayer) {
+						computername = p.getName();
+					}
+				}
+				String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + computername;
+				writeOutput(msg);
+				status = ClientStatus.IN_READY;
+			} else {
+				writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
+			}
 		} else {
-			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
+			tui.println(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 		}
 	}
 	
 	public void ready() {
+		status = ClientStatus.IN_GAME;
 		game.start();
 	}
 	
@@ -144,14 +163,21 @@ public class ClientHandler extends Thread {
 	}
 	
 	public void makeMove(String[] input) {
-		//TODO: input by wrong user, or wrong input, check valid move
-		if (input.length == 4) {
-			int x = Integer.parseInt(input[1]);
-			int y = Integer.parseInt(input[2]);
-			int z = Integer.parseInt(input[3]);
-			game.makeMove(username, x, y, z);
+		if (((HumanPlayer) game.currentPlayer()).getHandler() == this) {
+			if (input.length == 4) {
+				try {
+					int x = Integer.parseInt(input[1]);
+					int y = Integer.parseInt(input[2]);
+					int z = Integer.parseInt(input[3]);
+					game.makeMove(username, x, y, z);
+				} catch (NumberFormatException e) {
+					writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
+				}
+			} else {
+				writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
+			}
 		} else {
-			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
+			writeOutput(Protocol.ERROR_NOTYOURTURN);
 		}
 	}
 	
@@ -176,5 +202,9 @@ public class ClientHandler extends Thread {
 	
 	public String getUsername() {
 		return username;
+	}
+	
+	public void setStatus(ClientStatus newStatus) {
+		status = newStatus;
 	}
 }

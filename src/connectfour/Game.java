@@ -30,12 +30,17 @@ public class Game extends Thread {
 	}
 	
 	public void makeMove(String username, int x, int y, int z) {
+		timer.purge();
 		for (Player p: players) {
 			if (p.getName().equals(username)) {
-				board.setField(x, y, z, p.getMark());
+				if (board.isValidMove(x, y, z)) {
+					board.setField(x, y, z, p.getMark());
+				} else {
+					((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_INVALIDMOVE);
+				}
 			}
 		}
-			
+		moveMade = true;
 	}
 
 	
@@ -57,7 +62,6 @@ public class Game extends Thread {
 				while(!moveMade) {
 					//keep waiting
 				}
-				timer.purge();
 			}
 			currentPlayerIndex = (currentPlayerIndex + 1) % 2;
 		}
