@@ -11,7 +11,7 @@ public class ComputerPlayer extends Player {
      * 
      */	
 	public ComputerPlayer(Mark mark, Strategy strategy) {
-		super(strategy.getName(), mark);
+		super(strategy.getStrategyName(), mark);
 		this.strategy = strategy;
 		this.mark = mark;
 	}

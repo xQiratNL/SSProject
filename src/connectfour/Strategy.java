@@ -2,7 +2,7 @@ package connectfour;
 
 public interface Strategy {
 	
-	public String getName();
+	public String getStrategyName();
 
 	public int determineMove(Board board, Mark mark);
 	

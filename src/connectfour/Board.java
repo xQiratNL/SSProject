@@ -18,7 +18,7 @@ public class Board {
 	 * 
 	 * @param dim dimension of the board
 	 */
-	//@ dim>=4;
+	//@ dim>=3;
 	public Board(int dim) {
 		this.dim = dim;
 		this.size = dim * dim * dim;

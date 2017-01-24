@@ -14,7 +14,7 @@ public class NaiveStrategy implements Strategy {
 	}
 	
 	@Override
-	public String getName() {
+	public String getStrategyName() {
 		return this.name;
 	}
 
