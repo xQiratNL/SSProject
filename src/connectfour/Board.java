@@ -150,6 +150,10 @@ public class Board {
 		return fields[index(x, y, z)];
 	}
 	
+	public Mark getField(int index) {
+		return fields[index];
+	}
+	
 	/**
 	 * Returns true of field is empty.
 	 * @param x, x-coordinate
@@ -479,6 +483,19 @@ public class Board {
 	
 	public int getSize() {
 		return size;
+	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof Board && ((Board) obj).getDim() == dim) {
+			for (int i = 0; i < size; i++) {
+				if (fields[i] != ((Board) obj).getField(i)) {
+					return false;
+				}
+			} //all fields equal
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**
