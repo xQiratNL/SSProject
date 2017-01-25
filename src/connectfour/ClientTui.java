@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 public class ClientTui implements Runnable {
@@ -50,8 +51,6 @@ public class ClientTui implements Runnable {
      */
 	public void addCommands(String... command) {
 		for (String c: command) {
-			// cut the command to the first 4 letters. This causes easily command handling and checking.
-			c.substring(0, Math.min(c.length(), 4));
 			availableCommands.add(c);
 		}
 	}
@@ -70,14 +69,10 @@ public class ClientTui implements Runnable {
      *	@param ...
      *	@return 		true if the commands successfully have been removed. False otherwise.
      */
-	public boolean removeCommands(String... command) {
-		boolean correct = true;
+	public void removeCommands(String... command) {
 		for (String c: command) {
-			// cut the command to the first 4 letters. This causes easily command handling and checking.
-			c.substring(0, Math.min(c.length(), 4));
-			correct = availableCommands.add(c);
+			availableCommands.remove(c);
 		}
-		return correct;
 	}
 	
 	
@@ -122,7 +117,15 @@ public class ClientTui implements Runnable {
      * @return
      */
     private String reformInput(String input) {        
-    	if (availableCommands.contains(input.substring(0, Math.min(input.length(), 4)))) {
+    	boolean available = false;
+    	for (String c : availableCommands) {
+    		available = input.startsWith(c);
+    		if (available) {
+    			break;
+    		}	
+    	}
+    	
+    	if (available) {
     		// command is available at this moment!
         	if (input.startsWith("play human ")) {
             	input = input.replaceFirst("play human ", "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER);
@@ -145,14 +148,19 @@ public class ClientTui implements Runnable {
             } else if (input.equals("play computer")) {
             	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER;
             } else if (input.startsWith("move ")) {
-            	try {
-                	Board b = new Board(dimension);
-                	int[] coords = b.coordinates(Integer.parseInt(input));
-                	input = input.replaceFirst("move ", "MAKEMOVE" +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2]);
-            	} catch (NumberFormatException e) {
-            		// no number given or something went wrong. Try again...
-            		System.out.println("Something went wrong. Maybe you can't make that move? Try again!");
-            	}
+            	Scanner s = new Scanner(input);
+            	s.next();
+            	int d = s.nextInt();
+            	Board b = new Board(dimension);
+            	int[] coords = b.coordinates(d);
+            	input = "MAKEMOVE" +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];            	
+            	s.close();
+//            	try {
+//
+//            	} catch (NumberFormatException e) {
+//            		// no number given or something went wrong. Try again...
+//            		System.out.println("Something went wrong. Maybe you can't make that move? Try again!");
+//            	}
 
             } else if (input.startsWith("ready")) {
             	input = input.replaceFirst("ready", "READY");

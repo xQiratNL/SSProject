@@ -115,6 +115,7 @@ public class Client {
     			System.out.println("You have entered a game with " + otherPlayer + ". Are you ready? (usage: ready/decline)");
     			tui.removeCommands("play");
     			tui.addCommands("ready", "decline");
+    			board = new Board(tui.dimension);
     			break;
     		
     		// Playing a game
