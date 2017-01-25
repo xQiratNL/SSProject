@@ -141,24 +141,22 @@ public class ClientTui implements Runnable {
     	
     	if (available) {
     		// command is available at this moment!
-        	if (input.startsWith("play human ")) {
-            	input = input.replaceFirst("play human ", "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER);
-            	try {
-            		dimension = Integer.parseInt(input);
-            	} catch (NumberFormatException e) {
-            		// no dimension given.
-            		// so, do nothing
-            	}
+        	if (input.startsWith("play human ")) {          	
+            	Scanner s = new Scanner(input);
+            	s.next(); // skip the text. Go to the int.
+            	s.next();
+            	int d = s.nextInt();
+            	input = "MAKEMOVE" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER +d;            	
+            	s.close();
             } else if (input.equals("play human")) {
             	input = "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER;
-            } else if (input.startsWith("play computer ")) {
-            	input = input.replaceFirst("play computer ", "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER);
-            	try {
-            		dimension = Integer.parseInt(input);
-            	} catch (NumberFormatException e) {
-            		// no dimension given.
-            		// so, do nothing
-            	}
+            } else if (input.startsWith("play computer ")) {            	
+            	Scanner s = new Scanner(input);
+            	s.next(); // skip the text. Go to the int.
+            	s.next();
+            	int d = s.nextInt();
+            	input = "MAKEMOVE" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER +d;            	
+            	s.close();
             } else if (input.equals("play computer")) {
             	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER;
             } else if (input.startsWith("move ")) {
