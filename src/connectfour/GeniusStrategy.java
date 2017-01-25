@@ -34,7 +34,10 @@ public class GeniusStrategy implements Strategy {
 				System.out.println(field);
 				copyBoard.setField(field, mark);
 				fieldValue = valueBoardMark(copyBoard, mark);
-				if (fieldValue > bestMoveValue) {
+				if (fieldValue == 1.0) {
+					return field;
+				}
+				else if (fieldValue > bestMoveValue) {
 					bestMove = field;
 					bestMoveValue = fieldValue;
 				}
@@ -58,6 +61,15 @@ public class GeniusStrategy implements Strategy {
 						possibleMoves.add(field);
 					}
 				}
+				//check of opponent can win directly
+				for (int move: possibleMoves) {
+					Board copyBoard = board.deepCopy();
+					copyBoard.setField(move, mark.other());
+					if (copyBoard.isWinner(mark.other())) {
+						return -1.0;
+					}
+				}
+				
 				 //initial value
 				double value = 0.0;
 				for (int move: possibleMoves) {
@@ -74,7 +86,8 @@ public class GeniusStrategy implements Strategy {
 	
 	public static void main(String[] args) {
 		Board board = new Board(3);
+		System.out.println(board.toString());
 		Strategy s = new GeniusStrategy();
-		System.out.println(s.determineMove(board, Mark.XX));
+		System.out.println(s.determineMove(board, Mark.OO));
 	}
 }

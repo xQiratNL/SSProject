@@ -380,8 +380,8 @@ public class Board {
 	}
 	
 	public boolean hasCrossDiagonal(Mark mark) {
-		int nrMark = 0;
 		//first diagonal
+		int nrMark = 0;
 		for (int i = 0; i < dim; i++) {
 			if (getField(i, i, i).equals(mark)) {
 				nrMark++;
@@ -394,6 +394,7 @@ public class Board {
 		}
 		
 		//second diagonal
+		nrMark = 0;
 		for (int i = 0; i < dim; i++) {
 			if (getField(i, i, dim - 1 - i).equals(mark)) {
 				nrMark++;
@@ -406,6 +407,7 @@ public class Board {
 		}
 		
 		//third diagonal
+		nrMark = 0;
 		for (int i = 0; i < dim; i++) {
 			if (getField(i, dim - 1 - i, i).equals(mark)) {
 				nrMark++;
@@ -418,6 +420,7 @@ public class Board {
 		}
 		
 		//fourth diagonal
+		nrMark = 0;
 		for (int i = 0; i < dim; i++) {
 			if (getField(i, dim - 1 - i, dim - 1 - i).equals(mark)) {
 				nrMark++;
