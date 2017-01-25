@@ -14,8 +14,6 @@ public class GeniusStrategy implements Strategy {
 	
 	public GeniusStrategy() {
 		this.name = computerNames[(int) (Math.random()*computerNames.length)];
-		cache.put(Mark.XX, new TreeMap<String, Double>());
-		cache.put(Mark.OO, new TreeMap<String, Double>());
 	}
 	
 	@Override
@@ -25,20 +23,18 @@ public class GeniusStrategy implements Strategy {
 
 	@Override
 	public int determineMove(Board board, Mark mark) {
-		int bestMove = 0;
-		double bestMoveValue = -1;
+		cache.put(Mark.XX, new TreeMap<String, Double>());
+		cache.put(Mark.OO, new TreeMap<String, Double>());
+		int bestMove = (new SmartStrategy()).determineMove(board, mark);
+		double bestMoveValue = -100.0;
 		for (int move = 0; move < board.getDim() * board.getDim(); move++) {
 			Board copyBoard = board.deepCopy();
 			int field = Player.fall(copyBoard, move);
 			double fieldValue;
 			if (field != -1) {
-				System.out.println(field);
 				copyBoard.setField(field, mark);
 				fieldValue = valueBoardMark(copyBoard, mark);
-				if (fieldValue == 1.0) {
-					return field;
-				}
-				else if (fieldValue > bestMoveValue) {
+				if (fieldValue > bestMoveValue) {
 					bestMove = field;
 					bestMoveValue = fieldValue;
 				}
@@ -59,7 +55,7 @@ public class GeniusStrategy implements Strategy {
 				List<Integer> possibleMoves = new ArrayList<Integer>();
 				for (int move = 0; move < board.getDim() * board.getDim(); move++) {
 					int field = Player.fall(board, move);
-					if (field != -1) {
+					if (field != -1.0) {
 						possibleMoves.add(field);
 					}
 				}
@@ -68,6 +64,7 @@ public class GeniusStrategy implements Strategy {
 					Board copyBoard = board.deepCopy();
 					copyBoard.setField(move, mark.other());
 					if (copyBoard.isWinner(mark.other())) {
+						cache.get(mark).put(id, -1.0);
 						return -1.0;
 					}
 				}
@@ -90,6 +87,12 @@ public class GeniusStrategy implements Strategy {
 		Board board = new Board(3);
 		//System.out.println(board.toString());
 		Strategy s = new GeniusStrategy();
-		System.out.println(s.determineMove(board, Mark.XX));
+		Mark mark = Mark.XX;
+		while (!board.gameOver()) {
+			int move = s.determineMove(board, mark);
+			board.setField(move, mark);
+			mark = mark.other();
+			System.out.println(board.toString());
+		}
 	}
 }

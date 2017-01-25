@@ -488,19 +488,7 @@ public class Board {
 	public int getSize() {
 		return size;
 	}
-	
-	public boolean equals(Object obj) {
-		if (obj instanceof Board && ((Board) obj).getDim() == dim) {
-			for (int i = 0; i < size; i++) {
-				if (fields[i] != ((Board) obj).getField(i)) {
-					return false;
-				}
-			} //all fields equal
-			return true;
-		} else {
-			return false;
-		}
-	}
+
 	
 	public String calculateID() {
 		String id = "";
