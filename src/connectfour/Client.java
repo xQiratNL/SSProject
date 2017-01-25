@@ -116,6 +116,7 @@ public class Client {
     			tui.removeCommands("play");
     			tui.addCommands("ready", "decline");
     			board = new Board(tui.dimension);
+    			tui.copyBoard(board);
     			break;
     		
     		// Playing a game
@@ -138,6 +139,7 @@ public class Client {
     			} else {
     				board.setField(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), myMark.other());
     			}
+    			tui.copyBoard(board);
     			break;
     		case Protocol.ERROR_INVALIDMOVE:
     			System.out.println("A move on (" + scanner.next() + ", " + scanner.next() + ", " + scanner.next() + ") is an invalid move! Please try again.");
