@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class GeniusStrategy implements Strategy {
 
 	private String name;
 	private String[] computerNames = {"Tariq", "Rutger"};
-	private Map<Mark, Map<Board, Double>> cache = new HashMap<Mark, Map<Board, Double>>();
+	private Map<Mark, Map<String, Double>> cache = new HashMap<Mark, Map<String, Double>>();
 	
 	public GeniusStrategy() {
 		this.name = computerNames[(int) (Math.random()*computerNames.length)];
-		cache.put(Mark.XX, new HashMap<Board, Double>());
-		cache.put(Mark.OO, new HashMap<Board, Double>());
+		cache.put(Mark.XX, new TreeMap<String, Double>());
+		cache.put(Mark.OO, new TreeMap<String, Double>());
 	}
 	
 	@Override
@@ -47,11 +48,11 @@ public class GeniusStrategy implements Strategy {
 	}
 	
 	public double valueBoardMark(Board board, Mark mark) {
-		if (!cache.get(mark).containsKey(board)) {
+		if (!cache.get(mark).containsKey(board.calculateID())) {
 			if (board.isWinner(mark)) {
-				cache.get(mark).put(board, 1.0);
+				cache.get(mark).put(board.calculateID(), 1.0);
 			} else if (board.isFull()) {
-				cache.get(mark).put(board, 0.0);
+				cache.get(mark).put(board.calculateID(), 0.0);
 			} else {
 				//recursion
 				List<Integer> possibleMoves = new ArrayList<Integer>();
@@ -77,17 +78,17 @@ public class GeniusStrategy implements Strategy {
 					copyBoard.setField(move, mark.other());
 					value -= valueBoardMark(copyBoard, mark.other());
 				}
-				cache.get(mark).put(board, value / possibleMoves.size());
+				cache.get(mark).put(board.calculateID(), value / possibleMoves.size());
 			}
 		}
-		return cache.get(mark).get(board);
+		return cache.get(mark).get(board.calculateID());
 	}
 	
 	
 	public static void main(String[] args) {
 		Board board = new Board(3);
-		System.out.println(board.toString());
+		//System.out.println(board.toString());
 		Strategy s = new GeniusStrategy();
-		System.out.println(s.determineMove(board, Mark.OO));
+		System.out.println(s.determineMove(board, Mark.XX));
 	}
 }

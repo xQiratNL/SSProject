@@ -1,5 +1,6 @@
 package connectfour;
 
+
 public class Board {
 	
 	private static final String GRID_DELIM = "\t";
@@ -501,18 +502,17 @@ public class Board {
 		}
 	}
 	
-	public int calculateID() {
+	public String calculateID() {
+		String id = "";
 		for (int i = 0; i < size; i++) {
-			
+			id += fields[i].toString();
 		}
-		return 0;
+		return id;
 	}
 	
-	/**
 	public static void main(String[] args) {
 		Board board = new Board(4);
-		System.out.println(board.toString());
+		System.out.println(board.calculateID());
 	}
-	*/
 	
 }
