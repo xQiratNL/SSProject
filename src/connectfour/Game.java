@@ -53,7 +53,20 @@ public class Game extends Thread {
 	
 	@Override
 	public void run() {
+		//wait for both players to be ready
+		boolean ready = false;
+		while (!ready) {
+			ready = true;
+			for (Player p: players) {
+				if (p instanceof HumanPlayer && ((HumanPlayer) p).getHandler().getStatus() != ClientHandler.ClientStatus.IN_GAME) {
+					ready = false;
+					break;
+				}
+			}
+		}
 		timer.cancel();
+		
+		//start game
 		while (!board.gameOver()) {
 			if (currentPlayer() instanceof ComputerPlayer) {
 				makeMove(currentPlayer(), ((ComputerPlayer) currentPlayer()).determineMove(board));
@@ -68,6 +81,20 @@ public class Game extends Thread {
 			updatePlayerIndex();
 			System.out.println(currentPlayerIndex);
 			moveMade = false;
+		}
+		
+		//game is finished
+		String msg = Protocol.GAMEOVER;
+		if (board.isWinner(players[0].getMark())) {
+			msg += Protocol.DELIMITER + players[0].getName();
+		} else if (board.isWinner(players[1].getMark())) {
+			msg += Protocol.DELIMITER + players[1].getName();
+		}
+		for (Player p: players) {
+			if (p instanceof HumanPlayer) {
+				((HumanPlayer) p).getHandler().writeOutput(msg);
+				((HumanPlayer) p).getHandler().setStatus(ClientHandler.ClientStatus.IN_LOBBY);
+			}
 		}
 	}
 	

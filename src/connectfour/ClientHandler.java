@@ -103,8 +103,8 @@ public class ClientHandler extends Thread {
 				username = input[1];
 				server.addUser(this, username);
 				writeOutput(Protocol.HELLO + Protocol.DELIMITER + Server.EXT);
+				status = ClientStatus.IN_LOBBY;
 			}
-			status = ClientStatus.IN_LOBBY;
 		} else {
 			writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 		}
@@ -151,7 +151,6 @@ public class ClientHandler extends Thread {
 	
 	public void ready() {
 		status = ClientStatus.IN_GAME;
-		//TODO: check this
 		game.start();
 	}
 	
@@ -207,5 +206,9 @@ public class ClientHandler extends Thread {
 	
 	public void setStatus(ClientStatus newStatus) {
 		status = newStatus;
+	}
+	
+	public ClientStatus getStatus() {
+		return status;
 	}
 }
