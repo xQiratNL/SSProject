@@ -23,6 +23,7 @@ public class Client {
     private Mark myMark; // this player's mark
     private ClientTui tui;
     private Board board;
+    private ViewerController view;
     
     public Client(String InetAdress) {
     	try {
@@ -118,6 +119,7 @@ public class Client {
     			tui.addCommands("ready", "decline");
     			board = new Board(tui.dimension);
     			tui.copyBoard(board);
+    			// view = new ViewerController();
     			break;
     		
     		// Playing a game
