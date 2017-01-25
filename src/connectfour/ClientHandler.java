@@ -70,7 +70,6 @@ public class ClientHandler extends Thread {
 			case Protocol.PLAY:
 				if (status == ClientStatus.IN_LOBBY) {
 					play(splitInput);
-					game.setFirstTimeout();
 					break;
 				}
 			case Protocol.READY:
@@ -118,7 +117,7 @@ public class ClientHandler extends Thread {
 			}
 			if (input[1].equals(Protocol.HUMAN)) {
 				ClientHandler opponent = server.popFirstWaitingUser(dim);
-				if (opponent == null) {
+				if (null == opponent) {
 					writeOutput(Protocol.WAIT);
 					status = ClientStatus.IN_WAIT;
 				} else {
@@ -129,6 +128,7 @@ public class ClientHandler extends Thread {
 					opponent.writeOutput(msg);
 					status = ClientStatus.IN_READY;
 					opponent.setStatus(ClientStatus.IN_READY);
+					game.setFirstTimeout();
 				}			
 			} else if (input[1].equals(Protocol.COMPUTER)) {
 				game = newGame(dim);
@@ -141,6 +141,7 @@ public class ClientHandler extends Thread {
 				String msg = Protocol.READY + Protocol.DELIMITER + username + Protocol.DELIMITER + computername;
 				writeOutput(msg);
 				status = ClientStatus.IN_READY;
+				game.setFirstTimeout();
 			} else {
 				writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 			}
