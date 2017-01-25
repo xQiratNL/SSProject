@@ -26,7 +26,7 @@ public class GeniusStrategy implements Strategy {
 		cache.put(Mark.XX, new TreeMap<String, Double>());
 		cache.put(Mark.OO, new TreeMap<String, Double>());
 		int bestMove = (new SmartStrategy()).determineMove(board, mark);
-		double bestMoveValue = -100.0;
+		double bestMoveValue = Integer.MIN_VALUE;
 		for (int move = 0; move < board.getDim() * board.getDim(); move++) {
 			Board copyBoard = board.deepCopy();
 			int field = Player.fall(copyBoard, move);
