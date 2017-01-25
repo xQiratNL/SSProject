@@ -52,6 +52,8 @@ public abstract class Player {
      * 
      * @param board the current board
      * @param move	the move on the x,y plane (index)
+     * 
+     * @return the index of the fallen place
      */
     
     //TODO: fall was incorrect it might get stuck in infinite loop, so i did a quick fix, now returns -1 if no move possible, should be taking into account in other places

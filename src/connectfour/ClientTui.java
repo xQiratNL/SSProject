@@ -17,6 +17,7 @@ public class ClientTui implements Runnable {
 	public String username;
 	public Set<String> availableCommands = new HashSet<>();
 	public int dimension = Protocol.DIM; // default dimension
+	private Board boardTui; // a copy of the board in Client to calculate fallen pieces.
 	 
     /*@
     	requires sock != null
@@ -36,6 +37,19 @@ public class ClientTui implements Runnable {
     	
 	}
 
+    /*@
+		requires b != null;
+     */
+	/**
+     *	Makes a copy of the board in the Client class and sets this board to that same board.
+     *	This is used to make calculations, like falling, in this class upon the play board.
+     *
+     *	@param board The board of the Client.
+     */
+	public void copyBoard(Board b) {
+		boardTui = b;
+	}
+	
     /*@
 		requires command != null;
 		ensures availableCommands.contains(command);
@@ -149,19 +163,11 @@ public class ClientTui implements Runnable {
             	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER;
             } else if (input.startsWith("move ")) {
             	Scanner s = new Scanner(input);
-            	s.next();
-            	int d = s.nextInt();
-            	Board b = new Board(dimension);
-            	int[] coords = b.coordinates(d);
+            	s.next(); // skip the text. Go to the int.
+            	int d = Player.fall(boardTui, s.nextInt());
+            	int[] coords = boardTui.coordinates(d);
             	input = "MAKEMOVE" +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];            	
             	s.close();
-//            	try {
-//
-//            	} catch (NumberFormatException e) {
-//            		// no number given or something went wrong. Try again...
-//            		System.out.println("Something went wrong. Maybe you can't make that move? Try again!");
-//            	}
-
             } else if (input.startsWith("ready")) {
             	input = input.replaceFirst("ready", "READY");
             } else if (input.startsWith("decline")) {
