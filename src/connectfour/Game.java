@@ -126,6 +126,7 @@ public class Game extends Thread {
 					public void run() {
 						//TODO: maybe change this
 						handler.writeOutput(Protocol.GAMEOVER);
+						handler.setStatus(ClientHandler.ClientStatus.IN_LOBBY);
 					}
 				}, 20 * 1000);
 			}
@@ -140,6 +141,7 @@ public class Game extends Thread {
 				timer.schedule(new TimerTask() {
 					public void run() {
 						handler.writeOutput(Protocol.ERROR_USERQUIT + Protocol.DELIMITER + currentPlayer().getName());
+						handler.setStatus(ClientHandler.ClientStatus.IN_LOBBY);
 					}
 				}, 20 * 1000);
 			}
