@@ -151,6 +151,7 @@ public class ClientHandler extends Thread {
 	
 	public void ready() {
 		status = ClientStatus.IN_GAME;
+		//TODO: check this
 		game.start();
 	}
 	

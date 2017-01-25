@@ -27,6 +27,8 @@ public class Game extends Thread {
 	
 	private void makeMove(Player player, int field) {
 		board.setField(field, player.getMark());
+		int[] coord = board.coordinates(field);
+		informMoveMade(coord[0], coord[1], coord[2]);
 	}
 	
 	public void makeMove(String username, int x, int y, int z) {
@@ -41,6 +43,7 @@ public class Game extends Thread {
 			}
 		}
 		moveMade = true;
+		informMoveMade(x, y, z);
 	}
 
 	
@@ -64,6 +67,14 @@ public class Game extends Thread {
 				}
 			}
 			currentPlayerIndex = (currentPlayerIndex + 1) % 2;
+		}
+	}
+	
+	public void informMoveMade(int x, int y, int z) {
+		for (Player p: players) {
+			if (p instanceof HumanPlayer) {
+				((HumanPlayer) p).getHandler().writeOutput(Protocol.SETMOVE + Protocol.DELIMITER + currentPlayer().getName() + Protocol.DELIMITER + x + Protocol.DELIMITER + y + Protocol.DELIMITER + z);
+			}
 		}
 	}
 	
