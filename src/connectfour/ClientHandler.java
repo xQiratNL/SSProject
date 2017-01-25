@@ -59,7 +59,7 @@ public class ClientHandler extends Thread {
 	}
 	
 	public void processInput(String input) {
-		tui.println("User " + username +" says:"  + input);
+		tui.println("User " + username +" says: "  + input);
 		String[] splitInput = input.split(Protocol.DELIMITER);
 		switch (splitInput[0]) {
 			case Protocol.HELLO:
