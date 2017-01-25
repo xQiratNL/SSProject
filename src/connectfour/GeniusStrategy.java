@@ -92,7 +92,7 @@ public class GeniusStrategy implements Strategy {
 			int move = s.determineMove(board, mark);
 			board.setField(move, mark);
 			mark = mark.other();
-			System.out.println(board.toString());
+			//System.out.println(board.toString());
 		}
 	}
 }

@@ -142,14 +142,14 @@ public class Client {
     			tui.copyBoard(board);
     			break;
     		case Protocol.ERROR_INVALIDMOVE:
-    			System.out.println("A move on (" + scanner.next() + ", " + scanner.next() + ", " + scanner.next() + ") is an invalid move! Please try again.");
+    			System.out.println("This is an invalid move! Please try again.");
     			break;
     		case Protocol.ERROR_NOTYOURTURN:
     			System.out.println("Hold on there, cowboy! It isn't your turn yet!");
     			break;
     		case Protocol.GAMEOVER:
     			if (scanner.hasNext()) {
-    				System.out.println("Game over! user " + scanner.next() + " has won the game");
+    				System.out.println("Game over! User " + scanner.next() + " has won the game");
     			} else {
     				System.out.println("Game over! Ended in a draw.");
     			}
