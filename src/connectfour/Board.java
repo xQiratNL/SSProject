@@ -15,7 +15,6 @@ public class Board {
 	//--Constructors--------
 	/**
 	 * Creates board with empty marks.
-	 * Requires dim>=4.
 	 * 
 	 * @param dim dimension of the board
 	 */
