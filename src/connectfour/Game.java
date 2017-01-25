@@ -44,7 +44,7 @@ public class Game extends Thread {
 					moveMade = true;
 					this.notifyAll();
 				} else {
-					((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_INVALIDMOVE);
+					((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_INVALIDMOVE + Protocol.DELIMITER + x + Protocol.DELIMITER + y + Protocol.DELIMITER + z);
 				}
 			}
 		}
