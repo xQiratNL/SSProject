@@ -118,6 +118,7 @@ public class ClientHandler extends Thread {
 			if (input[1].equals(Protocol.HUMAN)) {
 				ClientHandler opponent = server.popFirstWaitingUser(dim);
 				if (null == opponent) {
+					server.addWaitingUser(dim, this);
 					writeOutput(Protocol.WAIT);
 					status = ClientStatus.IN_WAIT;
 				} else {
@@ -152,7 +153,9 @@ public class ClientHandler extends Thread {
 	
 	public void ready() {
 		status = ClientStatus.IN_GAME;
-		game.start();
+		if (!game.isAlive()) {
+			game.start();
+		}
 	}
 	
 	public void decline() {
