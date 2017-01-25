@@ -78,6 +78,7 @@ public class Game extends Thread {
 				}
 				setTimeout();
 			}
+			
 			updatePlayerIndex();
 			moveMade = false;
 		}
