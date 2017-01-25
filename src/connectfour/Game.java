@@ -25,31 +25,35 @@ public class Game extends Thread {
 		return players;
 	}
 	
-	private void makeMove(Player player, int field) {
+	private synchronized void makeMove(Player player, int field) {
 		board.setField(field, player.getMark());
 		int[] coord = board.coordinates(field);
 		informMoveMade(coord[0], coord[1], coord[2]);
+		moveMade = true;
+		this.notifyAll();
 	}
 	
-	public void makeMove(String username, int x, int y, int z) {
+	public synchronized void makeMove(String username, int x, int y, int z) {
 		timer.purge();
 		for (Player p: players) {
 			if (p.getName().equals(username)) {
 				if (board.isValidMove(x, y, z)) {
+					timer.cancel();
 					board.setField(x, y, z, p.getMark());
+					informMoveMade(x, y, z);
+					moveMade = true;
+					this.notifyAll();
 				} else {
 					((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_INVALIDMOVE);
 				}
 			}
 		}
-		moveMade = true;
-		informMoveMade(x, y, z);
 	}
 
 	
 	@Override
 	public void run() {
-		timer.purge();
+		timer.cancel();
 		while (!board.gameOver()) {
 			if (currentPlayer() instanceof ComputerPlayer) {
 				makeMove(currentPlayer(), ((ComputerPlayer) currentPlayer()).determineMove(board));
@@ -60,14 +64,23 @@ public class Game extends Thread {
 					}
 				}
 				setTimeout();
-				
-				//TODO: improve this
-				while(!moveMade) {
-					//keep waiting
-				}
 			}
-			currentPlayerIndex = (currentPlayerIndex + 1) % 2;
+			updatePlayerIndex();
+			System.out.println(currentPlayerIndex);
+			moveMade = false;
 		}
+	}
+	
+	public synchronized void updatePlayerIndex() {
+		while (!moveMade) {
+			try {
+				this.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		currentPlayerIndex = (currentPlayerIndex + 1) % 2;
 	}
 	
 	public void informMoveMade(int x, int y, int z) {
@@ -76,10 +89,6 @@ public class Game extends Thread {
 				((HumanPlayer) p).getHandler().writeOutput(Protocol.SETMOVE + Protocol.DELIMITER + currentPlayer().getName() + Protocol.DELIMITER + x + Protocol.DELIMITER + y + Protocol.DELIMITER + z);
 			}
 		}
-	}
-	
-	public void moveMade() {
-		moveMade = true;
 	}
 	
 	public void setFirstTimeout() {
@@ -97,6 +106,7 @@ public class Game extends Thread {
 	}
 	
 	public void setTimeout() {
+		timer = new Timer();
 		for (Player p: players) {
 			if (p instanceof HumanPlayer) {
 				ClientHandler handler = ((HumanPlayer) p).getHandler();

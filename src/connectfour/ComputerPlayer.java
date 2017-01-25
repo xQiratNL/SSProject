@@ -18,7 +18,7 @@ public class ComputerPlayer extends Player {
 	
 	public ComputerPlayer(Mark mark) {
 		super("Computer", mark);
-		//TODO: correct implementation
+		this.strategy = new NaiveStrategy();
 	}
 
     /**
@@ -28,6 +28,7 @@ public class ComputerPlayer extends Player {
      * @return the player's choice
      */
 	public int determineMove(Board board) {
+		System.out.println(board);
 		return fall(board, strategy.determineMove(board, mark));
 	}
 }
