@@ -146,7 +146,7 @@ public class ClientTui implements Runnable {
             	s.next(); // skip the text. Go to the int.
             	s.next();
             	int d = s.nextInt();
-            	input = "MAKEMOVE" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER +d;            	
+            	input = "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER +d;            	
             	s.close();
             } else if (input.equals("play human")) {
             	input = "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER;
@@ -155,7 +155,7 @@ public class ClientTui implements Runnable {
             	s.next(); // skip the text. Go to the int.
             	s.next();
             	int d = s.nextInt();
-            	input = "MAKEMOVE" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER +d;            	
+            	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER +d;            	
             	s.close();
             } else if (input.equals("play computer")) {
             	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER;

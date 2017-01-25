@@ -92,7 +92,7 @@ public class Client {
     			System.out.println("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled! \n"
     					+ "Use 'play human [dimension]' or 'play computer [dimension]' to begin a game agains a human player or a computer. \n\n");
     			tui.usernameSet = true;
-    			tui.addCommands("play");
+    			tui.addCommands("play human", "play computer");
     			break;
     		case Protocol.ERROR_USERNAMETAKEN:
     			System.out.print("This username is already in use, please enter another username: ");
@@ -101,6 +101,7 @@ public class Client {
     		// Starting a game
     		case Protocol.WAIT:
     			System.out.println("You are currently waiting for a game...");
+    			tui.removeCommands("play human", "play computer");
     			//TODO: maybe add the command Decline? This way the user can stop waiting.
     			break;
     		case Protocol.READY:
@@ -113,7 +114,7 @@ public class Client {
     				myMark = Mark.XX;
     			}
     			System.out.println("You have entered a game with " + otherPlayer + ". Are you ready? (usage: ready/decline)");
-    			tui.removeCommands("play");
+    			tui.removeCommands("play human", "play computer");
     			tui.addCommands("ready", "decline");
     			board = new Board(tui.dimension);
     			tui.copyBoard(board);
@@ -154,12 +155,12 @@ public class Client {
     				System.out.println("Game over! Ended in a draw.");
     			}
     			tui.removeCommands("move", "decline", "ready");
-    			tui.addCommands("play");
+    			tui.addCommands("play human", "play computer");
     			break;
     		case Protocol.ERROR_USERQUIT:
     			System.out.println("User " + scanner.next() + " is a chicken. He cowarded out!");
     			tui.removeCommands("move");
-    			tui.addCommands("play");
+    			tui.addCommands("play human", "play computer");
     			break;
     		
     			
