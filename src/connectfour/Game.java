@@ -79,7 +79,6 @@ public class Game extends Thread {
 				setTimeout();
 			}
 			updatePlayerIndex();
-			System.out.println(currentPlayerIndex);
 			moveMade = false;
 		}
 		
