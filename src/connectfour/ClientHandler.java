@@ -118,7 +118,7 @@ public class ClientHandler extends Thread {
 			}
 			if (input[1].equals(Protocol.HUMAN)) {
 				ClientHandler opponent = server.popFirstWaitingUser(dim);
-				if (opponent.equals(null)) {
+				if (opponent == null) {
 					writeOutput(Protocol.WAIT);
 					status = ClientStatus.IN_WAIT;
 				} else {
