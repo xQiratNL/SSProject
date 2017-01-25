@@ -48,11 +48,12 @@ public class GeniusStrategy implements Strategy {
 	}
 	
 	public double valueBoardMark(Board board, Mark mark) {
-		if (!cache.get(mark).containsKey(board.calculateID())) {
+		String id = board.calculateID();
+		if (!cache.get(mark).containsKey(id)) {
 			if (board.isWinner(mark)) {
-				cache.get(mark).put(board.calculateID(), 1.0);
+				cache.get(mark).put(id, 1.0);
 			} else if (board.isFull()) {
-				cache.get(mark).put(board.calculateID(), 0.0);
+				cache.get(mark).put(id, 0.0);
 			} else {
 				//recursion
 				List<Integer> possibleMoves = new ArrayList<Integer>();
@@ -78,10 +79,10 @@ public class GeniusStrategy implements Strategy {
 					copyBoard.setField(move, mark.other());
 					value -= valueBoardMark(copyBoard, mark.other());
 				}
-				cache.get(mark).put(board.calculateID(), value / possibleMoves.size());
+				cache.get(mark).put(id, value / possibleMoves.size());
 			}
 		}
-		return cache.get(mark).get(board.calculateID());
+		return cache.get(mark).get(id);
 	}
 	
 	

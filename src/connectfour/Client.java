@@ -132,6 +132,7 @@ public class Client {
     			break;
     		case Protocol.SETMOVE:
     			String userInTurn1 = scanner.next();
+    			System.out.println(userInTurn1 + " made a move.");
     			if (userInTurn1.equals(tui.username)) {
     				board.setField(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), myMark);
     			} else {
@@ -150,9 +151,13 @@ public class Client {
     			} else {
     				System.out.println("Game over! Ended in a draw.");
     			}
+    			tui.removeCommands("move", "decline", "ready");
+    			tui.addCommands("play");
     			break;
     		case Protocol.ERROR_USERQUIT:
     			System.out.println("User " + scanner.next() + " is a chicken. He cowarded out!");
+    			tui.removeCommands("move");
+    			tui.addCommands("play");
     			break;
     		
     			
