@@ -59,8 +59,8 @@ public class Client implements Observer {
         			host = tui.askHost();
         			addr = InetAddress.getByName(host);
         		} catch (UnknownHostException e) {
-        			System.out.println(USAGE);
-        			System.out.println("ERROR: host " + host + " unknown. Try again.");
+        			tui.printLine(USAGE);
+        			tui.printLine("ERROR: host " + host + " unknown. Try again.");
         			// System.exit(0);
         		}
         	} 		
@@ -68,10 +68,10 @@ public class Client implements Observer {
     		try {
     			pn = tui.askPort();
     			sock = new Socket(addr, pn);
-    			System.out.println("Connected to " + addr + ":" + pn + " \n");
+    			tui.printLine("Connected to " + addr + ":" + pn + " \n");
     			sockAccepted = true;
     		} catch (Exception e) {
-    			System.out.println("ERROR: could not create a socket on " + addr
+    			tui.printLine("ERROR: could not create a socket on " + addr
     					+ " and port " + pn);
     			addr = null;
     		}
@@ -117,7 +117,7 @@ public class Client implements Observer {
     		
     		// Connect to a server:
     		case Protocol.HELLO:
-    			System.out.println("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled! \n"
+    			tui.printLine("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled! \n"
     					+ "Use 'play human [dimension]' or 'play computer [dimension]' to begin a game agains a human player or a computer. \n\n");
     			tui.usernameSet = true;
     			tui.addCommands("play human", "play computer", "exit");
@@ -128,7 +128,7 @@ public class Client implements Observer {
     		
     		// Starting a game
     		case Protocol.WAIT:
-    			System.out.println("You are currently waiting for a game...");
+    			tui.printLine("You are currently waiting for a game...");
     			tui.removeCommands("play human", "play computer");
     			//TODO: maybe add the command Decline? This way the user can stop waiting.
     			break;
@@ -141,12 +141,12 @@ public class Client implements Observer {
     				otherPlayer = player2;
     				myMark = Mark.XX;
     			}
-    			System.out.println("You have entered a game with " + otherPlayer + ". Are you ready? (usage: ready/decline)");
+    			tui.printLine("You have entered a game with " + otherPlayer + ". Are you ready? (usage: ready/decline)");
     			tui.removeCommands("play human", "play computer");
     			tui.addCommands("ready", "decline");
     			board = new Board(tui.dimension);
     			board.addObserver(this);
-    			System.out.println("game started on a board with DIM " + tui.dimension);
+    			tui.printLine("game started on a board with DIM " + tui.dimension);
     			tui.copyBoard(board);
     			tui.myMark = this.myMark;
     			// view = new ViewerController();
@@ -161,15 +161,15 @@ public class Client implements Observer {
     				if (tui.isClientComputer) {
     					tui.makeMove();
     				} else {
-    					System.out.println("It is your turn! Please make a move! (usage: move <index>)");
+    					tui.printLine("It is your turn! Please make a move! (usage: move <index>)");
     				}
     			} else {
-    				System.out.println("It is " + userInTurn + "'s turn! Please wait for your turn...");
+    				tui.printLine("It is " + userInTurn + "'s turn! Please wait for your turn...");
     			}
     			break;
     		case Protocol.SETMOVE:
     			String userInTurn1 = scanner.next();
-    			System.out.println(userInTurn1 + " made a move.");
+    			tui.printLine(userInTurn1 + " made a move.");
     			if (userInTurn1.equals(tui.username)) {
     				board.setField(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), myMark);
     			} else {
@@ -178,22 +178,22 @@ public class Client implements Observer {
     			tui.copyBoard(board);
     			break;
     		case Protocol.ERROR_INVALIDMOVE:
-    			System.out.println("This is an invalid move! Please try again.");
+    			tui.printLine("This is an invalid move! Please try again.");
     			break;
     		case Protocol.ERROR_NOTYOURTURN:
-    			System.out.println("Hold on there, cowboy! It isn't your turn yet!");
+    			tui.printLine("Hold on there, cowboy! It isn't your turn yet!");
     			break;
     		case Protocol.GAMEOVER:
     			if (scanner.hasNext()) {
-    				System.out.println("Game over! User " + scanner.next() + " has won the game");
+    				tui.printLine("Game over! User " + scanner.next() + " has won the game");
     			} else {
-    				System.out.println("Game over! Ended in a draw.");
+    				tui.printLine("Game over! Ended in a draw.");
     			}
     			tui.removeCommands("move", "decline", "ready", "hint");
     			tui.addCommands("play human", "play computer");
     			break;
     		case Protocol.ERROR_USERQUIT:
-    			System.out.println("User " + scanner.next() + " is a chicken. He cowarded out!");
+    			tui.printLine("User " + scanner.next() + " is a chicken. He cowarded out!");
     			tui.removeCommands("move", "hint");
     			tui.addCommands("play human", "play computer");
     			break;
@@ -231,8 +231,8 @@ public class Client implements Observer {
     		
     		// Other
     		case Protocol.ERROR_COMMAND_NOT_RECOGNIZED:
-    			System.out.println("Command has not been recognized by the server! Please use one of the commands below:");
-    			System.out.println(COMMANDS);
+    			tui.printLine("Command has not been recognized by the server! Please use one of the commands below:");
+    			tui.printLine(COMMANDS);
     			break;
     	}
     	
@@ -241,7 +241,7 @@ public class Client implements Observer {
     
     @Override
 	public void update(Observable o, Object arg) {
-    	System.out.println(board.toString());
+    	tui.printLine(board.toString());
 	}
     
     /** Starts a Client application. */

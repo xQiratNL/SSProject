@@ -278,6 +278,13 @@ public class ClientTui implements Runnable {
     	return input;
 	}
 
+    
+	/**
+     * Prints the given message.
+     */
+    public void printLine(String msg) {
+		System.out.println(msg);
+    }
 
 	/**
      * Closes the connection, the sockets will be terminated.
