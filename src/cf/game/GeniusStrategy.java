@@ -12,16 +12,25 @@ public class GeniusStrategy implements Strategy {
 	private String[] computerNames = {"Tariq", "Rutger"};
 	private Map<Mark, Map<String, Double>> cache = new HashMap<Mark, Map<String, Double>>();
 	
+	/** 
+	 * Creates a new strategy with name Rutger/Tariq. This is the best strategy implemented.
+	 */
 	public GeniusStrategy() {
 		this.name = computerNames[(int) (Math.random()*computerNames.length)];
 	}
 	
 	@Override
+	/**
+	 * Returns the name of the stragey.
+	 */
 	public String getStrategyName() {
 		return this.name;
 	}
 
 	@Override
+	/**
+	 * Determines a move by calculating the value of the board/mark combination by assuming that opponent makes random move.
+	 */
 	public int determineMove(Board board, Mark mark) {
 		cache.put(Mark.XX, new TreeMap<String, Double>());
 		cache.put(Mark.OO, new TreeMap<String, Double>());
@@ -43,6 +52,12 @@ public class GeniusStrategy implements Strategy {
 		return bestMove;
 	}
 	
+	/**
+	 * Calculates the value of the board/mark combination, taking all possible opponent moves into account
+	 * @param board, current board
+	 * @param mark, mark to play.
+	 * @return value of the board, between -1.0 and 1.0.
+	 */
 	public double valueBoardMark(Board board, Mark mark) {
 		String id = board.calculateID();
 		if (!cache.get(mark).containsKey(id)) {

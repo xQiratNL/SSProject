@@ -9,15 +9,24 @@ public class NaiveStrategy implements Strategy {
 	private String[] computerNames = {"Henk", "Toos", "Frans", "Lisa", "Emma",
 			"Ide", "Daniel", "Naomi", "Anne", "Piet", "Arend", "Tom"};
 	
+	/**
+	 * Constructs a naive strategy with a random name.
+	 */
 	public NaiveStrategy() {
 		this.name = computerNames[(int) (Math.random()*computerNames.length)];
 	}
 	
 	@Override
+	/**
+	 * Returns name of this strategy.
+	 */
 	public String getStrategyName() {
 		return this.name;
 	}
 
+	/**
+	 * Determines a random valid move for the given input.
+	 */
 	@Override
 	public int determineMove(Board board, Mark mark) {
 		Set<Integer> set = new HashSet<Integer>();

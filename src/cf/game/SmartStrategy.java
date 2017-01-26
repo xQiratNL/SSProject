@@ -8,16 +8,25 @@ public class SmartStrategy implements Strategy {
 	private String name;
 	private String[] computerNames = {"Tariq", "Rutger"};
 	
+	/**
+	 * Constructs a new strategy with a name (either Tariq or Rutger).
+	 */
 	public SmartStrategy() {
 		this.name = computerNames[(int) (Math.random()*computerNames.length)];
 	}
 	
 	@Override
+	/**
+	 * Returns the name of this strategy.
+	 */
 	public String getStrategyName() {
 		return this.name;
 	}
 
 	@Override
+	/**
+	 * Determines move thinking one step ahead.
+	 */
 	public int determineMove(Board board, Mark mark) {
 		Set<Integer> set = new HashSet<Integer>();
 		// Add all empty fields to a set.
