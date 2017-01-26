@@ -202,11 +202,12 @@ public class ClientHandler extends Thread {
 	}
 	
 	/**
-	 * user declines the game, tell all user that client quit
+	 * user declines the game, tell other user that client quit
 	 */
 	public void decline() {
+		game.cancelTimer();
 		for (Player p: game.getPlayers()) {
-			if (p instanceof HumanPlayer && ((HumanPlayer) p).getHandler() == this) {
+			if (p instanceof HumanPlayer && ((HumanPlayer) p).getHandler() != this) {
 				((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_USERQUIT + Protocol.DELIMITER + this.username);
 			}
 		}

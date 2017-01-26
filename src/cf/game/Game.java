@@ -167,13 +167,17 @@ public class Game extends Thread {
 				timer.schedule(new TimerTask() {
 					public void run() {
 						if (handler.getStatus() != ClientStatus.IN_GAME) {
-							handler.writeOutput(Protocol.ERROR_USERQUIT + Protocol.DELIMITER + "");
+							handler.decline();
 						}
 						handler.setStatus(ClientHandler.ClientStatus.IN_LOBBY);
 					}
 				}, 20 * 1000);
 			}
 		}	
+	}
+	
+	public void cancelTimer() {
+		timer.cancel();
 	}
 	
 	/**
