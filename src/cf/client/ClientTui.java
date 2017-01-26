@@ -153,26 +153,26 @@ public class ClientTui implements Runnable {
      */
 	@Override
 	public void run() {
+		String input2 = "";
+		printLine("Do you want to play as a human or as a computer? (usage: human/computer)");
+		while ( !(input2.equals("human") || input2.equals("computer")) ) {
+			input2 = readString();
+			if (input2.equals("human")) {
+				this.isClientComputer = false;
+			} else if (input2.equals("computer")) {
+				this.isClientComputer = true;
+			} else {
+				printLine("Incorrect usage (" + input2 + "). Type 'human' or 'computer'.");
+			}
+		}
+		
 		System.out.print("Hi there! Please enter your username: ");
 		//TODO: make hello command automated: check if chat/leaderboard/... is enabled and apply that to the HELLO method
 		String input = null;
     	while (input == null || !input.equals("exit")) {
 			input = readString();
 			try {
-				if (!usernameSet) {					
-					String input2 = "";
-					printLine("Do you want to play as a human or as a computer? (usage: human/computer)");
-					while ( !(input2.equals("human") || input2.equals("computer")) ) {
-						input2 = readString();
-						if (input2.equals("human")) {
-							this.isClientComputer = false;
-						} else if (input2.equals("computer")) {
-							this.isClientComputer = true;
-						} else {
-							printLine("Incorrect usage (" + input2 + "). Type 'human' or 'computer'.");
-						}
-					}
-					
+				if (!usernameSet) {		
 					out.write("HELLO;" + input);
 					out.newLine();
 					out.flush();
