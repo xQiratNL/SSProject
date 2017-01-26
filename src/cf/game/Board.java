@@ -1,5 +1,4 @@
-package connectfour;
-
+package cf.game;
 
 public class Board {
 	

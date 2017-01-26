@@ -1,4 +1,4 @@
-package connectfour;
+package cf.game;
 
 public enum Mark {
 

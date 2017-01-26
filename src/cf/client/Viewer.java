@@ -1,4 +1,4 @@
-package connectfour;
+package cf.client;
 
 import java.util.Set;
 import java.util.HashSet;
@@ -14,9 +14,9 @@ public class Viewer extends Application implements Runnable {
 
 	private Set<int[]> marks;
 	
-	public Viewer(Set<int[]> marks) {
-		this.marks = marks;
-	}
+//	public Viewer(Set<int[]> marks) {
+//		this.marks = marks;
+//	}
 	
 	private Group root;
 	
@@ -29,7 +29,7 @@ public class Viewer extends Application implements Runnable {
 		box.setTranslateZ(150);
 
 		PerspectiveCamera camera = new PerspectiveCamera(false);
-		camera.setRotate(50);
+		camera.setRotate(10);
 		root = new Group();
 		
 		

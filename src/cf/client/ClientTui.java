@@ -1,4 +1,4 @@
-package connectfour;
+package cf.client;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,6 +9,10 @@ import java.net.Socket;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
+
+import cf.game.Board;
+import cf.game.Player;
+import cf.game.Protocol;
 
 public class ClientTui implements Runnable {
 	private BufferedWriter out;

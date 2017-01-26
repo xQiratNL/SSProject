@@ -1,4 +1,6 @@
-package connectfour;
+package cf.game;
+
+import cf.server.ClientHandler;
 
 public class HumanPlayer extends Player {
 

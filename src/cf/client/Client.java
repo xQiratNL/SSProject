@@ -1,4 +1,4 @@
-package connectfour;
+package cf.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,6 +7,10 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
+
+import cf.game.Board;
+import cf.game.Mark;
+import cf.game.Protocol;
 
 public class Client {
     private static final String USAGE

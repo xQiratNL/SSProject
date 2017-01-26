@@ -1,4 +1,4 @@
-package connectfour;
+package cf.game;
 
 import java.util.HashSet;
 import java.util.Set;

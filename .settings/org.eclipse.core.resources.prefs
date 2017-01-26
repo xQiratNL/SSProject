@@ -1,2 +1,3 @@
 eclipse.preferences.version=1
-encoding//src/connectfour/Protocol.java=UTF-8
+encoding//src/cf/Protocol.java=UTF-8
+encoding//src/cf/game/Protocol.java=UTF-8

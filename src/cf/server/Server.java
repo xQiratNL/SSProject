@@ -1,4 +1,4 @@
-package connectfour;
+package cf.server;
 
 import java.net.ServerSocket;
 import java.net.Socket;

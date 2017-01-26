@@ -1,4 +1,4 @@
-package connectfour;
+package cf.game;
 
 /**
  * This interface describes the main variables of the protocol need to make a

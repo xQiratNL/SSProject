@@ -1,4 +1,4 @@
-package connectfour;
+package cf.game;
 
 public abstract class Player {
 

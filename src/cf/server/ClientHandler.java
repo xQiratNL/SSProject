@@ -1,6 +1,13 @@
-package connectfour;
+package cf.server;
 
 import java.net.Socket;
+
+import cf.game.ComputerPlayer;
+import cf.game.Game;
+import cf.game.HumanPlayer;
+import cf.game.Mark;
+import cf.game.Player;
+import cf.game.Protocol;
 
 import java.io.IOException;
 import java.io.BufferedReader;

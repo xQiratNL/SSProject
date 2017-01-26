@@ -1,7 +1,9 @@
-package connectfour;
+package cf.game;
 
 import java.util.Timer;
 import java.util.TimerTask;
+
+import cf.server.ClientHandler;
 
 public class Game extends Thread {
 	

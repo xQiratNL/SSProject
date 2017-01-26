@@ -1,7 +1,9 @@
-package connectfour;
+package cf.client;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import cf.game.Board;
 
 public class ViewerController {
 
@@ -15,7 +17,7 @@ public class ViewerController {
 		
 		Set<int[]> marks = new HashSet<>();
 		
-		Viewer view = new Viewer(marks);
+		Viewer view = new Viewer();
 		Thread t = new Thread(view);
 	}
 	
