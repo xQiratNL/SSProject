@@ -45,6 +45,7 @@ public class Game extends Thread {
 	 * @param field, field to make move on.
 	 */
 	private synchronized void makeMove(Player player, int field) {
+		timer.cancel();
 		board.setField(field, player.getMark());
 		int[] coord = board.coordinates(field);
 		informMoveMade(coord[0], coord[1], coord[2]);
