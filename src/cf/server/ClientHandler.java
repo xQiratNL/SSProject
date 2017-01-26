@@ -131,7 +131,7 @@ public class ClientHandler extends Thread {
 	 */
 	public void hello(String[] input) {
 		if (input.length == 2) {
-			if (server.getUsers().values().contains(input[1])) {//usernametaken
+			if (server.nameTaken(input[1])) {//usernametaken
 				writeOutput(Protocol.ERROR_USERNAMETAKEN);
 			} else {//command correct
 				username = input[1];
@@ -304,5 +304,12 @@ public class ClientHandler extends Thread {
 	 */
 	public ClientStatus getStatus() {
 		return status;
+	}
+	
+	/**
+	 * @return true if socket closed.
+	 */
+	public boolean isClosed() {
+		return sock.isClosed();
 	}
 }

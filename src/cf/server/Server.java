@@ -3,16 +3,16 @@ package cf.server;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.io.IOException;
 
 public class Server {
 	
 	private ServerTui tui; //tui of the server
-	private Map<ClientHandler, String> users = new HashMap<ClientHandler, String>(); //users logged on to the server
-	private Map<Integer, List<ClientHandler>> waitingUsers = new HashMap<Integer, List<ClientHandler>>(); //users waiting on a game
+	private ConcurrentMap<ClientHandler, String> users = new ConcurrentHashMap<ClientHandler, String>(); //users logged on to the server
+	private ConcurrentMap<Integer, List<ClientHandler>> waitingUsers = new ConcurrentHashMap<Integer, List<ClientHandler>>(); //users waiting on a game
 	public static final String EXT = ""; //implemented optionals
 	
 	/**
@@ -51,13 +51,23 @@ public class Server {
 	public synchronized void addUser(ClientHandler handler) {
 		users.put(handler, handler.getUsername());
 	}
-	
 	/**
-	 * Returns the map containing all handlers and corresponding usernames.
-	 * @return map<ClientHandler, String>
+	 * Checks if username is taken. If name taken but connection closed, then name is made free.
+	 * @param name,name to check.
+	 * @return true if username free.
 	 */
-	public synchronized Map<ClientHandler, String> getUsers() {
-		return users;
+	public synchronized boolean nameTaken(String name) {
+		for (ClientHandler handler: users.keySet()) {
+			if (users.get(handler) == name) {//happens max once
+				if (handler.isClosed()) {
+					users.remove(handler);
+					return true;
+				} else {
+					break;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
