@@ -11,7 +11,9 @@ import java.util.Scanner;
 import java.util.Set;
 
 import cf.game.Board;
+import cf.game.Mark;
 import cf.game.Player;
+import cf.game.SmartStrategy;
 import cf.Protocol;
 
 public class ClientTui implements Runnable {
@@ -19,27 +21,10 @@ public class ClientTui implements Runnable {
 	private Socket sock;
 	public boolean usernameSet = false;
 	public String username;
+	public Mark myMark;
 	public Set<String> availableCommands = new HashSet<>();
 	public int dimension = Protocol.DIM; // default dimension
 	private Board boardTui; // a copy of the board in Client to calculate fallen pieces.
-	 
-    /*@
-    	requires sock != null
-     */
-    /**
-     * Constructor for a new ClientTui
-     */
-//	public ClientTui(Socket sock) {
-//    	try {
-//			// in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-//			out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//    	this.sock = sock;
-//    	
-//	}
 
     /**
      * Empty constructor for a non-working clientTui.
@@ -248,6 +233,9 @@ public class ClientTui implements Runnable {
             	input = input.replaceFirst("ready", "READY");
             } else if (input.startsWith("decline")) {
             	input = input.replaceFirst("decline", "DECLINE");
+            } else if (input.startsWith("hint")) {
+            	System.out.println("Maybe you should enter a mark at " + (new SmartStrategy()).determineMove(boardTui, myMark));
+            	input = null;
             }
     	} else {
     		System.out.println("You cannot use command (" + input + ") right now! Available commands: ");

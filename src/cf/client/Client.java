@@ -20,7 +20,8 @@ public class Client {
 	+ "play computer [dimension] \n"
 	+ "ready \n"
 	+ "decline \n"
-	+ "move <index>";
+	+ "move <index> \n"
+	+ "hint";
     
     private String player1; // first player
     private String player2; // second player
@@ -128,13 +129,14 @@ public class Client {
     			tui.addCommands("ready", "decline");
     			board = new Board(tui.dimension);
     			tui.copyBoard(board);
+    			tui.myMark = this.myMark;
     			// view = new ViewerController();
     			break;
     		
     		// Playing a game
     		case Protocol.REQUESTMOVE:
 				tui.removeCommands("ready", "decline");
-				tui.addCommands("move");
+				tui.addCommands("move", "hint");
     			String userInTurn = scanner.next();
     			if (userInTurn.equals(tui.username)) {
     				System.out.println(board.toString());
@@ -165,12 +167,12 @@ public class Client {
     			} else {
     				System.out.println("Game over! Ended in a draw.");
     			}
-    			tui.removeCommands("move", "decline", "ready");
+    			tui.removeCommands("move", "decline", "ready", "hint");
     			tui.addCommands("play human", "play computer");
     			break;
     		case Protocol.ERROR_USERQUIT:
     			System.out.println("User " + scanner.next() + " is a chicken. He cowarded out!");
-    			tui.removeCommands("move");
+    			tui.removeCommands("move", "hint");
     			tui.addCommands("play human", "play computer");
     			break;
     		
