@@ -12,7 +12,7 @@ import java.util.Set;
 
 import cf.game.Board;
 import cf.game.Player;
-import cf.game.Protocol;
+import cf.Protocol;
 
 public class ClientTui implements Runnable {
 	private BufferedWriter out;
@@ -39,6 +39,48 @@ public class ClientTui implements Runnable {
 		}
     	this.sock = sock;
     	
+	}
+	
+	public int askPort() {
+		int portnumber = Protocol.PORTNUMBER;
+		@SuppressWarnings("resource") // you don't want to close system.in since it can't be opened again.
+		Scanner in = new Scanner(System.in);
+		boolean correctInput = false;
+		do {
+			System.out.print("Enter port number (default " + Protocol.PORTNUMBER + "):");
+			String input = in.nextLine();
+			try {
+				correctInput = true;
+				if (!input.isEmpty()) {
+					portnumber = Integer.parseInt(input);
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("Please enter a valid portnumber.");
+				correctInput = false;
+			}
+		} while (!correctInput);
+		return portnumber;
+	}
+	
+	public int askHost() {
+		int portnumber = Protocol.PORTNUMBER;
+		@SuppressWarnings("resource") // you don't want to close system.in since it can't be opened again.
+		Scanner in = new Scanner(System.in);
+		boolean correctInput = false;
+		do {
+			System.out.print("Enter port number (default " + Protocol.PORTNUMBER + "):");
+			String input = in.nextLine();
+			try {
+				correctInput = true;
+				if (!input.isEmpty()) {
+					portnumber = Integer.parseInt(input);
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("Please enter a valid portnumber.");
+				correctInput = false;
+			}
+		} while (!correctInput);
+		return portnumber;
 	}
 
     /*@

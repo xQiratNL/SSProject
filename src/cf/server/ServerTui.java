@@ -2,7 +2,7 @@ package cf.server;
 
 import java.util.Scanner;
 
-import cf.game.Protocol;
+import cf.Protocol;
 
 public class ServerTui {
 

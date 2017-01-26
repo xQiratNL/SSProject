@@ -1,5 +1,6 @@
 package cf.game;
 
+import cf.Protocol;
 import cf.server.ClientHandler;
 
 public class HumanPlayer extends Player {

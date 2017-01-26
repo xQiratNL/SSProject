@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 import cf.game.Board;
 import cf.game.Mark;
-import cf.game.Protocol;
+import cf.Protocol;
 
 public class Client {
     private static final String USAGE
@@ -27,7 +27,7 @@ public class Client {
     private Mark myMark; // this player's mark
     private ClientTui tui;
     private Board board;
-    private ViewerController view;
+    // private ViewerController view; // TODO: 3d view of the game
     
     public Client(String InetAdress) {
     	try {
