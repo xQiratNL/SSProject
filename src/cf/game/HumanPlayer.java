@@ -25,6 +25,10 @@ public class HumanPlayer extends Player {
     }
 
     // -- Queries ----------------------------------------------------
+    /**
+     * Returns the clienthandler which belongs to the player
+     * @return ClientHandler object of player.
+     */
     public ClientHandler getHandler() {
     	return handler;
     }

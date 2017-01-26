@@ -51,12 +51,10 @@ public abstract class Player {
      * Makes a move fall. e.g. gets the fallen position for a move.
      * 
      * @param board the current board
-     * @param move	the move on the x,y plane (index)
+     * @param move	the move in the x,y plane (index)
      * 
-     * @return the index of the fallen place
+     * @return the index of the fallen place, or -1 if the vertical bar is full already and no move is possible here.
      */
-    
-    //TODO: fall was incorrect it might get stuck in infinite loop, so i did a quick fix, now returns -1 if no move possible, should be taking into account in other places
     public static int fall(Board board, int move) {
 		int[] xyz = board.coordinates(move);
 		int zcoord = 0;

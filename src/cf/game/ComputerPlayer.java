@@ -7,8 +7,9 @@ public class ComputerPlayer extends Player {
 	
     // -- Constructor -----------------------------------------------
     /**
-     * Creates a new ComputerPlayer object.
-     * 
+     * Creates a new computerplayer object with the given mark, and given strategy.
+     * @param mark, mark to give to player.
+     * @parm strategy, strategy that computerplayer should use, to determine moves.
      */	
 	public ComputerPlayer(Mark mark, Strategy strategy) {
 		super(strategy.getStrategyName(), mark);
@@ -16,6 +17,10 @@ public class ComputerPlayer extends Player {
 		this.mark = mark;
 	}
 	
+	/**
+	 * Creates a new computerplayer object with the given mark, and gives it a naive strategy.
+	 * @param mark, mark to give to player.
+	 */
 	public ComputerPlayer(Mark mark) {
 		super("Computer", mark);
 		this.strategy = new NaiveStrategy();

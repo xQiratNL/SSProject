@@ -24,6 +24,9 @@ public enum Mark {
         }
     }
     
+    /**
+     * @return string (length 1) representation of a mark.
+     */
     public String toString() {
     	if (this == XX) {
     		return "X";
@@ -34,6 +37,10 @@ public enum Mark {
     	}
     }
     
+    /**
+     * Returns true if mark is the empty mark.
+     * @return true if mark is empty.
+     */
     public boolean isEmpty() {
     	return this.equals(EMPTY);
     }
