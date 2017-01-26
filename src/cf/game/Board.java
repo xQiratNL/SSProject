@@ -60,7 +60,11 @@ public class Board {
 		}
 	}
 	
-	public String[][] boardStatus() {
+	/**
+	 * Builds a string which represents the current status of a board.
+	 * @return Array of Array of Strings giving the board status.
+	 */
+	private String[][] boardStatus() {
 		//set numbering
 		String[][] status = new String[dim][2 * dim - 1];
 		for (int z = 0; z < dim; z++) {
@@ -115,6 +119,11 @@ public class Board {
 		return dim * dim * z + dim * y + x;
 	}
 	
+	/**
+	 * Calculates the coordinates on the board for a given index.
+	 * @param index, index of the field on the board
+	 * @return array of {x, y, z} coordinates which correspond to the field.
+	 */
 	public int[] coordinates(int index) {
 		int z = index / (dim * dim);
 		int y = (index - z * dim * dim) / dim;
@@ -134,6 +143,11 @@ public class Board {
 		return 0 <= index(x, y, z) && index(x, y, z) < size;
 	}
 	
+	/**
+	 * Returns true of the tuple is a valid field on the board.
+	 * @param index, index of the field
+	 * @return true if valid.
+	 */
 	public boolean isField(int index) {
 		return 0 <= index && index < size;
 	}
@@ -149,6 +163,11 @@ public class Board {
 		return fields[index(x, y, z)];
 	}
 	
+	/**
+	 * Returns value of field
+	 * @param index, index of the field.
+	 * @return Mark on current field.
+	 */
 	public Mark getField(int index) {
 		return fields[index];
 	}
@@ -164,6 +183,11 @@ public class Board {
 		return getField(x, y, z).isEmpty();
 	}
 	
+	/**
+	 * Returns true of field is empty.
+	 * @param index, index of a given field.
+	 * @return true of empty.
+	 */
 	public boolean isEmptyField(int index) {
 		return fields[index].isEmpty();
 	}
@@ -218,10 +242,20 @@ public class Board {
 		fields[index] = mark;
 	}
 	
+	/**
+	 * Returns true if given mark has won the game.
+	 * @param mark, mark of player.
+	 * @return true if player of mark has won.
+	 */
 	public boolean isWinner(Mark mark) {
 		return hasRow(mark) || hasColumn(mark) || hasBar(mark) || hasXDiagonal(mark) || hasYDiagonal(mark) || hasZDiagonal(mark) || hasCrossDiagonal(mark);
 	}
 	
+	/**
+	 * Returns true if given mark has a row on the board.
+	 * @param mark, mark of player.
+	 * @return true if player of mark has won.
+	 */
 	public boolean hasRow(Mark mark) {
 		for (int z = 0; z < dim; z++) {
 			for (int y = 0; y < dim; y++) {
@@ -242,6 +276,11 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Returns true if given mark has a column on the board.
+	 * @param mark, mark of player.
+	 * @return true if player of mark has won.
+	 */
 	public boolean hasColumn(Mark mark) {
 		for (int z = 0; z < dim; z++) {
 			for (int x = 0; x< dim; x++) {
@@ -262,6 +301,11 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Returns true if given mark has a bar on the board.
+	 * @param mark, mark of player.
+	 * @return true if player of mark has won.
+	 */
 	public boolean hasBar(Mark mark) {
 		for (int x = 0; x < dim; x++) {
 			for (int y = 0; y < dim; y++) {
@@ -282,6 +326,11 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Returns true if given mark has a diagonal in the xy-plane on the board.
+	 * @param mark, mark of player.
+	 * @return true if player of mark has won.
+	 */
 	public boolean hasZDiagonal(Mark mark) {
 		for (int z = 0; z < dim; z++) {
 			int nrMark = 0;
@@ -314,6 +363,11 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Returns true if given mark has a diagonal in the xz-plane on the board.
+	 * @param mark, mark of player.
+	 * @return true if player of mark has won.
+	 */
 	public boolean hasYDiagonal(Mark mark) {
 		for (int y = 0; y < dim; y++) {
 			int nrMark = 0;
@@ -346,6 +400,11 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Returns true if given mark has a diagonal in the yz-plane on the board.
+	 * @param mark, mark of player.
+	 * @return true if player of mark has won.
+	 */
 	public boolean hasXDiagonal(Mark mark) {
 		for (int x = 0; x < dim; x++) {
 			int nrMark = 0;
@@ -378,6 +437,11 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Returns true if given mark has a true diagonal on the board.
+	 * @param mark, mark of player.
+	 * @return true if player of mark has won.
+	 */
 	public boolean hasCrossDiagonal(Mark mark) {
 		//first diagonal
 		int nrMark = 0;
@@ -434,6 +498,10 @@ public class Board {
 		return false;
 	}
 	
+	/**
+	 * Returns true if one of the marks on the board has won the game.
+	 * @return true of X or O has won the game.
+	 */
 	public boolean hasWinner() {
 		if (this.isWinner(Mark.OO) || this.isWinner(Mark.XX)) {
 			return true;
@@ -442,10 +510,18 @@ public class Board {
 		}
 	}
 	
+	/**
+	 * Returns true if one of the marks on the board has won the game, or the board is full.
+	 * @return true of X or O has won the game, or no more move can be made.
+	 */
 	public boolean gameOver() {
 		return this.isFull() || this.hasWinner();
 	}
 	
+	/**
+	 * Returns a String representation of the input that can be given for the board, as well
+	 * as the current status of the board.
+	 */
 	public String toString() {
 		
 		String string = "Numbering: \n \n";
@@ -479,15 +555,24 @@ public class Board {
 		return string;
 	}
 	
+	/**
+	 * @return dimension of the board
+	 */
 	public int getDim() {
 		return dim;
 	}
 	
+	/**
+	 * @return size of the board
+	 */
 	public int getSize() {
 		return size;
 	}
 
-	
+	/**
+	 * Calculates unique identifier for the board in it's current status.
+	 * @return string identifying the board in its current state.
+	 */
 	public String calculateID() {
 		String id = "";
 		for (int i = 0; i < size; i++) {
