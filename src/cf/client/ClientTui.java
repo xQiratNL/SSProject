@@ -14,6 +14,7 @@ import cf.game.Board;
 import cf.game.Mark;
 import cf.game.Player;
 import cf.game.SmartStrategy;
+import cf.game.Strategy;
 import cf.Protocol;
 
 public class ClientTui implements Runnable {
@@ -25,14 +26,8 @@ public class ClientTui implements Runnable {
 	public Set<String> availableCommands = new HashSet<>();
 	public int dimension = Protocol.DIM; // default dimension
 	private Board boardTui; // a copy of the board in Client to calculate fallen pieces.
-
-    /**
-     * Empty constructor for a non-working clientTui.
-     * This is used to get access to askPort() and askHost() to make a correct working clientTui.
-     */
-	public ClientTui() {
-		// empty constructor;
-	}
+	public boolean isClientComputer = false;
+	private static Strategy STRATEGY = new SmartStrategy();
 
     /*@
 		requires sock != null
@@ -44,7 +39,6 @@ public class ClientTui implements Runnable {
 	 */
 	public void setSocket(Socket sock) {
     	try {
-			// in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -162,16 +156,31 @@ public class ClientTui implements Runnable {
 	public void run() {
 		System.out.print("Hi there! Please enter your username: ");
 		//TODO: make hello command automated: check if chat/leaderboard/... is enabled and apply that to the HELLO method
-		String input = "";
+		String input = null;
     	while (input == null || !input.equals("exit")) {
 			input = readString();
 			try {
-				if (!usernameSet) {
+				if (!usernameSet) {					
+					String input2 = "";
+					System.out.println("Do you want to play as a human or as a computer? (usage: human/computer)");
+					while ( !(input2.equals("human") || input2.equals("computer")) ) {
+						input2 = readString();
+						if (input2.equals("human")) {
+							this.isClientComputer = false;
+						} else if (input2.equals("computer")) {
+							this.isClientComputer = true;
+						} else {
+							System.out.println("Incorrect usage (" + input2 + "). Type 'human' or 'computer'.");
+						}
+					}
+					
 					out.write("HELLO;" + input);
 					out.newLine();
 					out.flush();
 					username = input;
-				} else if (!input.equals("exit")) {
+					
+				} else if (!input.equals("exit") && !(isClientComputer && availableCommands.contains("move"))) {
+					// prefents handling input if the 'user' is a computerplayer
 					input = reformInput(input);
 					if (input != null) {
 						out.write(input);
@@ -184,8 +193,25 @@ public class ClientTui implements Runnable {
 				System.out.println("ERROR: Socket is closed!");
 			}
 		}
+    	System.exit(0);
+
 	}
 	
+	
+	public void makeMove() {
+		try {
+        	int d = Player.fall(boardTui, STRATEGY.determineMove(boardTui, myMark));
+        	int[] coords = boardTui.coordinates(d);
+        	String moveCommand = "MAKEMOVE" +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];
+			out.write(moveCommand);
+			out.newLine();
+			out.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 	
     /**
      * Changes input given by the user in the TUI to a readable command for the server.
@@ -209,7 +235,8 @@ public class ClientTui implements Runnable {
             	s.next(); // skip the text. Go to the int.
             	s.next();
             	int d = s.nextInt();
-            	input = "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER +d;            	
+            	input = "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER +d;
+            	this.dimension = d;
             	s.close();
             } else if (input.equals("play human")) {
             	input = "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER;
@@ -218,7 +245,8 @@ public class ClientTui implements Runnable {
             	s.next(); // skip the text. Go to the int.
             	s.next();
             	int d = s.nextInt();
-            	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER +d;            	
+            	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER +d;
+            	this.dimension = d;
             	s.close();
             } else if (input.equals("play computer")) {
             	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER;

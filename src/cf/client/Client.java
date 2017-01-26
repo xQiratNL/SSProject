@@ -31,38 +31,43 @@ public class Client {
     // private ViewerController view; // TODO: 3d view of the game
     
     public Client() {
-    	try {
-			this.start();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+    	this.start();
     }
     
-    public void start() throws IOException {
+    public void start() {
     	InetAddress addr = null;
     	Socket sock = null;
     	BufferedReader in;
     	
     	String host = "localhost";
-    	try {
-    		host = tui.askHost();
-    		addr = InetAddress.getByName(host);
-    	} catch (UnknownHostException e) {
-    		System.out.println(USAGE);
-    		System.out.println("ERROR: host " + host + " unknown.");
-    		System.exit(0);
-    	}
+
 
     	// try to open a Socket to the server
     	int pn = Protocol.PORTNUMBER; // portnumber
-    	try {
-    		pn = tui.askPort();
-    		sock = new Socket(addr, pn);
-    		System.out.println("Connected to " + addr + ":" + pn + " \n");
-    	} catch (IOException e) {
-    		System.out.println("ERROR: could not create a socket on " + addr
-    				+ " and port " + pn);
+    	boolean sockAccepted = false;
+    	while (!sockAccepted) {
+    		
+        	while (addr == null) {
+        		try {
+        			host = tui.askHost();
+        			addr = InetAddress.getByName(host);
+        		} catch (UnknownHostException e) {
+        			System.out.println(USAGE);
+        			System.out.println("ERROR: host " + host + " unknown. Try again.");
+        			// System.exit(0);
+        		}
+        	} 		
+    		
+    		try {
+    			pn = tui.askPort();
+    			sock = new Socket(addr, pn);
+    			System.out.println("Connected to " + addr + ":" + pn + " \n");
+    			sockAccepted = true;
+    		} catch (Exception e) {
+    			System.out.println("ERROR: could not create a socket on " + addr
+    					+ " and port " + pn);
+    			addr = null;
+    		}
     	}
     	
         // create ClientTui object in a new thread and start the two-way communication.
@@ -73,17 +78,22 @@ public class Client {
         streamInputHandler.start();
         
         // Handle all incoming communication: the input.
-        in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-		while (!sock.isClosed()) {
-			try {
-				if (in.ready()) {	
-					processInput(in.readLine());
+        try {
+			in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+			while (!sock.isClosed()) {
+				try {
+					if (in.ready()) {	
+						processInput(in.readLine());
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}   	
+			}   	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     
@@ -103,7 +113,7 @@ public class Client {
     			System.out.println("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled! \n"
     					+ "Use 'play human [dimension]' or 'play computer [dimension]' to begin a game agains a human player or a computer. \n\n");
     			tui.usernameSet = true;
-    			tui.addCommands("play human", "play computer");
+    			tui.addCommands("play human", "play computer", "exit");
     			break;
     		case Protocol.ERROR_USERNAMETAKEN:
     			System.out.print("This username is already in use, please enter another username: ");
@@ -128,6 +138,7 @@ public class Client {
     			tui.removeCommands("play human", "play computer");
     			tui.addCommands("ready", "decline");
     			board = new Board(tui.dimension);
+    			System.out.println("game started on a board with DIM " + tui.dimension);
     			tui.copyBoard(board);
     			tui.myMark = this.myMark;
     			// view = new ViewerController();
@@ -140,7 +151,11 @@ public class Client {
     			String userInTurn = scanner.next();
     			if (userInTurn.equals(tui.username)) {
     				System.out.println(board.toString());
-    				System.out.println("It is your turn! Please make a move! (usage: move <index>)");
+    				if (tui.isClientComputer) {
+    					tui.makeMove();
+    				} else {
+    					System.out.println("It is your turn! Please make a move! (usage: move <index>)");
+    				}
     			} else {
     				System.out.println("It is " + userInTurn + "'s turn! Please wait for your turn...");
     			}
