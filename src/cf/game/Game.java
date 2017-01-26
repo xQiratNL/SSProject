@@ -5,6 +5,7 @@ import java.util.TimerTask;
 
 import cf.Protocol;
 import cf.server.ClientHandler;
+import cf.server.ClientHandler.ClientStatus;
 
 public class Game extends Thread {
 	
@@ -135,14 +136,19 @@ public class Game extends Thread {
 		while (!moveMade) {
 			try {
 				this.wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (InterruptedException e) {//shouldn't happen
+				System.out.println(e.getMessage());
 			}
 		}
 		currentPlayerIndex = (currentPlayerIndex + 1) % 2;
 	}
 	
+	/**
+	 * inform all clients in game of the move made
+	 * @param x, x-coordinate
+	 * @param y, y-coordinate
+	 * @param z, z-coordinate
+	 */
 	public void informMoveMade(int x, int y, int z) {
 		for (Player p: players) {
 			if (p instanceof HumanPlayer) {
@@ -151,21 +157,28 @@ public class Game extends Thread {
 		}
 	}
 	
+	/**
+	 * Players most answer ready/decline within 20 seconds or else userquit message gets send.
+	 */
 	public void setFirstTimeout() {
 		for (Player p: players) {
 			if (p instanceof HumanPlayer) {
 				ClientHandler handler = ((HumanPlayer) p).getHandler();
 				timer.schedule(new TimerTask() {
 					public void run() {
-						//TODO: maybe change this
-						handler.writeOutput(Protocol.GAMEOVER);
+						if (handler.getStatus() != ClientStatus.IN_GAME) {
+							handler.writeOutput(Protocol.ERROR_USERQUIT + Protocol.DELIMITER + "");
+						}
 						handler.setStatus(ClientHandler.ClientStatus.IN_LOBBY);
 					}
 				}, 20 * 1000);
 			}
-		}
+		}	
 	}
 	
+	/**
+	 * Players most send a move within 20 seconds or else userquit message gets send.
+	 */
 	public void setTimeout() {
 		timer = new Timer();
 		for (Player p: players) {
