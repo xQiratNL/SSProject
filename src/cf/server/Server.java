@@ -57,17 +57,7 @@ public class Server {
 	 * @return true if username free.
 	 */
 	public synchronized boolean nameTaken(String name) {
-		for (ClientHandler handler: users.keySet()) {
-			if (users.get(handler) == name) {//happens max once
-				if (handler.isClosed()) {
-					users.remove(handler);
-					return false;
-				} else {
-					return true;
-				}
-			}
-		}
-		return false;
+		return users.containsValue(name);
 	}
 	
 	/**
