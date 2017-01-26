@@ -49,7 +49,7 @@ public class Game extends Thread {
 		int[] coord = board.coordinates(field);
 		informMoveMade(coord[0], coord[1], coord[2]);
 		moveMade = true;
-		this.notifyAll();
+		this.notifyAll();//update player index
 	}
 	
 	/**
@@ -68,7 +68,7 @@ public class Game extends Thread {
 					board.setField(x, y, z, p.getMark());
 					informMoveMade(x, y, z);
 					moveMade = true;
-					this.notifyAll();
+					this.notifyAll();//update player index
 				} else {
 					((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_INVALIDMOVE + Protocol.DELIMITER + x + Protocol.DELIMITER + y + Protocol.DELIMITER + z);
 				}
@@ -78,6 +78,9 @@ public class Game extends Thread {
 
 	
 	@Override
+	/**
+	 * Starts the game requests moves of players and makes move and if gameover sends message to all players.
+	 */
 	public void run() {
 		//wait for both players to be ready
 		boolean ready = false;
@@ -90,13 +93,13 @@ public class Game extends Thread {
 				}
 			}
 		}
-		timer.cancel();
+		timer.cancel();//turn off timer
 		
 		//start game
 		while (!board.gameOver()) {
-			if (currentPlayer() instanceof ComputerPlayer) {
+			if (currentPlayer() instanceof ComputerPlayer) {//computerplayers turn
 				makeMove(currentPlayer(), ((ComputerPlayer) currentPlayer()).determineMove(board));
-			} else {
+			} else {//humanplayers turn
 				for (Player p: players) {
 					if (p instanceof HumanPlayer) {
 						((HumanPlayer) p).requestMove(currentPlayer(), board);
@@ -109,7 +112,7 @@ public class Game extends Thread {
 			moveMade = false;
 		}
 		
-		//game is finished
+		//game is finished, inform players
 		String msg = Protocol.GAMEOVER;
 		if (board.isWinner(players[0].getMark())) {
 			msg += Protocol.DELIMITER + players[0].getName();
@@ -117,13 +120,16 @@ public class Game extends Thread {
 			msg += Protocol.DELIMITER + players[1].getName();
 		}
 		for (Player p: players) {
-			if (p instanceof HumanPlayer) {
+			if (p instanceof HumanPlayer) {//inform only human players and change status of players
 				((HumanPlayer) p).getHandler().writeOutput(msg);
 				((HumanPlayer) p).getHandler().setStatus(ClientHandler.ClientStatus.IN_LOBBY);
 			}
 		}
 	}
 	
+	/**
+	 * Change playerindex when a move is made, while not made whait on move made.
+	 */
 	public synchronized void updatePlayerIndex() {
 		while (!moveMade) {
 			try {
