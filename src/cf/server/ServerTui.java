@@ -10,7 +10,11 @@ public class ServerTui {
 		System.out.println(msg);
 	}
 	
-	public int askServerNumber() {
+	public void printException(Exception e) {
+		System.out.println("An error has occured:" + e.getMessage());
+	}
+	
+	public int askPortNumber() {
 		int portnumber = Protocol.PORTNUMBER;
 		@SuppressWarnings("resource") // you don't want to close system.in since it can't be opened again.
 		Scanner in = new Scanner(System.in);

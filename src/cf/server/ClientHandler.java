@@ -107,7 +107,7 @@ public class ClientHandler extends Thread {
 				writeOutput(Protocol.ERROR_USERNAMETAKEN);
 			} else {
 				username = input[1];
-				server.addUser(this, username);
+				server.addUser(this);
 				writeOutput(Protocol.HELLO + Protocol.DELIMITER + Server.EXT);
 				status = ClientStatus.IN_LOBBY;
 			}

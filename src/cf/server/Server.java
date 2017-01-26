@@ -10,19 +10,27 @@ import java.io.IOException;
 
 public class Server {
 	
-	private ServerTui tui;
-	private Map<ClientHandler, String> users = new HashMap<ClientHandler, String>();
-	private Map<Integer, List<ClientHandler>> waitingUsers = new HashMap<Integer, List<ClientHandler>>();
-	public static final String EXT = ""; //change when optionals implemented
+	private ServerTui tui; //tui of the server
+	private Map<ClientHandler, String> users = new HashMap<ClientHandler, String>(); //users logged on to the server
+	private Map<Integer, List<ClientHandler>> waitingUsers = new HashMap<Integer, List<ClientHandler>>(); //users waiting on a game
+	public static final String EXT = ""; //implemented optionals
 	
+	/**
+	 * Constructs a new server, with a tui and calls the method start on this server.
+	 */
 	public Server() {
 		tui = new ServerTui();
 		this.start();
 	}
 
+	/**
+	 * This method creates asks the user for a portnumber via the tui and creates a serversocket.
+	 * After that it waits for incoming connections and if so it creates a handler thread which will 
+	 * deal with all clientrelated matter.
+	 */
 	public void start() {
 		while (true) {
-			try (ServerSocket ssock = new ServerSocket(tui.askServerNumber());) {
+			try (ServerSocket ssock = new ServerSocket(tui.askPortNumber());) {
 				tui.println("Server has started on port: " + ssock.getLocalPort());
 				int i = 0;
 				while (true) {
@@ -31,19 +39,32 @@ public class Server {
 					new ClientHandler(this, sock, tui).start();
 				}
 			} catch (IOException e) {
-				tui.println(e.getMessage());
+				tui.printException(e);
 			}
 		}
 	}
 	
-	public synchronized void addUser(ClientHandler handler, String username) {
-		users.put(handler, username);
+	/**
+	 * Adds a handler with corresponding name to the users in the server.
+	 * @param handler handler which should be added.
+	 */
+	public synchronized void addUser(ClientHandler handler) {
+		users.put(handler, handler.getUsername());
 	}
 	
+	/**
+	 * Returns the map containing all handlers and corresponding usernames.
+	 * @return map<ClientHandler, String>
+	 */
 	public synchronized Map<ClientHandler, String> getUsers() {
 		return users;
 	}
 	
+	/**
+	 * Adds a user to the list of users that are waiting for a game of a given dimension.
+	 * @param dim, dimension of the game, the client wants to play.
+	 * @param handler, ClientHandler of the client.
+	 */
 	public synchronized void addWaitingUser(int dim, ClientHandler handler) {
 		if (!waitingUsers.containsKey(dim)) {
 			waitingUsers.put(dim, new ArrayList<>());
