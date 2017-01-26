@@ -28,6 +28,7 @@ public class Game extends Thread {
 		return players;
 	}
 	
+	//TODO: fix and also fix determinemove everywhere and the according docs as well
 	private synchronized void makeMove(Player player, int field) {
 		board.setField(field, player.getMark());
 		int[] coord = board.coordinates(field);

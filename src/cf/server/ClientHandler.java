@@ -24,7 +24,7 @@ public class ClientHandler extends Thread {
 	private BufferedWriter out;
 	private String username = "";
 	private Game game;
-	public enum ClientStatus {CONNECTED, IN_LOBBY, IN_WAIT, IN_READY, IN_GAME};
+	public enum ClientStatus {CONNECTED, IN_LOBBY, IN_WAIT, IN_READY, IN_GAME}; //status of this client, used in determining which commands are possible.
 	private ClientStatus status = ClientStatus.CONNECTED;
 
 	public ClientHandler(Server server, Socket sock, ServerTui tui) {
