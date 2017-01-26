@@ -61,9 +61,9 @@ public class Server {
 			if (users.get(handler) == name) {//happens max once
 				if (handler.isClosed()) {
 					users.remove(handler);
-					return true;
+					return false;
 				} else {
-					break;
+					return true;
 				}
 			}
 		}
