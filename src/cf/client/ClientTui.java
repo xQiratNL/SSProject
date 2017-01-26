@@ -41,8 +41,7 @@ public class ClientTui implements Runnable {
     	try {
 			out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			printLine("ERROR: Cannot handle output stream!");
 		}
     	this.sock = sock;	
 	}
@@ -68,7 +67,7 @@ public class ClientTui implements Runnable {
 					portnumber = Integer.parseInt(input);
 				}
 			} catch (NumberFormatException e) {
-				System.out.println("Please enter a valid portnumber.");
+				printLine("Please enter a valid portnumber.");
 				correctInput = false;
 			}
 		} while (!correctInput);
@@ -162,7 +161,7 @@ public class ClientTui implements Runnable {
 			try {
 				if (!usernameSet) {					
 					String input2 = "";
-					System.out.println("Do you want to play as a human or as a computer? (usage: human/computer)");
+					printLine("Do you want to play as a human or as a computer? (usage: human/computer)");
 					while ( !(input2.equals("human") || input2.equals("computer")) ) {
 						input2 = readString();
 						if (input2.equals("human")) {
@@ -170,7 +169,7 @@ public class ClientTui implements Runnable {
 						} else if (input2.equals("computer")) {
 							this.isClientComputer = true;
 						} else {
-							System.out.println("Incorrect usage (" + input2 + "). Type 'human' or 'computer'.");
+							printLine("Incorrect usage (" + input2 + "). Type 'human' or 'computer'.");
 						}
 					}
 					
@@ -186,11 +185,11 @@ public class ClientTui implements Runnable {
 						out.write(input);
 						out.newLine();
 						out.flush();
-						System.out.println("Command has been send (" + input + ")");
+						printLine("Command has been send (" + input + ")");
 					}
 				}
 			} catch (IOException e) {
-				System.out.println("ERROR: Socket is closed!");
+				printLine("ERROR: Socket is closed!");
 			}
 		}
     	System.exit(0);
@@ -209,8 +208,7 @@ public class ClientTui implements Runnable {
 			out.newLine();
 			out.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			printLine("ERROR: Cannot handle output stream!");
 		}
 
 	}
@@ -264,13 +262,13 @@ public class ClientTui implements Runnable {
             } else if (input.startsWith("decline")) {
             	input = input.replaceFirst("decline", "DECLINE");
             } else if (input.startsWith("hint")) {
-            	System.out.println("Maybe you should enter a mark at " + (new SmartStrategy()).determineMove(boardTui, myMark));
+            	printLine("Maybe you should enter a mark at " + (new SmartStrategy()).determineMove(boardTui, myMark));
             	input = null;
             }
     	} else {
-    		System.out.println("You cannot use command (" + input + ") right now! Available commands: ");
+    		printLine("You cannot use command (" + input + ") right now! Available commands: ");
     		for (String c : availableCommands) {
-    			System.out.println(c);
+    			printLine(c);
     		}
     		input = null;
     	}
@@ -293,7 +291,7 @@ public class ClientTui implements Runnable {
 		try {
 			sock.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			printLine("ERROR: Socket is already closed.");
 		}
 		
     }
@@ -309,6 +307,7 @@ public class ClientTui implements Runnable {
                     System.in));
             antw = in.readLine();
         } catch (IOException e) {
+        	System.out.println("ERROR: Cannot handle System.in input stream");
         }
 
         return (antw == null) ? "" : antw;

@@ -93,13 +93,11 @@ public class Client implements Observer {
 						processInput(in.readLine());
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					tui.printLine("Cannot read line!");
 				}
 			}   	
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			tui.printLine("ERROR: Inputstream cannot be handled!");
 		}
     }
     
