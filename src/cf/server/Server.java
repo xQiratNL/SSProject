@@ -72,6 +72,11 @@ public class Server {
 		waitingUsers.get(dim).add(handler);
 	}
 	
+	/**
+	 * Returns the first waiting user for a game of a certain dimension.
+	 * @param dim, dimension of the game to play.
+	 * @return ClientHandle of the player, or null if no such player exists.
+	 */
 	public synchronized ClientHandler popFirstWaitingUser(int dim) {
 		if (!waitingUsers.containsKey(dim)) {
 			return null;
@@ -83,6 +88,9 @@ public class Server {
 		return handler;
 	}
 	
+	/**
+	 * Starts a Server.
+	 */
 	public static void main (String[] args) {
 		new Server();
 	}
