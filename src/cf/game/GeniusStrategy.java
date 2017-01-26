@@ -31,6 +31,7 @@ public class GeniusStrategy implements Strategy {
 	/**
 	 * Determines a move by calculating the value of the board/mark combination by assuming that opponent makes random move.
 	 */
+	//TODO: improve
 	public int determineMove(Board board, Mark mark) {
 		cache.put(Mark.XX, new TreeMap<String, Double>());
 		cache.put(Mark.OO, new TreeMap<String, Double>());

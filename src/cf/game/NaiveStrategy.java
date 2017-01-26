@@ -25,7 +25,7 @@ public class NaiveStrategy implements Strategy {
 	}
 
 	/**
-	 * Determines a random valid move for the given input.
+	 * Determines a random valid move in xy-plane for the given input.
 	 */
 	@Override
 	public int determineMove(Board board, Mark mark) {

@@ -25,7 +25,7 @@ public class SmartStrategy implements Strategy {
 
 	@Override
 	/**
-	 * Determines move thinking one step ahead.
+	 * Determines move in xy-plane thinking one step ahead.
 	 */
 	public int determineMove(Board board, Mark mark) {
 		Set<Integer> set = new HashSet<Integer>();
