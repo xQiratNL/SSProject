@@ -29,7 +29,35 @@ public class ClientTui implements Runnable {
     /**
      * Constructor for a new ClientTui
      */
-	public ClientTui(Socket sock) {
+//	public ClientTui(Socket sock) {
+//    	try {
+//			// in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+//			out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//    	this.sock = sock;
+//    	
+//	}
+
+    /**
+     * Empty constructor for a non-working clientTui.
+     * This is used to get access to askPort() and askHost() to make a correct working clientTui.
+     */
+	public ClientTui() {
+		// empty constructor;
+	}
+
+    /*@
+		requires sock != null
+    */
+	/**
+	 * Adds the socket to this clientTui.
+	 * 
+	 * @param sock
+	 */
+	public void setSocket(Socket sock) {
     	try {
 			// in = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
@@ -37,10 +65,16 @@ public class ClientTui implements Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	this.sock = sock;
-    	
+    	this.sock = sock;	
 	}
 	
+    /*@
+		ensures \result != null;
+		ensures \result instanceof Integer;
+     */
+	/**
+     *	Get's input from the user to get a port number for the server
+     */	
 	public int askPort() {
 		int portnumber = Protocol.PORTNUMBER;
 		@SuppressWarnings("resource") // you don't want to close system.in since it can't be opened again.
@@ -61,26 +95,24 @@ public class ClientTui implements Runnable {
 		} while (!correctInput);
 		return portnumber;
 	}
-	
-	public int askHost() {
-		int portnumber = Protocol.PORTNUMBER;
+
+    /*@
+		ensures \result != null;
+		ensures \result instanceof String;
+     */
+	/**
+     *	Get's input from the user to get a host for the server
+     */	
+	public String askHost() {
+		String host = "localhost";
 		@SuppressWarnings("resource") // you don't want to close system.in since it can't be opened again.
 		Scanner in = new Scanner(System.in);
-		boolean correctInput = false;
-		do {
-			System.out.print("Enter port number (default " + Protocol.PORTNUMBER + "):");
-			String input = in.nextLine();
-			try {
-				correctInput = true;
-				if (!input.isEmpty()) {
-					portnumber = Integer.parseInt(input);
-				}
-			} catch (NumberFormatException e) {
-				System.out.println("Please enter a valid portnumber.");
-				correctInput = false;
-			}
-		} while (!correctInput);
-		return portnumber;
+		System.out.print("Enter host (default " + host + "):");
+		String input = in.nextLine();
+		if (!input.isEmpty()) {
+			host = input;	
+		}
+		return host;
 	}
 
     /*@

@@ -25,44 +25,49 @@ public class Client {
     private String player1; // first player
     private String player2; // second player
     private Mark myMark; // this player's mark
-    private ClientTui tui;
+    private ClientTui tui = new ClientTui();
     private Board board;
     // private ViewerController view; // TODO: 3d view of the game
     
-    public Client(String InetAdress) {
+    public Client() {
     	try {
-			this.start(InetAdress);
+			this.start();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     }
     
-    public void start(String InetAdress) throws IOException {
+    public void start() throws IOException {
     	InetAddress addr = null;
     	Socket sock = null;
     	BufferedReader in;
     	
-    	// check args[0] - the IP-adress
+    	String host = "localhost";
     	try {
-    		addr = InetAddress.getByName(InetAdress);
+    		host = tui.askHost();
+    		addr = InetAddress.getByName(host);
     	} catch (UnknownHostException e) {
     		System.out.println(USAGE);
-    		System.out.println("ERROR: host " + InetAdress + " unknown");
+    		System.out.println("ERROR: host " + host + " unknown.");
     		System.exit(0);
     	}
 
     	// try to open a Socket to the server
+    	int pn = Protocol.PORTNUMBER; // portnumber
     	try {
-    		sock = new Socket(addr, Protocol.PORTNUMBER);
+    		pn = tui.askPort();
+    		sock = new Socket(addr, pn);
+    		System.out.println("Connected to " + addr + ":" + pn + " \n");
     	} catch (IOException e) {
     		System.out.println("ERROR: could not create a socket on " + addr
-    				+ " and port " + Protocol.PORTNUMBER);
+    				+ " and port " + pn);
     	}
     	
         // create ClientTui object in a new thread and start the two-way communication.
     	// The new thread is created to maintain one process: the output.
-    	tui = new ClientTui(sock);
+    	//tui = new ClientTui(sock);
+    	tui.setSocket(sock);
         Thread streamInputHandler = new Thread(tui);
         streamInputHandler.start();
         
@@ -212,11 +217,7 @@ public class Client {
     
     /** Starts a Client application. */
     public static void main(String[] args) {
-    	if (args.length != 1) {
-    		System.out.println(USAGE);
-    		System.exit(0);
-    	}
-    	new Client(args[0]);
+    	new Client();
     }
     
 }
