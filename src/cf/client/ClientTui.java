@@ -197,7 +197,9 @@ public class ClientTui implements Runnable {
 
 	}
 	
-	
+    /**
+     * Makes a move as a computer player on behalf of the client.
+     */	
 	public void makeMove() {
 		try {
         	int d = Player.fall(boardTui, STRATEGY.determineMove(boardTui, myMark));
