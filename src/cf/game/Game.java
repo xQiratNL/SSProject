@@ -14,21 +14,36 @@ public class Game extends Thread {
 	private Timer timer = new Timer();
 	private boolean moveMade = false;
 	
+	/**
+	 * Construct a new game object for given players and board of given dimension
+	 * @param players, array of two players
+	 * @param dim, dimension of the board
+	 */
 	public Game(Player[] players, int dim) {
 		this.board = new Board(dim);
 		this.players = players;
 		currentPlayerIndex = 0;
 	}
 
+	/**
+	 * @return Player that is to make a move.
+	 */
 	public Player currentPlayer() {
 		return players[currentPlayerIndex];
 	}
 	
+	/**
+	 * @return Array of all players in game (2 players)
+	 */
 	public Player[] getPlayers() {
 		return players;
 	}
 	
-	//TODO: fix and also fix determinemove everywhere and the according docs as well
+	/**
+	 * Makemove for computerplayer on server.
+	 * @param player computerplayer
+	 * @param field, field to make move on.
+	 */
 	private synchronized void makeMove(Player player, int field) {
 		board.setField(field, player.getMark());
 		int[] coord = board.coordinates(field);
@@ -37,8 +52,15 @@ public class Game extends Thread {
 		this.notifyAll();
 	}
 	
+	/**
+	 * Makemove for humanplayer, also turns off the timer.
+	 * @param username name of humanplayer, is unique so can be used to identify player
+	 * @param x, x-coordinate of move
+	 * @param y, y-coordinate of move
+	 * @param z, z-coordinate of move
+	 */
 	public synchronized void makeMove(String username, int x, int y, int z) {
-		timer.purge();
+		timer.cancel();
 		for (Player p: players) {
 			if (p.getName().equals(username)) {
 				if (board.isValidMove(x, y, z)) {
