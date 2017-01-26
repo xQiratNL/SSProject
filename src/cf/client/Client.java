@@ -6,13 +6,15 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Scanner;
 
 import cf.game.Board;
 import cf.game.Mark;
 import cf.Protocol;
 
-public class Client {
+public class Client implements Observer {
     private static final String USAGE
     = "usage: java connectfour.Client <address>";
     private static final String COMMANDS
@@ -143,6 +145,7 @@ public class Client {
     			tui.removeCommands("play human", "play computer");
     			tui.addCommands("ready", "decline");
     			board = new Board(tui.dimension);
+    			board.addObserver(this);
     			System.out.println("game started on a board with DIM " + tui.dimension);
     			tui.copyBoard(board);
     			tui.myMark = this.myMark;
@@ -155,7 +158,6 @@ public class Client {
 				tui.addCommands("move", "hint");
     			String userInTurn = scanner.next();
     			if (userInTurn.equals(tui.username)) {
-    				System.out.println(board.toString());
     				if (tui.isClientComputer) {
     					tui.makeMove();
     				} else {
@@ -237,9 +239,15 @@ public class Client {
     	scanner.close();
     }
     
+    @Override
+	public void update(Observable o, Object arg) {
+    	System.out.println(board.toString());
+	}
+    
     /** Starts a Client application. */
     public static void main(String[] args) {
     	new Client();
     }
+
     
 }

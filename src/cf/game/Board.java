@@ -1,6 +1,8 @@
 package cf.game;
 
-public class Board {
+import java.util.Observable;
+
+public class Board extends Observable {
 	
 	private static final String GRID_DELIM = "\t";
 	private static final String FIELD_DELIM = "\t| ";
@@ -97,6 +99,8 @@ public class Board {
 		for (int i = 0; i < size; i++) {
 			fields[i] = Mark.EMPTY;
 		}
+		setChanged();
+		notifyObservers();
 	}
 	/**
 	 * Creates deep copy of this field.
@@ -231,6 +235,8 @@ public class Board {
 	 */
 	public void setField(int x, int y, int z, Mark mark) {
 		fields[index(x, y, z)] = mark;
+		setChanged();
+		notifyObservers();
 	}
 	
 	/**
@@ -240,6 +246,8 @@ public class Board {
 	 */
 	public void setField(int index, Mark mark) {
 		fields[index] = mark;
+		setChanged();
+		notifyObservers(this);
 	}
 	
 	/**
