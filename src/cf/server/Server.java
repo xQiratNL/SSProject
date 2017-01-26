@@ -87,6 +87,19 @@ public class Server {
 		}
 		return handler;
 	}
+
+	/**
+	 * Removes given handler from the waiting list.
+	 * @param handler, handler to remove
+	 */
+	public synchronized void removeWaiting(ClientHandler handler) {
+		for (int dim: waitingUsers.keySet()) {
+			waitingUsers.get(dim).remove(handler);
+			if (waitingUsers.get(dim).size() == 0) {
+				waitingUsers.remove(dim);
+			}
+		}
+	}
 	
 	/**
 	 * Starts a Server.
