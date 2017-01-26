@@ -29,19 +29,24 @@ public class Client {
     private ClientTui tui = new ClientTui();
     private Board board;
     // private ViewerController view; // TODO: 3d view of the game
-    
+ 
+    /**
+     * Constructor method
+     */
     public Client() {
     	this.start();
     }
     
+    /**
+     * Start method. Starts by asking for a host and portnumber. With these given the method
+     * tries to create a socket with the specified data. When the socket is made the TUI is put
+     * into a seperate thread and this method continues the monitoring of the inputStream.
+     */
     public void start() {
     	InetAddress addr = null;
     	Socket sock = null;
-    	BufferedReader in;
-    	
+    	BufferedReader in;	
     	String host = "localhost";
-
-
     	// try to open a Socket to the server
     	int pn = Protocol.PORTNUMBER; // portnumber
     	boolean sockAccepted = false;
