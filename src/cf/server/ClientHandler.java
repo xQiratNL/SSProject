@@ -201,7 +201,7 @@ public class ClientHandler extends Thread {
 	 */
 	private void broadcast(String[] input) {
 		for (ClientHandler user: server.getUsers().keySet()) {
-			if (user.chatImplemented()) {
+			if (user.chatImplemented() && user != this) {
 				user.writeOutput(Protocol.BROADCAST + Protocol.DELIMITER + this.username + Protocol.DELIMITER + input[1]);
 			}
 		}
