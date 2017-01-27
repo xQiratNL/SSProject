@@ -3,6 +3,8 @@ package cf.game;
 import java.util.HashSet;
 import java.util.Set;
 
+import cf.server.Player;
+
 public class SmartStrategy implements Strategy {
 
 	private String name;

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cf.server.Player;
+
 public class GeniusStrategy implements Strategy {
 
 	private String name;

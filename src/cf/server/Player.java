@@ -1,4 +1,7 @@
-package cf.game;
+package cf.server;
+
+import cf.game.Board;
+import cf.game.Mark;
 
 public abstract class Player {
 

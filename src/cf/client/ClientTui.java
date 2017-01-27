@@ -12,9 +12,9 @@ import java.util.Set;
 
 import cf.game.Board;
 import cf.game.Mark;
-import cf.game.Player;
 import cf.game.SmartStrategy;
 import cf.game.Strategy;
+import cf.server.Player;
 import cf.Protocol;
 
 public class ClientTui implements Runnable {

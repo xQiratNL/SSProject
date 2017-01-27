@@ -1,11 +1,10 @@
-package cf.game;
+package cf.server;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 import cf.Protocol;
-import cf.server.ClientHandler;
-import cf.server.ClientHandler.ClientStatus;
+import cf.game.Board;
 
 public class Game extends Thread {
 	
@@ -166,7 +165,7 @@ public class Game extends Thread {
 				ClientHandler handler = ((HumanPlayer) p).getHandler();
 				timer.schedule(new TimerTask() {
 					public void run() {
-						if (handler.getStatus() != ClientStatus.IN_GAME) {
+						if (handler.getStatus() != ClientHandler.ClientStatus.IN_GAME) {
 							handler.decline();
 						}
 						handler.setStatus(ClientHandler.ClientStatus.IN_LOBBY);

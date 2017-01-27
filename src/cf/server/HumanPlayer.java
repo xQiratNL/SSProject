@@ -1,7 +1,8 @@
-package cf.game;
+package cf.server;
 
 import cf.Protocol;
-import cf.server.ClientHandler;
+import cf.game.Board;
+import cf.game.Mark;
 
 public class HumanPlayer extends Player {
 
