@@ -13,6 +13,7 @@ public class Game extends Thread {
 	private int currentPlayerIndex;
 	private Timer timer = new Timer();
 	private boolean moveMade = false;
+	public final static int TIMEOUT = 20 * 1000;
 	
 	/**
 	 * Construct a new game object for given players and board of given dimension
@@ -170,7 +171,7 @@ public class Game extends Thread {
 						}
 						handler.setStatus(ClientHandler.ClientStatus.IN_LOBBY);
 					}
-				}, 20 * 1000);
+				}, TIMEOUT);
 			}
 		}	
 	}
@@ -192,7 +193,7 @@ public class Game extends Thread {
 						handler.writeOutput(Protocol.ERROR_USERQUIT + Protocol.DELIMITER + currentPlayer().getName());
 						handler.setStatus(ClientHandler.ClientStatus.IN_LOBBY);
 					}
-				}, 20 * 1000);
+				}, TIMEOUT);
 			}
 		}	
 	}
