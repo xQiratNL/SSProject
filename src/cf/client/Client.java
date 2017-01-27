@@ -17,17 +17,7 @@ import cf.model.Mark;
 public class Client implements Observer {
     private static final String USAGE
     = "usage: java connectfour.Client <address>";
-    private static final String COMMANDS
-	= "play human [dimension] \n"
-	+ "play computer [dimension] \n"
-	+ "ready \n"
-	+ "decline \n"
-	+ "move <index> \n"
-	+ "hint \n"
-	+ "all <text> \n"
-	+ "pm <username>;<text> \n"
-	+ "game <text> \n"
-	+ "chatusers";
+
     
     private String player1; // first player
     private String player2; // second player
@@ -123,7 +113,7 @@ public class Client implements Observer {
     			tui.printLine("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled! \n"
     					+ "Use 'play human [dimension]' or 'play computer [dimension]' to begin a game agains a human player or a computer. \n\n");
     			tui.usernameSet = true;
-    			tui.addCommands("play human", "play computer", "exit", "all", "pm", "chatusers");
+    			tui.addCommands("play human", "play computer", "exit", "all", "pm", "chatusers", "help");
     			break;
     		case Protocol.ERROR_USERNAME_TAKEN:
     			System.out.print("This username is already in use, please enter another username: ");
@@ -252,7 +242,7 @@ public class Client implements Observer {
     		// Other
     		case Protocol.ERROR_COMMAND_NOT_RECOGNIZED:
     			tui.printLine("Command has not been recognized by the server! Please use one of the commands below:");
-    			tui.printLine(COMMANDS);
+    			tui.printHelp();
     			break;
     	}
     	

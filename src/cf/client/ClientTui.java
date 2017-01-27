@@ -28,6 +28,19 @@ public class ClientTui implements Runnable {
 	public boolean isClientComputer = false;
 	private static Strategy STRATEGY = new SmartStrategy(); // the strategy used if the client plays as a computer.
 	private static String EXTENTIONS = "";
+    private static final String COMMANDS
+	= "play human [dimension] \t\t play a game against another human \n"
+	+ "play computer [dimension] \t play a game agains a computer player \n"
+	+ "ready \t\t\t\t accepts an incoming game \n"
+	+ "decline \t\t\t declines an incoming game \n"
+	+ "move <index> \t\t\t sets a move on the board \n"
+	+ "hint \t\t\t\t request a hint from the computer \n"
+	+ "all <text> \t\t\t sent a chat message to all the active chat users \n"
+	+ "pm <username>;<text> \t\t sends a personal message to <username> \n"
+	+ "game <text> \t\t\t sends a message to all the players in your current game \n"
+	+ "chatusers \t\t\t prints a list of all users with chat enabled \n"
+	+ "help \t\t\t\t prints this message";
+	
     /*@
 		requires sock != null
     */
@@ -293,12 +306,19 @@ public class ClientTui implements Runnable {
             	input = Protocol.CHATUSERS;
             }
         	
+        	
+            else if (input.equals("help")) {
+            	printHelp();
+            	input = null;
+            }
+        	
         
     	} else { // if the user may not use this command right now:
-    		printLine("You cannot use command (" + input + ") right now! Available commands: ");
+    		printLine("You cannot use command (" + input + ") right now! Available commands:");
     		for (String c : availableCommands) {
     			printLine(c);
     		}
+    		printLine("\n\n Type 'help' for more info.");
     		input = null;
     	}
     
@@ -311,6 +331,10 @@ public class ClientTui implements Runnable {
      */
     public void printLine(String msg) {
 		System.out.println(msg);
+    }
+    
+    public void printHelp() {
+    	printLine(COMMANDS);
     }
 
 	/**
