@@ -134,20 +134,36 @@ public class ClientHandler extends Thread {
 				} //els not yet username given
 			case Protocol.GAMECHAT:
 				if (status == ClientStatus.IN_GAME) {
-					gameChat(splitInput);
+					if (splitInput.length == 2) {
+						gameChat(splitInput);
+						break;
+					}// else wrong command so go to default
 				} else {//currently not in a game
 					writeOutput(Protocol.ERROR_NOT_IN_GAME);
-				}
-				break;
+					break;
+				}	
 			default:
 				//wrong command given or given at wrong time
 				writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 		}
-	}private void gameChat(String[] splitInput) {
-		// TODO Auto-generated method stub
-		
 	}
 	
+	/**
+	 * Sends message to all other users in the gamechat, if user tries to send message to computerplayer, computerplayer will give a nice reply.
+	 * @param splitInput, split version of clients command
+	 */	private void gameChat(String[] splitInput) {
+		for (Player player: game.getPlayers()) {
+			if (player instanceof HumanPlayer) {
+				((HumanPlayer) player).getHandler().writeOutput(Protocol.GAMECHAT + Protocol.DELIMITER + splitInput[1]);
+			} else {//computerplayer
+				writeOutput(Protocol.GAMECHAT + Protocol.DELIMITER + "I will crush you."); //supposed to be funny.
+			}
+		}
+	}
+	
+	/**
+	 * Sends all usernames who have chat implemented to the client.
+	 */
 	private void chatUsers() {
 		String users = Protocol.DELIMITER;
 		for (ClientHandler user: server.getUsers().keySet()) {
@@ -158,7 +174,10 @@ public class ClientHandler extends Thread {
 		writeOutput(Protocol.CHATUSERS + users);
 	}
 
-
+	/**
+	 * Sends message to person to whisper to, or error message if necessary.
+	 * @param input, split version of command by client
+	 */
 	private void whisper(String[] input) {
 		if (!server.getUsers().containsValue(input[1])) {
 			for (ClientHandler user: server.getUsers().keySet()) {
