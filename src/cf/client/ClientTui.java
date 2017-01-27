@@ -288,7 +288,7 @@ public class ClientTui implements Runnable {
             		input = null;
             	}
             } else if (input.startsWith("game ")) {
-            	input = input.replaceFirst("game  ", Protocol.GAMECHAT + Protocol.DELIMITER); 
+            	input = input.replaceFirst("game ", Protocol.GAMECHAT + Protocol.DELIMITER); 
             } else if (input.equals("chatusers")) {
             	input = Protocol.CHATUSERS;
             }
