@@ -26,8 +26,8 @@ public class ClientTui implements Runnable {
 	public int dimension = Protocol.DIM; // default dimension
 	private Board boardTui; // a copy of the board in Client to calculate fallen pieces.
 	public boolean isClientComputer = false;
-	private static Strategy STRATEGY = new SmartStrategy();
-
+	private static Strategy STRATEGY = new SmartStrategy(); // the strategy used if the client plays as a computer.
+	private static String EXTENTIONS = "";
     /*@
 		requires sock != null
     */
@@ -92,6 +92,16 @@ public class ClientTui implements Runnable {
 		return host;
 	}
 
+    /*@
+		requires ext != null;
+     */
+	/**
+     *	Sets the EXTENSIONS field to a new value including the added extension.
+     */	
+	public void addExtenion(String ext) {
+		EXTENTIONS += ext + ";";
+	}
+	
     /*@
 		requires b != null;
      */
@@ -166,13 +176,12 @@ public class ClientTui implements Runnable {
 		}
 		
 		System.out.print("Hi there! Please enter your username: ");
-		//TODO: make hello command automated: check if chat/leaderboard/... is enabled and apply that to the HELLO method
 		String input = null;
     	while (input == null || !input.equals("exit")) {
 			input = readString();
 			try {
 				if (!usernameSet) {		
-					out.write("HELLO;" + input);
+					out.write("HELLO;" + input + Protocol.DELIMITER + EXTENTIONS);
 					out.newLine();
 					out.flush();
 					username = input;
@@ -264,6 +273,18 @@ public class ClientTui implements Runnable {
             	printLine("Maybe you should enter a mark at " + (new SmartStrategy()).determineMove(boardTui, myMark));
             	input = null;
             }
+        	
+        	
+        	// Chat optional
+            else if (input.startsWith("all ")) {
+            	input.replaceFirst("all ", "BROADCAST;"); 
+            } else if (input.startsWith("pm ")) {
+            	input.replaceFirst("pm ", "WHISPER;");     	
+            } else if (input.startsWith("game ")) {
+            	input.replaceFirst("game  ", "GAMECHAT;"); 
+            }
+        	
+        	
     	} else {
     		printLine("You cannot use command (" + input + ") right now! Available commands: ");
     		for (String c : availableCommands) {

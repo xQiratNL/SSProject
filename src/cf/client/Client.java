@@ -23,7 +23,10 @@ public class Client implements Observer {
 	+ "ready \n"
 	+ "decline \n"
 	+ "move <index> \n"
-	+ "hint";
+	+ "hint \n"
+	+ "all <text> \n"
+	+ "pm <username>;<text> \n"
+	+ "game <text>";
     
     private String player1; // first player
     private String player2; // second player
@@ -36,6 +39,7 @@ public class Client implements Observer {
      * Constructor method
      */
     public Client() {
+    	tui.addExtenion(Protocol.EXT_CHAT);
     	this.start();
     }
     
@@ -118,7 +122,7 @@ public class Client implements Observer {
     			tui.printLine("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled! \n"
     					+ "Use 'play human [dimension]' or 'play computer [dimension]' to begin a game agains a human player or a computer. \n\n");
     			tui.usernameSet = true;
-    			tui.addCommands("play human", "play computer", "exit");
+    			tui.addCommands("play human", "play computer", "exit", "all", "pm");
     			break;
     		case Protocol.ERROR_USERNAME_TAKEN:
     			System.out.print("This username is already in use, please enter another username: ");
@@ -153,7 +157,7 @@ public class Client implements Observer {
     		// Playing a game
     		case Protocol.REQUESTMOVE:
 				tui.removeCommands("ready", "decline");
-				tui.addCommands("move", "hint");
+				tui.addCommands("move", "hint", "game");
     			String userInTurn = scanner.next();
     			if (userInTurn.equals(tui.username)) {
     				if (tui.isClientComputer) {
@@ -187,12 +191,12 @@ public class Client implements Observer {
     			} else {
     				tui.printLine("Game over! Ended in a draw.");
     			}
-    			tui.removeCommands("move", "decline", "ready", "hint");
+    			tui.removeCommands("move", "decline", "ready", "hint", "game");
     			tui.addCommands("play human", "play computer");
     			break;
     		case Protocol.ERROR_USER_QUIT:
     			tui.printLine("User " + scanner.next() + " is a chicken. He cowarded out!");
-    			tui.removeCommands("move", "hint");
+    			tui.removeCommands("move", "hint", "game");
     			tui.addCommands("play human", "play computer");
     			break;
     		
@@ -203,7 +207,7 @@ public class Client implements Observer {
     			tui.printLine("ALL| " + scanner.next() + ": " + scanner.next());
     			break;
     		case Protocol.WHISPER:
-    			tui.printLine("WHISPER| " + scanner.next() + ": " + scanner.next());
+    			tui.printLine("DM| " + scanner.next() + ": " + scanner.next());
     			break;
     		case Protocol.CHATUSERS:
     			String users = "";
@@ -214,16 +218,17 @@ public class Client implements Observer {
     			tui.printLine("List of all users:" + users);
     			break;
     		case Protocol.GAMECHAT:
-    			//do this
+    			// GAMECHAT <username> <text> (Not well defined in protocol)
+    			tui.printLine("GAME| " + scanner.next() + ": " + scanner.next());
     			break;
     		case Protocol.ERROR_USER_HAS_NO_CHAT:
-    			//do this
+    			tui.printLine("It seems that this user has no chat.");
     			break;
     		case Protocol.ERROR_USER_NOT_FOUND:
-    			//do this
+    			tui.printLine("The server can't find this player.");
     			break;
     		case Protocol.ERROR_NOT_IN_GAME:
-    			//do this
+    			tui.printLine("You are currently not in a game, so gamechat is not available.");
     			break;
     		
     		// Challenge
