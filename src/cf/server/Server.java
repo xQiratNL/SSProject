@@ -3,8 +3,12 @@ package cf.server;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import cf.Protocol;
+
 import java.util.ArrayList;
 import java.io.IOException;
 
@@ -13,7 +17,7 @@ public class Server {
 	private ServerTui tui; //tui of the server
 	private ConcurrentMap<ClientHandler, String> users = new ConcurrentHashMap<ClientHandler, String>(); //users logged on to the server
 	private ConcurrentMap<Integer, List<ClientHandler>> waitingUsers = new ConcurrentHashMap<Integer, List<ClientHandler>>(); //users waiting on a game
-	public static final String EXT = ""; //implemented optionals
+	public static final String EXT = Protocol.EXT_CHAT; //implemented optionals
 	
 	/**
 	 * Constructs a new server, with a tui and calls the method start on this server.
@@ -99,6 +103,14 @@ public class Server {
 				waitingUsers.remove(dim);
 			}
 		}
+	}
+	
+	/**
+	 * Returns map of clienthandlers and usernames connected to server.
+	 * @return map<ClientHandler, String>
+	 */
+	public Map<ClientHandler, String> getUsers() {
+		return users;
 	}
 	
 	/**

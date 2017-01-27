@@ -1,6 +1,7 @@
 package cf.server;
 
 import java.net.Socket;
+import java.util.Arrays;
 
 import cf.Protocol;
 import cf.model.Mark;
@@ -20,6 +21,7 @@ public class ClientHandler extends Thread {
 	private BufferedWriter out; //outputstream of client
 	private String username = "";
 	private Game game;
+	private boolean ext_chat = false;
 	public enum ClientStatus {CONNECTED, IN_LOBBY, IN_WAIT, IN_READY, IN_GAME}; //status of this client, used in determining which commands are possible.
 	private ClientStatus status = ClientStatus.CONNECTED;
 
@@ -115,21 +117,70 @@ public class ClientHandler extends Thread {
 					makeMove(splitInput);
 					break;
 				} //else command entered at wrong time
+			case Protocol.BROADCAST:
+				if (!(status == ClientStatus.CONNECTED) && splitInput.length == 2) {
+					broadcast(splitInput);
+					break;
+				} //else not yet username given
+			case Protocol.WHISPER:
+				if (!(status == ClientStatus.CONNECTED)) {
+					whisper(splitInput);
+					break;
+				} //else not yet username given
+			case Protocol.CHATUSERS:
+				if (!(status == ClientStatus.CONNECTED)) {
+					chatUsers();
+					break;
+				} //els not yet username given
+			case Protocol.GAMECHAT:
+				if (status == ClientStatus.IN_GAME) {
+					gameChat(splitInput);
+				} else {//currently not in a game
+					writeOutput(Protocol.ERROR_NOT_IN_GAME);
+				}
+				break;
 			default:
 				//wrong command given or given at wrong time
 				writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 		}
+	}private void gameChat(String[] splitInput) {
+		// TODO Auto-generated method stub
+		
 	}
 	
+	private void chatUsers() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	private void whisper(String[] input) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	private void broadcast(String[] input) {
+		for (ClientHandler user: server.getUsers().keySet()) {
+			if (user.chatImplemented()) {
+				user.writeOutput(Protocol.BROADCAST + Protocol.DELIMITER + this.username + Protocol.DELIMITER + input[2]);
+			}
+		}
+	}
+
+
 	/**
-	 * Process the command hello ...
+	 * Process the command hello ..., also sets extensions if necessary using setExtensions
 	 * @param input command of user
 	 */
 	public void hello(String[] input) {
-		if (input.length == 2) {
+		if (input.length >= 2) {
 			if (server.nameTaken(input[1])) {//usernametaken
 				writeOutput(Protocol.ERROR_USERNAME_TAKEN);
 			} else {//command correct
+				if (input.length > 2) {
+					setExtensions(Arrays.copyOfRange(input, 2, input.length));
+				}
 				username = input[1];
 				server.addUser(this);
 				writeOutput(Protocol.HELLO + Protocol.DELIMITER + Server.EXT);
@@ -140,6 +191,19 @@ public class ClientHandler extends Thread {
 		}
 	}
 	
+	/**
+	 * Checks for input if it contains extensions implemented by the server.
+	 * @param extensions
+	 */
+	private void setExtensions(String[] extensions) {
+		for (String ext: extensions) {
+			if (ext.equals(Protocol.EXT_CHAT)) {
+				ext_chat = true;
+			}
+		}	
+	}
+
+
 	/**
 	 * Process the command play...
 	 * @param input command of user
@@ -307,5 +371,12 @@ public class ClientHandler extends Thread {
 	 */
 	public boolean isClosed() {
 		return sock.isClosed();
+	}
+	
+	/**
+	 * @return true if client implemented chat functionality
+	 */
+	public boolean chatImplemented() {
+		return ext_chat;
 	}
 }
