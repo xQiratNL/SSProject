@@ -276,16 +276,23 @@ public class ClientTui implements Runnable {
         	
         	
         	// Chat optional
+        	// Changes the first words with the readable for the server
             else if (input.startsWith("all ")) {
             	input.replaceFirst("all ", "BROADCAST;"); 
             } else if (input.startsWith("pm ")) {
-            	input.replaceFirst("pm ", "WHISPER;");     	
+            	// whisper includes a user and a text. But these are already in the good format.
+            	if (input.length() - input.replace(";", "").length() == 1) {
+            		input.replaceFirst("pm ", "WHISPER;");
+            	} else {
+            		printLine("You have too much ';' characters in your command. (max. 1)");
+            		input = null;
+            	}
             } else if (input.startsWith("game ")) {
             	input.replaceFirst("game  ", "GAMECHAT;"); 
             }
         	
-        	
-    	} else {
+        
+    	} else { // if the user may not use this command right now:
     		printLine("You cannot use command (" + input + ") right now! Available commands: ");
     		for (String c : availableCommands) {
     			printLine(c);
