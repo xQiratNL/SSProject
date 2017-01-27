@@ -243,32 +243,32 @@ public class ClientTui implements Runnable {
             	s.next(); // skip the text. Go to the int.
             	s.next();
             	int d = s.nextInt();
-            	input = "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER +d;
+            	input = Protocol.PLAY +Protocol.DELIMITER+ Protocol.HUMAN +Protocol.DELIMITER +d;
             	this.dimension = d;
             	s.close();
             } else if (input.equals("play human")) {
-            	input = "PLAY" +Protocol.DELIMITER+ "HUMAN" +Protocol.DELIMITER;
+            	input = Protocol.PLAY +Protocol.DELIMITER+ Protocol.HUMAN +Protocol.DELIMITER;
             } else if (input.startsWith("play computer ")) {            	
             	Scanner s = new Scanner(input);
             	s.next(); // skip the text. Go to the int.
             	s.next();
             	int d = s.nextInt();
-            	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER +d;
+            	input = Protocol.PLAY +Protocol.DELIMITER+ Protocol.COMPUTER +Protocol.DELIMITER +d;
             	this.dimension = d;
             	s.close();
             } else if (input.equals("play computer")) {
-            	input = "PLAY" +Protocol.DELIMITER+ "COMPUTER" +Protocol.DELIMITER;
+            	input = "PLAY" +Protocol.DELIMITER+ Protocol.COMPUTER +Protocol.DELIMITER;
             } else if (input.startsWith("move ")) {
             	Scanner s = new Scanner(input);
             	s.next(); // skip the text. Go to the int.
             	int d = boardTui.fall(s.nextInt());
             	int[] coords = boardTui.coordinates(d);
-            	input = "MAKEMOVE" +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];            	
+            	input = Protocol.MAKEMOVE +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];            	
             	s.close();
             } else if (input.startsWith("ready")) {
-            	input = input.replaceFirst("ready", "READY");
+            	input = input.replaceFirst("ready", Protocol.READY);
             } else if (input.startsWith("decline")) {
-            	input = input.replaceFirst("decline", "DECLINE");
+            	input = input.replaceFirst("decline", Protocol.DECLINE);
             } else if (input.startsWith("hint")) {
             	printLine("Maybe you should enter a mark at " + (new SmartStrategy()).determineMove(boardTui, myMark));
             	input = null;
@@ -278,17 +278,17 @@ public class ClientTui implements Runnable {
         	// Chat optional
         	// Changes the first words with the readable for the server
             else if (input.startsWith("all ")) {
-            	input.replaceFirst("all ", "BROADCAST;"); 
+            	input.replaceFirst("all ", Protocol.BROADCAST + Protocol.DELIMITER); 
             } else if (input.startsWith("pm ")) {
             	// whisper includes a user and a text. But these are already in the good format.
             	if (input.length() - input.replace(";", "").length() == 1) {
-            		input.replaceFirst("pm ", "WHISPER;");
+            		input.replaceFirst("pm ", Protocol.WHISPER + Protocol.DELIMITER);
             	} else {
             		printLine("You have too much ';' characters in your command. (max. 1)");
             		input = null;
             	}
             } else if (input.startsWith("game ")) {
-            	input.replaceFirst("game  ", "GAMECHAT;"); 
+            	input.replaceFirst("game  ", Protocol.GAMECHAT + Protocol.DELIMITER); 
             }
         	
         
