@@ -123,7 +123,7 @@ public class ClientHandler extends Thread {
 					break;
 				} //else not yet username given
 			case Protocol.WHISPER:
-				if (!(status == ClientStatus.CONNECTED)) {
+				if (!(status == ClientStatus.CONNECTED) && splitInput.length == 3) {
 					whisper(splitInput);
 					break;
 				} //else not yet username given
@@ -155,15 +155,30 @@ public class ClientHandler extends Thread {
 
 
 	private void whisper(String[] input) {
-		// TODO Auto-generated method stub
-		
+		if (!server.getUsers().containsValue(input[1])) {
+			for (ClientHandler user: server.getUsers().keySet()) {
+				if (server.getUsers().get(user) == input[1]) {
+					if (user.chatImplemented()) {
+						user.writeOutput(Protocol.WHISPER + Protocol.DELIMITER + this.username + Protocol.DELIMITER + input[2]);
+					} else {
+						writeOutput(Protocol.ERROR_USER_HAS_NO_CHAT);
+					}
+					break;
+				}
+			}
+		} else {
+			writeOutput(Protocol.ERROR_USER_NOT_FOUND);
+		}
 	}
 
-
+	/**
+	 * Broadcasts message from this user to all users which implemented chat
+	 * @param input, string of length 2 with second entry containing the message.
+	 */
 	private void broadcast(String[] input) {
 		for (ClientHandler user: server.getUsers().keySet()) {
 			if (user.chatImplemented()) {
-				user.writeOutput(Protocol.BROADCAST + Protocol.DELIMITER + this.username + Protocol.DELIMITER + input[2]);
+				user.writeOutput(Protocol.BROADCAST + Protocol.DELIMITER + this.username + Protocol.DELIMITER + input[1]);
 			}
 		}
 	}
