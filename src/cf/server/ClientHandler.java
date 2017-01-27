@@ -181,7 +181,7 @@ public class ClientHandler extends Thread {
 	private void whisper(String[] input) {
 		if (server.getUsers().containsValue(input[1])) {
 			for (ClientHandler user: server.getUsers().keySet()) {
-				if (server.getUsers().get(user) == input[1]) {
+				if (server.getUsers().get(user).equals(input[1])) {
 					if (user.chatImplemented()) {
 						user.writeOutput(Protocol.WHISPER + Protocol.DELIMITER + this.username + Protocol.DELIMITER + input[2]);
 					} else {
