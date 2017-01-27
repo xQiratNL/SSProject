@@ -128,7 +128,7 @@ public class ClientHandler extends Thread {
 	public void hello(String[] input) {
 		if (input.length == 2) {
 			if (server.nameTaken(input[1])) {//usernametaken
-				writeOutput(Protocol.ERROR_USERNAMETAKEN);
+				writeOutput(Protocol.ERROR_USERNAME_TAKEN);
 			} else {//command correct
 				username = input[1];
 				server.addUser(this);
@@ -204,7 +204,7 @@ public class ClientHandler extends Thread {
 		game.cancelTimer();
 		for (Player p: game.getPlayers()) {
 			if (p instanceof HumanPlayer && ((HumanPlayer) p).getHandler() != this) {
-				((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_USERQUIT + Protocol.DELIMITER + this.username);
+				((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_USER_QUIT + Protocol.DELIMITER + this.username);
 			}
 		}
 	}
@@ -236,7 +236,7 @@ public class ClientHandler extends Thread {
 				writeOutput(Protocol.ERROR_COMMAND_NOT_RECOGNIZED);
 			}
 		} else {//user tries to make move while not its turn
-			writeOutput(Protocol.ERROR_NOTYOURTURN);
+			writeOutput(Protocol.ERROR_NOT_YOUR_TURN);
 		}
 	}
 

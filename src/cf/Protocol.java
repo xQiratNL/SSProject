@@ -4,20 +4,34 @@ package cf;
  * This interface describes the main variables of the protocol need to make a
  * between the client and the server.
  * 
- * @author Carmen Burghardt
- * @version 1.2 (21-01-2017),Eclipse: 4.6.1
+ * @author Carmen Burghardt / Gereon Mendler (Modifications)
+ * @version 1.2 (25-01-2017),Eclipse: 4.6.1
  */
 
 // When a message contains <> you should fill it in yourself. When a message
-// contains [] it’s optional. E.g. connecting with the server with username
+// contains [] itâ€™s optional. E.g. connecting with the server with username
 // Pietje18 and extension challenge would look like: HELLO + DELIMITER +
-// “Pietje”+ DELIMITER + EXT_CHALLENGE
+// Pietje18 + DELIMITER + EXT_CHALLENGE
 
 public interface Protocol {
 	
 	public static final String DELIMITER = ";";
-	public static final int DIM = 4;
+	
+    // The dimension of the field of the tournament
+    public static final int DIM = 4;
+	
+	// What about unexpected commands?
+	/**
+	 * If the server gets a command that is not expected, for example MAKEMOVE when HELLO is needed first,
+	 * it sends this message together with the expected keyword, thus in that example: 
+	 * 
+	 * ERROR_UNEXPECTED;<Expected command>;[other expectations]
+	 */
+	public static final String ERROR_UNEXPECTED = "ERROR_UNEXPECTED"; 
+	
+	public static final String ERROR_COMMAND_NOT_RECOGNIZED = "ERROR_COMMAND_NOT_RECOGNIZED";
 
+	
 	/* --------------------------- Connect to server ----------------------- */
 	/**
 	 * 1.Client handshakes with server,via the port number 
@@ -28,14 +42,14 @@ public interface Protocol {
 	 * ERROR_USERNAMETAKEN
 	 */
 	public static final int PORTNUMBER = 1337;
-	//2.
+	//1. and 2.
 	public static final String HELLO = "HELLO";
 	public static final String EXT_CHAT = "EXT_CHAT";
 	public static final String EXT_CHALLENGE = "EXT_CHALLENGE";
 	public static final String EXT_LEADERBOARD = "EXT_LEADERBOARD";
 	public static final String EXT_PASSWORD = "EXT_PASSWORD";
 	// 3. Exception
-	public static final String ERROR_USERNAMETAKEN = "ERROR_USERNAMETAKEN";
+	public static final String ERROR_USERNAME_TAKEN = "ERROR_USERNAME_TAKEN"; 
 
 	/* --------------------------- Start a game --------------------------- */
 	/**
@@ -53,10 +67,10 @@ public interface Protocol {
 	 * 2. Server: sends wait, when the player has to wait for
 	 * another player 
 	 * WAIT 
-	 * 3. Server: sends ready when the game can start 
+	 * 3. Server: sends ready when the game can start (this also happens when playing with a computer player)
 	 * READY <username1> <username2> 
 	 * 4. Client: responds with READY when they want to
-	 * start, DECLINE otherwise 
+	 * start, DECLINE otherwise (in this case the client will get back to the lobby)
 	 * READY 
 	 * DECLINE 
 	 * 5. Server: requests a move from
@@ -93,12 +107,12 @@ public interface Protocol {
 	public static final String MAKEMOVE = "MAKEMOVE";
 	// 7.
 	public static final String SETMOVE = "SETMOVE";
-	public static final String ERROR_INVALIDMOVE = "ERROR_INVALIDMOVE";
-	public static final String ERROR_NOTYOURTURN = "ERROR_NOTYOURTURN";
+	public static final String ERROR_INVALID_MOVE = "ERROR_INVALID_MOVE"; 
+	public static final String ERROR_NOT_YOUR_TURN = "ERROR_NOT_YOUR_TURN"; 
 	// 8. (Gameover)
 	public static final String GAMEOVER = "GAMEOVER";
 	// Exception (Quit)
-	public static final String ERROR_USERQUIT = "ERROR_USERQUIT";
+	public static final String ERROR_USER_QUIT = "ERROR_USER_QUIT"; 
 
 	/*
 	 * --------------------------- EXTENSION ----------------------------------
@@ -110,10 +124,8 @@ public interface Protocol {
 	 * BROADCAST <text> 
 	 * 2.Server broadcast chat 
 	 * BROADCAST <user> <text>  
-	 * 3.Client (username1) whisper to server to the one who requested it (username2)
-	 * WHISPER <username2> <text> 
-	 * 3.1 Server sends Whisper to username2
-	 * WHISPER <username1> <text>
+	 * 3.Client whisper to server to the one who requested it 
+	 * WHISPER <username> <text> 
 	 * 4. Client requests chatuser list
 	 * CHATUSERS
 	 * 5.Server sends chat users
@@ -132,11 +144,11 @@ public interface Protocol {
 	// 3.
 	public static final String WHISPER = "WHISPER";
 	// 4. and 5.
-	public static final String CHATUSER = "CHATUSER";
+	public static final String CHATUSERS = "CHATUSERS";
 	// 6.
 	public static final String GAMECHAT = "GAMECHAT";
 	// 7.
-	public static final String ERROR_USER_NOT_FOUND = "RROR_USER_NOT_FOUND";
+	public static final String ERROR_USER_NOT_FOUND = "ERROR_USER_NOT_FOUND";
 	public static final String ERROR_USER_HAS_NO_CHAT = "ERROR_USER_HAS_NO_CHAT";
 	public static final String ERROR_NOT_IN_GAME = "ERROR_NOT_IN_GAME";
 
@@ -144,15 +156,14 @@ public interface Protocol {
 	 * --------------------------- Challenge ----------------------------------
 	 */
 	/**
-	 * 1.Client (username 1) sends challenge to a certain other client (username2) via server 
-	 * CHALLENGE <username2> 
-	 * 2.Server sends challenge to the challenged user 
-	 * CHALLENGED <username1> 
+	 * 1.Clients sends challenge to a certain other client via server 
+	 * CHALLENGE <username> 
+	 * 2.Server receives challenge 
+	 * CHALLENGED <username> 
 	 * 3.The client accept or declines the challenge 
 	 * ACCEPT 
 	 * DECLINE
-	 * 4.If declined the server will cancel the challenge where username is the
-	 * name of the Client who cancelled
+	 * 4.If declined the server will cancel the challenge 
 	 * CANCELLED <username> 
 	 * 5.The client asks for status if challenge not canceled 
 	 * STATUS <username> 
@@ -174,27 +185,27 @@ public interface Protocol {
 	public static final String CANCELLED = "CANCELLED";
 	//5.
 	public static final String STATUS = "STATUS";
+	public static final String AVAILABLE = "AVAILABLE";
+	public static final String NOT_AVAILABLE = "NOT_AVAILABLE"; 
 	//6.
-	public static final String USER_NOT_FOUND_FOR_CHALLENGE = "USER_NOT_FOUND_FOR_CHALLENGE";
+	public static final String ERROR_USER_NOT_FOUND_FOR_CHALLENGE = "USER_NOT_FOUND_FOR_CHALLENGE";
 	public static final String ERROR_USER_IN_GAME = "ERROR_USER_IN_GAME";
 	public static final String ERROR_USER_HAS_NO_CHALLENGE = "ERROR_USER_HAS_NO_CHALLENGE ";
-	public static final String AVAILABLE = "AVAILABLE";
+	
 	
 
 	/*
-	 * --------------------------- Leader board
-	 * ----------------------------------
+	 * --------------------------- Leader board ----------------------------------
 	 */
 	/**
 	 * 1.Client requests leaderboard
 	 * LEADERBOARD 
 	 * 2.Sever sends leader board, unless command not is not recognized 
-	 * LEADERBOARD <username> <points> [username] [points] ... 
-	 * ERROR_COMMAND_NOT_RECOGNIZED
+	 * LEADERBOARD <username> <points> [usernmae] [points] ... 
 	 */
 
-	public static final String LEADERBORD = "LEADERBORD";
-	public static final String ERROR_COMMAND_NOT_RECOGNIZED = "ERROR_COMMAND_NOT_RECOGNIZED";
+	public static final String LEADERBOARD = "LEADERBOARD";
+	
 
 	/*
 	 * --------------------------- Password ----------------------------------
@@ -203,8 +214,8 @@ public interface Protocol {
 	 * 1. Server request password 
 	 * REQUEST_PASSWORD 
 	 * 2. Client sends hash of the password 
-	 * PASSWORD <hash of password> 
-	 * 3. Server sent if the password is granted. If no access is granted,the access is denied. 
+	 * PASSWORD<hash of password> 
+	 * 3. Server sent if the password is granted. If no access is granted,the access is denied. ACCESGRANTED
 	 * ERROR_ACCES_DENIED 
 	 * ACCESS_GRANTED
 	 * 4. If granted it also will make an account if not

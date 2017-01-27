@@ -72,7 +72,7 @@ public class Game extends Thread {
 					moveMade = true;
 					this.notifyAll();//update player index
 				} else {
-					((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_INVALIDMOVE + Protocol.DELIMITER + x + Protocol.DELIMITER + y + Protocol.DELIMITER + z);
+					((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_INVALID_MOVE + Protocol.DELIMITER + x + Protocol.DELIMITER + y + Protocol.DELIMITER + z);
 				}
 			}
 		}
@@ -190,7 +190,7 @@ public class Game extends Thread {
 				ClientHandler handler = ((HumanPlayer) p).getHandler();
 				timer.schedule(new TimerTask() {
 					public void run() {
-						handler.writeOutput(Protocol.ERROR_USERQUIT + Protocol.DELIMITER + currentPlayer().getName());
+						handler.writeOutput(Protocol.ERROR_USER_QUIT + Protocol.DELIMITER + currentPlayer().getName());
 						handler.setStatus(ClientHandler.ClientStatus.IN_LOBBY);
 					}
 				}, TIMEOUT);

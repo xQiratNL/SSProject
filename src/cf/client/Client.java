@@ -120,7 +120,7 @@ public class Client implements Observer {
     			tui.usernameSet = true;
     			tui.addCommands("play human", "play computer", "exit");
     			break;
-    		case Protocol.ERROR_USERNAMETAKEN:
+    		case Protocol.ERROR_USERNAME_TAKEN:
     			System.out.print("This username is already in use, please enter another username: ");
     			break;
     		
@@ -175,10 +175,10 @@ public class Client implements Observer {
     			}
     			tui.copyBoard(board);
     			break;
-    		case Protocol.ERROR_INVALIDMOVE:
+    		case Protocol.ERROR_INVALID_MOVE:
     			tui.printLine("This is an invalid move! Please try again.");
     			break;
-    		case Protocol.ERROR_NOTYOURTURN:
+    		case Protocol.ERROR_NOT_YOUR_TURN:
     			tui.printLine("Hold on there, cowboy! It isn't your turn yet!");
     			break;
     		case Protocol.GAMEOVER:
@@ -190,7 +190,7 @@ public class Client implements Observer {
     			tui.removeCommands("move", "decline", "ready", "hint");
     			tui.addCommands("play human", "play computer");
     			break;
-    		case Protocol.ERROR_USERQUIT:
+    		case Protocol.ERROR_USER_QUIT:
     			tui.printLine("User " + scanner.next() + " is a chicken. He cowarded out!");
     			tui.removeCommands("move", "hint");
     			tui.addCommands("play human", "play computer");
@@ -200,13 +200,18 @@ public class Client implements Observer {
     		// ====== OPTIONALS ======
     		// Chat
     		case Protocol.BROADCAST:
-    			//do this
+    			tui.printLine("ALL| " + scanner.next() + ": " + scanner.next());
     			break;
     		case Protocol.WHISPER:
-    			//do this
+    			tui.printLine("WHISPER| " + scanner.next() + ": " + scanner.next());
     			break;
-    		case Protocol.CHATUSER:
-    			//do this
+    		case Protocol.CHATUSERS:
+    			String users = "";
+    			while (scanner.hasNext()) {
+    				users += scanner.next() + ", ";
+    			}
+    			users.substring(0,users.length()-2);
+    			tui.printLine("List of all users:" + users);
     			break;
     		case Protocol.GAMECHAT:
     			//do this
