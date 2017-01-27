@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import cf.Protocol;
-import cf.game.Board;
+import cf.model.Board;
 
 public class Game extends Thread {
 	

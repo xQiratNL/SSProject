@@ -2,8 +2,8 @@ package cf.server;
 
 import java.net.Socket;
 
-import cf.game.Mark;
 import cf.Protocol;
+import cf.model.Mark;
 
 import java.io.IOException;
 import java.io.BufferedReader;

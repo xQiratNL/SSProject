@@ -1,4 +1,4 @@
-package cf.game;
+package cf.model;
 
 import java.util.HashSet;
 import java.util.Set;

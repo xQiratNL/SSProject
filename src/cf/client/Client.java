@@ -10,9 +10,9 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.Scanner;
 
-import cf.game.Board;
-import cf.game.Mark;
 import cf.Protocol;
+import cf.model.Board;
+import cf.model.Mark;
 
 public class Client implements Observer {
     private static final String USAGE

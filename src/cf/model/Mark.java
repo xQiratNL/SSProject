@@ -1,4 +1,4 @@
-package cf.game;
+package cf.model;
 
 public enum Mark {
 

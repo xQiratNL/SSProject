@@ -10,12 +10,12 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-import cf.game.Board;
-import cf.game.Mark;
-import cf.game.SmartStrategy;
-import cf.game.Strategy;
 import cf.server.Player;
 import cf.Protocol;
+import cf.model.Board;
+import cf.model.Mark;
+import cf.model.SmartStrategy;
+import cf.model.Strategy;
 
 public class ClientTui implements Runnable {
 	private BufferedWriter out;

@@ -1,9 +1,9 @@
 package cf.server;
 
-import cf.game.Board;
-import cf.game.Mark;
-import cf.game.NaiveStrategy;
-import cf.game.Strategy;
+import cf.model.Board;
+import cf.model.Mark;
+import cf.model.NaiveStrategy;
+import cf.model.Strategy;
 
 public class ComputerPlayer extends Player {
 

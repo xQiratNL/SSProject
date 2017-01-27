@@ -1,4 +1,4 @@
-package cf.game;
+package cf.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;

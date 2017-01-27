@@ -3,7 +3,7 @@ package cf.client;
 import java.util.HashSet;
 import java.util.Set;
 
-import cf.game.Board;
+import cf.model.Board;
 
 public class ViewerController {
 

@@ -1,8 +1,8 @@
 package cf.server;
 
 import cf.Protocol;
-import cf.game.Board;
-import cf.game.Mark;
+import cf.model.Board;
+import cf.model.Mark;
 
 public class HumanPlayer extends Player {
 
