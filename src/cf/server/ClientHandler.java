@@ -149,8 +149,13 @@ public class ClientHandler extends Thread {
 	}
 	
 	private void chatUsers() {
-		// TODO Auto-generated method stub
-		
+		String users = Protocol.DELIMITER;
+		for (ClientHandler user: server.getUsers().keySet()) {
+			if (user.chatImplemented()) {
+				users += user.getUsername() + Protocol.DELIMITER;
+			}
+		}
+		writeOutput(Protocol.CHATUSERS + users);
 	}
 
 
