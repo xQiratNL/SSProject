@@ -172,12 +172,23 @@ public class Client implements Observer {
     		case Protocol.SETMOVE:
     			String userInTurn1 = scanner.next();
     			tui.printLine(userInTurn1 + " made a move.");
-    			if (userInTurn1.equals(tui.username)) {
-    				board.setField(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), myMark);
+    			int x = scanner.nextInt();
+    			int y = scanner.nextInt();
+    			int z = scanner.nextInt();
+    			
+    			if (board.isValidMove(x, y, z)) { // check if the SETMOVE is a valid move.
+    				if (userInTurn1.equals(tui.username)) {	
+    					board.setField(x, y, z, myMark);
+    				} else {
+    					board.setField(x, y, z, myMark.other());
+    				}
+    				tui.copyBoard(board);
     			} else {
-    				board.setField(scanner.nextInt(), scanner.nextInt(), scanner.nextInt(), myMark.other());
+    				// Sends text to the client when the server sends an invalid move.
+    				// Nothing is declared in the protocol about invalid moves on the server,
+    				// so we added this simple error message.
+    				tui.printLine("ERROR: Server send an invalid move. Please restart the game.");
     			}
-    			tui.copyBoard(board);
     			break;
     		case Protocol.ERROR_INVALID_MOVE:
     			tui.printLine("This is an invalid move! Please try again.");
