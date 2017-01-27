@@ -26,7 +26,8 @@ public class Client implements Observer {
 	+ "hint \n"
 	+ "all <text> \n"
 	+ "pm <username>;<text> \n"
-	+ "game <text>";
+	+ "game <text> \n"
+	+ "chatusers";
     
     private String player1; // first player
     private String player2; // second player
@@ -122,7 +123,7 @@ public class Client implements Observer {
     			tui.printLine("Succesfully connected to the server with " + (scanner.hasNext() ? scanner.next() : "no extensions") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + (scanner.hasNext() ? scanner.next() : "") + " enabled! \n"
     					+ "Use 'play human [dimension]' or 'play computer [dimension]' to begin a game agains a human player or a computer. \n\n");
     			tui.usernameSet = true;
-    			tui.addCommands("play human", "play computer", "exit", "all", "pm");
+    			tui.addCommands("play human", "play computer", "exit", "all", "pm", "chatusers");
     			break;
     		case Protocol.ERROR_USERNAME_TAKEN:
     			System.out.print("This username is already in use, please enter another username: ");

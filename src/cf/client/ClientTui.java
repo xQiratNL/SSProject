@@ -272,23 +272,25 @@ public class ClientTui implements Runnable {
             } else if (input.startsWith("hint")) {
             	printLine("Maybe you should enter a mark at " + (new SmartStrategy()).determineMove(boardTui, myMark));
             	input = null;
-            }
-        	
-        	
-        	// Chat optional
-        	// Changes the first words with the readable for the server
+            } 
+            
+            
             else if (input.startsWith("all ")) {
-            	input.replaceFirst("all ", Protocol.BROADCAST + Protocol.DELIMITER); 
+            	// Chat optional
+            	// Changes the first words with the readable for the server
+            	input = input.replaceFirst("all ", Protocol.BROADCAST + Protocol.DELIMITER); 
             } else if (input.startsWith("pm ")) {
             	// whisper includes a user and a text. But these are already in the good format.
             	if (input.length() - input.replace(";", "").length() == 1) {
-            		input.replaceFirst("pm ", Protocol.WHISPER + Protocol.DELIMITER);
+            		input = input.replaceFirst("pm ", Protocol.WHISPER + Protocol.DELIMITER);
             	} else {
             		printLine("You have too much ';' characters in your command. (max. 1)");
             		input = null;
             	}
             } else if (input.startsWith("game ")) {
-            	input.replaceFirst("game  ", Protocol.GAMECHAT + Protocol.DELIMITER); 
+            	input = input.replaceFirst("game  ", Protocol.GAMECHAT + Protocol.DELIMITER); 
+            } else if (input.equals("chatusers")) {
+            	input = Protocol.CHATUSERS;
             }
         	
         
