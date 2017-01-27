@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import cf.server.Player;
-
 public class GeniusStrategy implements Strategy {
 
 	private String name;
@@ -41,7 +39,7 @@ public class GeniusStrategy implements Strategy {
 		double bestMoveValue = Integer.MIN_VALUE;
 		for (int move = 0; move < board.getDim() * board.getDim(); move++) {
 			Board copyBoard = board.deepCopy();
-			int field = Player.fall(copyBoard, move);
+			int field = board.fall(move);
 			double fieldValue;
 			if (field != -1) {
 				copyBoard.setField(field, mark);
@@ -72,7 +70,7 @@ public class GeniusStrategy implements Strategy {
 				//recursion
 				List<Integer> possibleMoves = new ArrayList<Integer>();
 				for (int move = 0; move < board.getDim() * board.getDim(); move++) {
-					int field = Player.fall(board, move);
+					int field = board.fall(move);
 					if (field != -1.0) {
 						possibleMoves.add(field);
 					}

@@ -3,8 +3,6 @@ package cf.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import cf.server.Player;
-
 public class SmartStrategy implements Strategy {
 
 	private String name;
@@ -44,7 +42,7 @@ public class SmartStrategy implements Strategy {
 		// check for guaranteed win of this player.
 		for (Integer s : set) {
 			bCopy = board.deepCopy();
-			int field = Player.fall(bCopy, s);
+			int field = board.fall(s);
 			bCopy.setField(field, mark);
 			if (bCopy.hasWinner()) {
 				setMove = s;
@@ -57,7 +55,7 @@ public class SmartStrategy implements Strategy {
 		if (setMove == -1) {
 			for (Integer s : set) {
 				bCopy = board.deepCopy();
-				int field = Player.fall(bCopy, s);
+				int field = board.fall(s);
 				bCopy.setField(field, mark.other());
 				if (bCopy.hasWinner()) {
 					setMove = s;

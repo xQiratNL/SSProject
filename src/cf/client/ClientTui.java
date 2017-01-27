@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 
-import cf.server.Player;
 import cf.Protocol;
 import cf.model.Board;
 import cf.model.Mark;
@@ -201,7 +200,7 @@ public class ClientTui implements Runnable {
      */	
 	public void makeMove() {
 		try {
-        	int d = Player.fall(boardTui, STRATEGY.determineMove(boardTui, myMark));
+        	int d = boardTui.fall(STRATEGY.determineMove(boardTui, myMark));
         	int[] coords = boardTui.coordinates(d);
         	String moveCommand = "MAKEMOVE" +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];
 			out.write(moveCommand);
@@ -253,7 +252,7 @@ public class ClientTui implements Runnable {
             } else if (input.startsWith("move ")) {
             	Scanner s = new Scanner(input);
             	s.next(); // skip the text. Go to the int.
-            	int d = Player.fall(boardTui, s.nextInt());
+            	int d = boardTui.fall(s.nextInt());
             	int[] coords = boardTui.coordinates(d);
             	input = "MAKEMOVE" +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];            	
             	s.close();

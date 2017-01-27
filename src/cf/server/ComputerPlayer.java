@@ -38,6 +38,6 @@ public class ComputerPlayer extends Player {
      * @return the player's choice
      */
 	public int determineMove(Board board) {
-		return fall(board, strategy.determineMove(board, mark));
+		return board.fall(strategy.determineMove(board, mark));
 	}
 }
