@@ -221,7 +221,7 @@ public class Client implements Observer {
     			break;
     		case Protocol.GAMECHAT:
     			// GAMECHAT <username> <text> (Not well defined in protocol)
-    			tui.printLine("GAME| " + scanner.next() + ": " + scanner.next());
+    			tui.printLine("GAME|" + scanner.next());
     			break;
     		case Protocol.ERROR_USER_HAS_NO_CHAT:
     			tui.printLine("It seems that this user has no chat.");
