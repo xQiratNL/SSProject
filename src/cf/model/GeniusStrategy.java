@@ -11,17 +11,31 @@ public class GeniusStrategy implements Strategy {
 	private String name;
 	private String[] computerNames = {"Tariq", "Rutger"};
 	private Map<Mark, Map<String, Double>> cache = new HashMap<Mark, Map<String, Double>>();
+	public static final int DEFAULT_THINK_TIME = 15;
+	private int thinkTime;
+	private int bestMove;
+	private Thread calculatingThread;
 	
 	/** 
 	 * Creates a new strategy with name Rutger/Tariq. This is the best strategy implemented.
 	 */
 	public GeniusStrategy() {
+		this(DEFAULT_THINK_TIME);
+	}
+	
+	/**
+	 * Creates a new strategy with name Rutger/Tariq. This is the best strategy implemented.
+	 * Has a maximum thinking time in seconds, if it runs out of time, it returns the move that smart strategy would have given.
+	 * @param time, maximum thinking time in seconds.
+	 */
+	public GeniusStrategy(int time) {
 		this.name = computerNames[(int) (Math.random()*computerNames.length)];
+		thinkTime = time * 1000;
 	}
 	
 	@Override
 	/**
-	 * Returns the name of the stragey.
+	 * Returns the name of the strategy.
 	 */
 	public String getStrategyName() {
 		return this.name;
@@ -33,24 +47,44 @@ public class GeniusStrategy implements Strategy {
 	 */
 	//TODO: improve
 	public int determineMove(Board board, Mark mark) {
+		int endTime = (int) System.currentTimeMillis() + thinkTime;
 		cache.put(Mark.XX, new TreeMap<String, Double>());
 		cache.put(Mark.OO, new TreeMap<String, Double>());
-		int bestMove = (new SmartStrategy()).determineMove(board, mark);
-		double bestMoveValue = Integer.MIN_VALUE;
-		for (int move = 0; move < board.getDim() * board.getDim(); move++) {
-			Board copyBoard = board.deepCopy();
-			int field = board.fall(move);
-			double fieldValue;
-			if (field != -1) {
-				copyBoard.setField(field, mark);
-				fieldValue = valueBoardMark(copyBoard, mark);
-				if (fieldValue > bestMoveValue) {
-					bestMove = field;
-					bestMoveValue = fieldValue;
+		
+		calculatingThread = new Thread() {
+			public void run() {
+				try {
+					double bestMoveValue = Integer.MIN_VALUE;
+					for (int move = 0; move < board.getDim() * board.getDim(); move++) {
+						Board copyBoard = board.deepCopy();
+						int field = board.fall(move);
+						double fieldValue;
+						if (field != -1) {
+							copyBoard.setField(field, mark);
+							fieldValue = valueBoardMark(copyBoard, mark);
+							if (fieldValue > bestMoveValue) {
+								bestMove = field;
+								bestMoveValue = fieldValue;
+							}
+						} //else invalid move
+					}
+				} catch (InterruptedException e) {
+					//thread interrupted, for good reasons, so this is no issue.
 				}
-			} //else invalid move
+			}
+		};
+		calculatingThread.start();
+		//wait for the amount of thinking time that is allowed
+		while ((int) System.currentTimeMillis() < endTime && calculatingThread.isAlive()) {
+			//do nothing
 		}
-		return bestMove;
+		if (calculatingThread.isAlive()) {//thread didn't finish
+			calculatingThread.interrupt();//interrupt thread
+			return (new SmartStrategy()).determineMove(board, mark);
+		} else {//thread finished
+			return bestMove;
+		}
+
 	}
 	
 	/**
@@ -58,8 +92,10 @@ public class GeniusStrategy implements Strategy {
 	 * @param board, current board
 	 * @param mark, mark to play.
 	 * @return value of the board, between -1.0 and 1.0.
+	 * @throws InterruptedException 
 	 */
-	public double valueBoardMark(Board board, Mark mark) {
+	public double valueBoardMark(Board board, Mark mark) throws InterruptedException {
+		Thread.sleep(0); //necessary for interrupt to work.
 		String id = board.calculateID();
 		if (!cache.get(mark).containsKey(id)) {
 			if (board.isWinner(mark)) {
@@ -97,18 +133,6 @@ public class GeniusStrategy implements Strategy {
 		}
 		return cache.get(mark).get(id);
 	}
-	
-	
-	public static void main(String[] args) {
-		Board board = new Board(3);
-		//System.out.println(board.toString());
-		Strategy s = new GeniusStrategy();
-		Mark mark = Mark.XX;
-		while (!board.gameOver()) {
-			int move = s.determineMove(board, mark);
-			board.setField(move, mark);
-			mark = mark.other();
-			//System.out.println(board.toString());
-		}
-	}
+
 }
+

@@ -67,7 +67,6 @@ public class SmartStrategy implements Strategy {
 		// Opponent cannot win, so check if the middle field is empty.
 		if (setMove == -1 && board.isEmptyField((board.getDim()-1)/2, (board.getDim()-1)/2, (board.getDim()-1)/2)) {
 			setMove = board.index((board.getDim()-1)/2, (board.getDim()-1)/2, 0);
-			System.out.println("evaluating middle fields");
 		}
 		
 		// Middle field is not empty, so select a random field.
@@ -81,7 +80,6 @@ public class SmartStrategy implements Strategy {
 				}
 				i++;
 			}
-			System.out.println("random move");
 		}
 		
 		return setMove;
