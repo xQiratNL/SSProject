@@ -51,7 +51,7 @@ public class GeniusStrategy implements Strategy {
 
 	@Override
 	/**
-	 * Determines a move by calculating the value of the board/mark combination by assuming that opponent makes random move.
+	 * Determines a move in xy-plane by calculating the value of the board/mark combination by assuming that opponent makes random move.
 	 */
 	//TODO: improve
 	public int determineMove(Board board, Mark mark) {
@@ -71,7 +71,7 @@ public class GeniusStrategy implements Strategy {
 							copyBoard.setField(field, mark);
 							fieldValue = valueBoardMark(copyBoard, mark);
 							if (fieldValue > bestMoveValue) {
-								bestMove = field;
+								bestMove = move;
 								bestMoveValue = fieldValue;
 							}
 						} //else invalid move
