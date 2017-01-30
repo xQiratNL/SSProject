@@ -2,7 +2,7 @@ package cf.server;
 
 import cf.model.Board;
 import cf.model.Mark;
-import cf.model.NaiveStrategy;
+import cf.model.SmartStrategy;
 import cf.model.Strategy;
 
 public class ComputerPlayer extends Player {
@@ -28,7 +28,7 @@ public class ComputerPlayer extends Player {
 	 */
 	public ComputerPlayer(Mark mark) {
 		super("Computer", mark);
-		this.strategy = new NaiveStrategy();
+		this.strategy = new SmartStrategy();
 	}
 
     /**
