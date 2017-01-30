@@ -194,11 +194,13 @@ public class Client implements Observer {
     			} else {
     				tui.printLine("Game over! Ended in a draw.");
     			}
+    			tui.dimension = Protocol.DIM;
     			tui.removeCommands("move", "decline", "ready", "hint", "game");
     			tui.addCommands("play human", "play computer");
     			break;
     		case Protocol.ERROR_USER_QUIT:
     			tui.printLine("User " + scanner.next() + " is a chicken. He cowarded out!");
+    			tui.dimension = Protocol.DIM;
     			tui.removeCommands("move", "hint", "game");
     			tui.addCommands("play human", "play computer");
     			break;
