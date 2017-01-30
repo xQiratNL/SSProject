@@ -15,11 +15,15 @@ public class Game extends Thread {
 	private boolean moveMade = false;
 	public final static int TIMEOUT = 20 * 1000;
 	
+	//@ private invariant currentPlayerIndex == 0 || currentPlayerIndex == 1;
 	/**
 	 * Construct a new game object for given players and board of given dimension
 	 * @param players, array of two players
 	 * @param dim, dimension of the board
 	 */
+	//@ requires players.length ==2;
+	//@ requires dim > 1;
+	//@ ensures currentPlayer() == players[0];
 	public Game(Player[] players, int dim) {
 		this.board = new Board(dim);
 		this.players = players;
@@ -29,14 +33,14 @@ public class Game extends Thread {
 	/**
 	 * @return Player that is to make a move.
 	 */
-	public Player currentPlayer() {
+	/*@ pure */public Player currentPlayer() {
 		return players[currentPlayerIndex];
 	}
 	
 	/**
 	 * @return Array of all players in game (2 players)
 	 */
-	public Player[] getPlayers() {
+	/*@ pure */public Player[] getPlayers() {
 		return players;
 	}
 	
@@ -45,6 +49,10 @@ public class Game extends Thread {
 	 * @param player computerplayer
 	 * @param field, field to make move on.
 	 */
+	//@ requires player != null;
+	//@ requires board.isField(field);
+	//@ ensures board.getField(field) == player.getMark();
+	//@ ensures (\forall int x; board.isField(x) == true && x != field ; \old(board.getField(x)) == board.getField(x));
 	private synchronized void makeMove(Player player, int field) {
 		timer.cancel();
 		board.setField(field, player.getMark());
@@ -61,6 +69,7 @@ public class Game extends Thread {
 	 * @param y, y-coordinate of move
 	 * @param z, z-coordinate of move
 	 */
+	//@ requires username != null;
 	public synchronized void makeMove(String username, int x, int y, int z) {
 		timer.cancel();
 		for (Player p: players) {
@@ -132,6 +141,7 @@ public class Game extends Thread {
 	/**
 	 * Change playerindex when a move is made, while not made whait on move made.
 	 */
+	//@ ensures currentPlayer() != \old(currentPlayer());
 	public synchronized void updatePlayerIndex() {
 		while (!moveMade) {
 			try {
@@ -149,7 +159,7 @@ public class Game extends Thread {
 	 * @param y, y-coordinate
 	 * @param z, z-coordinate
 	 */
-	public void informMoveMade(int x, int y, int z) {
+	/*@ pure */public void informMoveMade(int x, int y, int z) {
 		for (Player p: players) {
 			if (p instanceof HumanPlayer) {
 				((HumanPlayer) p).getHandler().writeOutput(Protocol.SETMOVE + Protocol.DELIMITER + currentPlayer().getName() + Protocol.DELIMITER + x + Protocol.DELIMITER + y + Protocol.DELIMITER + z);

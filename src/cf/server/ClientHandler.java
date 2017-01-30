@@ -32,6 +32,9 @@ public class ClientHandler extends Thread {
 	 * @param sock, the socket of the client.
 	 * @param tui, the tui of the server.
 	 */
+	//@ requires server != null;
+	//@ requires sock != null;
+	//@ requires tui != null;
 	public ClientHandler(Server server, Socket sock, ServerTui tui) {
 		this.server = server;
 		this.sock = sock;
@@ -66,7 +69,8 @@ public class ClientHandler extends Thread {
 	 * Writes output to the client and also prints communication to the server's tui.
 	 * @param output, output to send to client
 	 */
-	public synchronized void writeOutput(String output) {
+	//@ requires output != null;
+	/*@ pure */public synchronized void writeOutput(String output) {
 		tui.println("Server replies to user " + username + ": " + output);
 		try {
 			out.write(output);
@@ -82,6 +86,7 @@ public class ClientHandler extends Thread {
 	 * Also print user input on server's tui.
 	 * @param input, input to process.
 	 */
+	//@ requires input != null;
 	public void processInput(String input) {
 		tui.println("User " + username +" says: "  + input);
 		String[] splitInput = input.split(Protocol.DELIMITER);
@@ -151,7 +156,9 @@ public class ClientHandler extends Thread {
 	/**
 	 * Sends message to all other users in the gamechat, if user tries to send message to computerplayer, computerplayer will give a nice reply.
 	 * @param splitInput, split version of clients command
-	 */	private void gameChat(String[] splitInput) {
+	 */
+	//@ requires getStatus() == ClientStatus.IN_GAME;
+	//@ requires splitInput.length == 2;	/*@ pure */private void gameChat(String[] splitInput) {
 		for (Player player: game.getPlayers()) {
 			if (player instanceof HumanPlayer) {
 				((HumanPlayer) player).getHandler().writeOutput(Protocol.GAMECHAT + Protocol.DELIMITER + splitInput[1]);
@@ -164,7 +171,8 @@ public class ClientHandler extends Thread {
 	/**
 	 * Sends all usernames who have chat implemented to the client.
 	 */
-	private void chatUsers() {
+	//@ requires getStatus() != ClientStatus.CONNECTED;
+	/*@ pure*/private void chatUsers() {
 		String users = Protocol.DELIMITER;
 		for (ClientHandler user: server.getUsers().keySet()) {
 			if (user.chatImplemented()) {
@@ -178,7 +186,9 @@ public class ClientHandler extends Thread {
 	 * Sends message to person to whisper to, or error message if necessary.
 	 * @param input, split version of command by client
 	 */
-	private void whisper(String[] input) {
+	//@ requires getStatus() != ClientStatus.CONNECTED;
+	//@ requires input.length == 3;
+	/*@ pure */private void whisper(String[] input) {
 		if (server.getUsers().containsValue(input[1])) {
 			for (ClientHandler user: server.getUsers().keySet()) {
 				if (server.getUsers().get(user).equals(input[1])) {
@@ -199,7 +209,9 @@ public class ClientHandler extends Thread {
 	 * Broadcasts message from this user to all users which implemented chat
 	 * @param input, string of length 2 with second entry containing the message.
 	 */
-	private void broadcast(String[] input) {
+	//@ requires getStatus() != ClientStatus.CONNECTED;
+	//@ requires input.length == 2;
+	/*@ pure */private void broadcast(String[] input) {
 		for (ClientHandler user: server.getUsers().keySet()) {
 			if (user.chatImplemented() && user != this) {
 				user.writeOutput(Protocol.BROADCAST + Protocol.DELIMITER + this.username + Protocol.DELIMITER + input[1]);
@@ -212,6 +224,7 @@ public class ClientHandler extends Thread {
 	 * Process the command hello ..., also sets extensions if necessary using setExtensions
 	 * @param input command of user
 	 */
+	//@ requires getStatus() == ClientStatus.CONNECTED;
 	public void hello(String[] input) {
 		if (input.length >= 2) {
 			if (server.nameTaken(input[1])) {//usernametaken
@@ -234,6 +247,7 @@ public class ClientHandler extends Thread {
 	 * Checks for input if it contains extensions implemented by the server.
 	 * @param extensions
 	 */
+	//@ requires extensions.length >= 1;
 	private void setExtensions(String[] extensions) {
 		for (String ext: extensions) {
 			if (ext.equals(Protocol.EXT_CHAT)) {
@@ -247,6 +261,8 @@ public class ClientHandler extends Thread {
 	 * Process the command play...
 	 * @param input command of user
 	 */
+	//@ requires input != null;
+	//@ requires getStatus() == ClientStatus.IN_LOBBY;
 	public void play(String[] input) throws NumberFormatException {
 		if (input.length == 2 || input.length == 3) {
 			int dim = Protocol.DIM;
@@ -293,6 +309,7 @@ public class ClientHandler extends Thread {
 	/**
 	 * user says ready start game if not already started.
 	 */
+	//@ requires getStatus() == ClientStatus.IN_READY;
 	public void ready() {
 		status = ClientStatus.IN_GAME;
 		if (!game.isAlive()) {
@@ -303,18 +320,24 @@ public class ClientHandler extends Thread {
 	/**
 	 * user declines the game, tell other user that client quit
 	 */
+	//@ requires getStatus() == ClientStatus.IN_READY;
+	//@ ensures getStatus() == ClientStatus.IN_LOBBY;
 	public void decline() {
 		game.cancelTimer();
 		for (Player p: game.getPlayers()) {
 			if (p instanceof HumanPlayer && ((HumanPlayer) p).getHandler() != this) {
 				((HumanPlayer) p).getHandler().writeOutput(Protocol.ERROR_USER_QUIT + Protocol.DELIMITER + this.username);
+				((HumanPlayer) p).getHandler().setStatus(ClientStatus.IN_LOBBY);
 			}
 		}
+		status = ClientStatus.IN_LOBBY;
 	}
 	
 	/**
 	 * Users declines while waiting, returns to lobby and gets removed from waiting list on server.
 	 */
+	//@ requires getStatus() == ClientStatus.IN_WAIT;
+	//@ ensures getStatus() == ClientStatus.IN_LOBBY;
 	public void declineWait() {
 		server.removeWaiting(this);
 		status = ClientStatus.IN_LOBBY;
@@ -324,6 +347,8 @@ public class ClientHandler extends Thread {
 	 * Users makes move
 	 * @param input user command makemove x y z
 	 */
+	//@ requires getStatus() == ClientStatus.IN_GAME;
+	//@ requires input != null;
 	public void makeMove(String[] input) {
 		if (((HumanPlayer) game.currentPlayer()).getHandler() == this) {
 			if (input.length == 4) {
@@ -348,6 +373,7 @@ public class ClientHandler extends Thread {
 	 * @param dim dimension of board
 	 * @return game object
 	 */
+	//@ requires dim > 1;
 	public Game newGame(int dim) {
 		Mark mark = Mark.XX;
 		if (Math.random() >= 0.5) {//50% chance on O/X
@@ -364,6 +390,8 @@ public class ClientHandler extends Thread {
 	 * @param dim dimension of board
 	 * @return game object
 	 */
+	//@ requires opponent != null;
+	//@ requires dim > 1;
 	public Game newGame(ClientHandler opponent, int dim) {
 		Mark mark = Mark.XX;
 		if (Math.random() >= 0.5) {//50% chance on O/X
@@ -378,6 +406,7 @@ public class ClientHandler extends Thread {
 	 * Set game of client
 	 * @param game, game object to pass
 	 */
+	//@ requires game != null;
 	public void setGame(Game game) {
 		this.game = game;
 	}
@@ -385,7 +414,7 @@ public class ClientHandler extends Thread {
 	/**
 	 * @return Username of client
 	 */
-	public String getUsername() {
+	/*@ pure */public String getUsername() {
 		return username;
 	}
 	
@@ -393,6 +422,8 @@ public class ClientHandler extends Thread {
 	 * Change a clients status
 	 * @param newStatus, client (ClientStatus) to change it to.
 	 */
+	//@ ensures getStatus() == newStatus;
+	//@ requires newStatus != null;
 	public void setStatus(ClientStatus newStatus) {
 		status = newStatus;
 	}
@@ -401,21 +432,21 @@ public class ClientHandler extends Thread {
 	 * Get status of client
 	 * @return status (ClienStatus) of client
 	 */
-	public ClientStatus getStatus() {
+	/*@ pure */public ClientStatus getStatus() {
 		return status;
 	}
 	
 	/**
 	 * @return true if socket closed.
 	 */
-	public boolean isClosed() {
+	/* @ pure */public boolean isClosed() {
 		return sock.isClosed();
 	}
 	
 	/**
 	 * @return true if client implemented chat functionality
 	 */
-	public boolean chatImplemented() {
+	/*@ pure */public boolean chatImplemented() {
 		return ext_chat;
 	}
 }
