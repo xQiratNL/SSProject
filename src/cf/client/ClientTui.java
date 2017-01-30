@@ -12,6 +12,7 @@ import java.util.Set;
 
 import cf.Protocol;
 import cf.model.Board;
+import cf.model.GeniusStrategy;
 import cf.model.Mark;
 import cf.model.SmartStrategy;
 import cf.model.Strategy;
@@ -26,7 +27,7 @@ public class ClientTui implements Runnable {
 	public int dimension = Protocol.DIM; // default dimension
 	private Board boardTui; // a copy of the board in Client to calculate fallen pieces.
 	public boolean isClientComputer = false;
-	private static Strategy STRATEGY = new SmartStrategy(); // the strategy used if the client plays as a computer.
+	private static Strategy STRATEGY = new GeniusStrategy(); // the strategy used if the client plays as a computer.
 	private static String EXTENTIONS = "";
     private static final String COMMANDS
 	= "play human [dimension] \t\t play a game against another human \n"
@@ -176,15 +177,18 @@ public class ClientTui implements Runnable {
 	@Override
 	public void run() {
 		String input2 = "";
-		printLine("Do you want to play as a human or as a computer? (usage: human/computer)");
-		while ( !(input2.equals("human") || input2.equals("computer")) ) {
+		printLine("Do you want to play as a human or as a computer? (usage: human/computer <time>)");
+		while ( !(input2.equals("human") || input2.startsWith("computer")) ) {
 			input2 = readString();
 			if (input2.equals("human")) {
 				this.isClientComputer = false;
-			} else if (input2.equals("computer")) {
+			} else if (input2.startsWith("computer")) {
 				this.isClientComputer = true;
+				if (STRATEGY instanceof GeniusStrategy) { // sets the time of the strategy to the parameter.
+					((GeniusStrategy) STRATEGY).setThinkTime(Integer.parseInt(input2.replaceAll("\\D+","")));
+				}
 			} else {
-				printLine("Incorrect usage (" + input2 + "). Type 'human' or 'computer'.");
+				printLine("Incorrect usage (" + input2 + "). Type 'human' or 'computer <time>'.");
 			}
 		}
 		

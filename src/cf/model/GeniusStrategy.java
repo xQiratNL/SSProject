@@ -33,6 +33,14 @@ public class GeniusStrategy implements Strategy {
 		thinkTime = time * 1000;
 	}
 	
+	/**
+	 * Sets the maximum thinking time of this strategy.
+	 * @param t maximum time.
+	 */
+	public void setThinkTime(int t) {
+		thinkTime = t;
+	}
+	
 	@Override
 	/**
 	 * Returns the name of the strategy.
