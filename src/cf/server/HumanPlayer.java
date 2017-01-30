@@ -11,9 +11,7 @@ public class HumanPlayer extends Player {
     // -- Constructors -----------------------------------------------
 
     /*@
-       requires name != null;
        requires mark != null;
-       ensures this.getName() == name;
        ensures this.getMark() == mark;
     */
     /**
@@ -38,8 +36,6 @@ public class HumanPlayer extends Player {
 
     /*@
        requires board != null;
-       ensures board.isField(\result) && board.isEmptyField(\result);
-
      */
     /**
      * Asks the user to input the field where to place the next mark. This is

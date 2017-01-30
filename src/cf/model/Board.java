@@ -13,13 +13,21 @@ public class Board extends Observable {
 	private int size;
 	private Mark[] fields;
 	
+	//@private invariant numbering.length == size;
+	//@private invariant size == dim * dim *dim;
+	//@private invariant fields.length == size;
+	//@public invariant (\forall int x, y, z; 0 <= x && x < getDim() && 0 <= y && y < getDim() && 0 < z && z < getDim() && getField(x, y,z) != Mark.EMPTY; getField(x, y, z - 1) != Mark.EMPTY); 
+	
 	//--Constructors--------
 	/**
 	 * Creates board with empty marks.
 	 * 
-	 * @param dim dimension of the board
+	 * @param dim dimension of the board, at least three
 	 */
-	//@ dim>=3;
+	//@ requires dim > 1;
+	//@ ensures (\forall int i; 0 <= i && i < getSize(); getField(i) == Mark.EMPTY);
+	//@ ensures getDim() == dim;
+	//@ ensures getSize() == dim * dim * dim;
 	public Board(int dim) {
 		this.dim = dim;
 		this.size = dim * dim * dim;
@@ -32,7 +40,7 @@ public class Board extends Observable {
 	 * Creates the numbering of the fields in the xy-plane.
 	 * @return String which represents the numbering.
 	 */
-	public void numbering() {
+	/*@ pure */public void numbering() {
 		//set line
 		line = "--------";
 		for (int i = 1; i < dim; i++) {
@@ -66,7 +74,7 @@ public class Board extends Observable {
 	 * Builds a string which represents the current status of a board.
 	 * @return Array of Array of Strings giving the board status.
 	 */
-	private String[][] boardStatus() {
+	/*@ pure */private String[][] boardStatus() {
 		//set numbering
 		String[][] status = new String[dim][2 * dim - 1];
 		for (int z = 0; z < dim; z++) {
@@ -95,6 +103,7 @@ public class Board extends Observable {
 	/**
 	 * Sets content of all fields to EMPTY;
 	 */
+	//@ ensures (\forall int i; 0 <= i && i < getSize(); getField(i) == Mark.EMPTY);
 	public void reset() {
 		for (int i = 0; i < size; i++) {
 			fields[i] = Mark.EMPTY;
@@ -102,11 +111,13 @@ public class Board extends Observable {
 		setChanged();
 		notifyObservers();
 	}
+	
 	/**
 	 * Creates deep copy of this field.
 	 * @return deep copy of this board.
 	 */
-	public Board deepCopy() {
+	//@ ensures calculateID() == \result.calculateID();
+	/*@ pure */public Board deepCopy() {
 		Board newBoard = new Board(dim);
 		newBoard.fields = this.fields.clone();
 		return newBoard;
@@ -119,7 +130,9 @@ public class Board extends Observable {
 	 * @param z, z-coordinate
 	 * @return 0<=index<size
 	 */
-	public int index(int x, int y, int z) {
+	//@ requires isField(x, y, z) == true;
+	//@ ensures \result == getDim() * getDim() * z + getDim() * y + x;
+	/*@ pure */ public int index(int x, int y, int z) {
 		return dim * dim * z + dim * y + x;
 	}
 	
@@ -128,7 +141,9 @@ public class Board extends Observable {
 	 * @param index, index of the field on the board
 	 * @return array of {x, y, z} coordinates which correspond to the field.
 	 */
-	public int[] coordinates(int index) {
+	//@ requires isField(index) == true;
+	//@ ensures index(\result[0], \result[1], \result[2]) == index;
+	/*@ pure */public int[] coordinates(int index) {
 		int z = index / (dim * dim);
 		int y = (index - z * dim * dim) / dim;
 		int x = index - z * dim * dim - y * dim;
@@ -143,7 +158,8 @@ public class Board extends Observable {
 	 * @param z, z-coordinate
 	 * @return true if valid.
 	 */
-	public boolean isField(int x, int y, int z) {
+	//@ ensures \result == (0 <= index(x, y, z) && index(x, y, z) < getSize());
+	/*@pure */public boolean isField(int x, int y, int z) {
 		return 0 <= index(x, y, z) && index(x, y, z) < size;
 	}
 	
@@ -152,7 +168,8 @@ public class Board extends Observable {
 	 * @param index, index of the field
 	 * @return true if valid.
 	 */
-	public boolean isField(int index) {
+	//@ ensures \result == (0 <= index && index < getSize());
+	/*@ pure */public boolean isField(int index) {
 		return 0 <= index && index < size;
 	}
 	
@@ -163,7 +180,8 @@ public class Board extends Observable {
 	 * @param z, z-coordinate
 	 * @return Mark or empty on current field.
 	 */
-	public Mark getField(int x, int y, int z) {
+	//@ requires isField(x, y, z);
+	/*@ pure */public Mark getField(int x, int y, int z) {
 		return fields[index(x, y, z)];
 	}
 	
@@ -172,7 +190,8 @@ public class Board extends Observable {
 	 * @param index, index of the field.
 	 * @return Mark on current field.
 	 */
-	public Mark getField(int index) {
+	//@ requires isField(index);
+	/*@ pure */ public Mark getField(int index) {
 		return fields[index];
 	}
 	
@@ -183,7 +202,9 @@ public class Board extends Observable {
 	 * @param z, z-coordinate
 	 * @return true of empty.
 	 */
-	public boolean isEmptyField(int x, int y, int z) {
+	//@ requires isField(x, y, z);
+	//@ ensures \result == (getField(x, y, z) == Mark.EMPTY);
+	/*@ pure */public boolean isEmptyField(int x, int y, int z) {
 		return getField(x, y, z).isEmpty();
 	}
 	
@@ -192,7 +213,9 @@ public class Board extends Observable {
 	 * @param index, index of a given field.
 	 * @return true of empty.
 	 */
-	public boolean isEmptyField(int index) {
+	//@ requires isField(index);
+	//@ ensures \result == (getField(index) == Mark.EMPTY);
+	/*@ pure */public boolean isEmptyField(int index) {
 		return fields[index].isEmpty();
 	}
 	
@@ -203,10 +226,11 @@ public class Board extends Observable {
 	 * @param z, z-coordinate
 	 * @return true if field exists, is empty and z=0 or field below not empty.
 	 */
-	public boolean isValidMove(int x, int y, int z) {
+	//@ ensures \result == (isField(x, y, z) && isEmptyField(x,y,z) && (z ==0 || !isEmptyField(x, y, z-1)));
+	/*@ pure */public boolean isValidMove(int x, int y, int z) {
 		if(!(isField(x, y, z) && isEmptyField(x, y, z))) {
 			return false;
-		} else if (z == 0 || !(isEmptyField(x , y, z - 1))){
+		} else if (z == 0 || !isEmptyField(x , y, z - 1)){
 			return true;
 		} else {
 			return false;
@@ -217,7 +241,8 @@ public class Board extends Observable {
 	 * Returns true if board is full.
 	 * @return true if board is full.
 	 */
-	public boolean isFull() {
+	//@ ensures \result == (\forall int i; 0 <= i && i < getDim(); getField(i) != Mark.EMPTY);
+	/*@ pure */public boolean isFull() {
 		for (int i = 0; i < size; i++) {
 			if (fields[i].isEmpty()) {
 				return false;
@@ -233,6 +258,9 @@ public class Board extends Observable {
 	 * @param z, z-coordinate
 	 * @param mark, mark of player
 	 */
+	//@ requires getField(x, y, z) == Mark.EMPTY;
+	//@ ensures getField(x,y,z) == mark;
+	//@ ensures (\forall int a,b,c; isField(a,b,c) == true && !(a==x && b==y && c==z); \old(getField(a,b,c)) == getField(a,b,c));
 	public void setField(int x, int y, int z, Mark mark) {
 		fields[index(x, y, z)] = mark;
 		setChanged();
@@ -244,6 +272,9 @@ public class Board extends Observable {
 	 * @param index, index of field to change.
 	 * @param mark, mark of player
 	 */
+	//@ requires getField(index) == Mark.EMPTY;
+	//@ ensures getField(index) == mark;
+	//@ ensures (\forall int x; isField(x) == true && x != index ; \old(getField(x)) == getField(x));
 	public void setField(int index, Mark mark) {
 		fields[index] = mark;
 		setChanged();
@@ -255,7 +286,8 @@ public class Board extends Observable {
 	 * @param mark, mark of player.
 	 * @return true if player of mark has won.
 	 */
-	public boolean isWinner(Mark mark) {
+	//@ ensures \result == hasRow(mark) || hasColumn(mark) || hasBar(mark) || hasXDiagonal(mark) || hasYDiagonal(mark) || hasZDiagonal(mark) || hasCrossDiagonal(mark);
+	/*@ pure */public boolean isWinner(Mark mark) {
 		return hasRow(mark) || hasColumn(mark) || hasBar(mark) || hasXDiagonal(mark) || hasYDiagonal(mark) || hasZDiagonal(mark) || hasCrossDiagonal(mark);
 	}
 	
@@ -264,7 +296,8 @@ public class Board extends Observable {
 	 * @param mark, mark of player.
 	 * @return true if player of mark has won.
 	 */
-	public boolean hasRow(Mark mark) {
+	//@ ensures \result == (\forall int z, y; 0 <= z && z < getDim() && 0 <= y && y <= getDim(); (\forall int x; isField(x, y, z) == true; getField(x,y,z)==mark));
+	/*@ pure*/public boolean hasRow(Mark mark) {
 		for (int z = 0; z < dim; z++) {
 			for (int y = 0; y < dim; y++) {
 				int nrMark = 0;
@@ -289,7 +322,8 @@ public class Board extends Observable {
 	 * @param mark, mark of player.
 	 * @return true if player of mark has won.
 	 */
-	public boolean hasColumn(Mark mark) {
+	//@ ensures \result == (\forall int x, z; 0 <= x && x < getDim() && 0 <= z && z <= getDim(); (\forall int y; isField(x, y, z) == true; getField(x,y,z)==mark));
+	/*@ pure*/public boolean hasColumn(Mark mark) {
 		for (int z = 0; z < dim; z++) {
 			for (int x = 0; x< dim; x++) {
 				int nrMark = 0;
@@ -314,7 +348,8 @@ public class Board extends Observable {
 	 * @param mark, mark of player.
 	 * @return true if player of mark has won.
 	 */
-	public boolean hasBar(Mark mark) {
+	//@ ensures \result == (\forall int x, y; 0 <= x && x < getDim() && 0 <= y && y <= getDim(); (\forall int z; isField(x, y, z) == true; getField(x,y,z)==mark));
+	/*@ pure*/public boolean hasBar(Mark mark) {
 		for (int x = 0; x < dim; x++) {
 			for (int y = 0; y < dim; y++) {
 				int nrMark = 0;
@@ -339,7 +374,9 @@ public class Board extends Observable {
 	 * @param mark, mark of player.
 	 * @return true if player of mark has won.
 	 */
-	public boolean hasZDiagonal(Mark mark) {
+	//@ ensures (\forall int z; 0 <= z && z < getDim(); (\forall int i; isField(i, i, z) == true; getField(i,i,z)==mark)) ==> \result == true;
+	//@ ensures (\forall int z; 0 <= z && z < getDim(); (\forall int i; isField(i, getDim() - 1 - i, z) == true; getField(i,getDim() - 1 - i,z)==mark)) ==> \result == true;
+	/*@ pure*/public boolean hasZDiagonal(Mark mark) {
 		for (int z = 0; z < dim; z++) {
 			int nrMark = 0;
 			for (int i = 0; i < dim; i++) {
@@ -376,7 +413,9 @@ public class Board extends Observable {
 	 * @param mark, mark of player.
 	 * @return true if player of mark has won.
 	 */
-	public boolean hasYDiagonal(Mark mark) {
+	//@ ensures (\forall int y; 0 <= y && y < getDim(); (\forall int i; isField(i, y, i) == true; getField(i,y,i)==mark)) ==> \result == true;
+	//@ ensures  (\forall int y; 0 <= y && y < getDim(); (\forall int i; isField(i, y, getDim() -1 - i) == true; getField(i,y,getDim() -1 -i)==mark)) ==> \result == true;
+	/*@ pure*/public boolean hasYDiagonal(Mark mark) {
 		for (int y = 0; y < dim; y++) {
 			int nrMark = 0;
 			for (int i = 0; i < dim; i++) {
@@ -413,7 +452,9 @@ public class Board extends Observable {
 	 * @param mark, mark of player.
 	 * @return true if player of mark has won.
 	 */
-	public boolean hasXDiagonal(Mark mark) {
+	//@ ensures (\forall int x; 0 <= x && x < getDim(); (\forall int i; isField(x,i,i) == true; getField(x,i,i)==mark)) ==> \result == true;
+	//@ ensures (\forall int x; 0 <= x && x < getDim(); (\forall int i; isField(x,i,getDim() -1 -i) == true; getField(x,i,getDim() -1 -i)==mark)) ==> \result == true;
+	/*@ pure*/public boolean hasXDiagonal(Mark mark) {
 		for (int x = 0; x < dim; x++) {
 			int nrMark = 0;
 			for (int i = 0; i < dim; i++) {
@@ -450,7 +491,11 @@ public class Board extends Observable {
 	 * @param mark, mark of player.
 	 * @return true if player of mark has won.
 	 */
-	public boolean hasCrossDiagonal(Mark mark) {
+	//@ ensures (\forall int i; isField(i,i,i); getField(i,i,i) == mark) ==> \result == true;
+	//@ ensures (\forall int i; isField(i,i,getDim() - 1 -i); getField(i,i,getDim() -1 -i) == mark) ==> \result == true;
+	//@ ensures (\forall int i; isField(i,getDim() - 1 -i,getDim() - 1 -i); getField(i,getDim() - 1 -i,getDim() - 1 -i) == mark) ==> \result == true;
+	//@ ensures (\forall int i; isField(i,getDim() - 1 -i,i); getField(i,getDim() - 1 -i,i) == mark) ==> \result == true;
+	/*@ pure*/public boolean hasCrossDiagonal(Mark mark) {
 		//first diagonal
 		int nrMark = 0;
 		for (int i = 0; i < dim; i++) {
@@ -510,7 +555,8 @@ public class Board extends Observable {
 	 * Returns true if one of the marks on the board has won the game.
 	 * @return true of X or O has won the game.
 	 */
-	public boolean hasWinner() {
+	//@ ensures \result == (isWinner(Mark.OO) || isWinner(Mark.XX));
+	/*@ pure*/public boolean hasWinner() {
 		if (this.isWinner(Mark.OO) || this.isWinner(Mark.XX)) {
 			return true;
 		} else {
@@ -522,7 +568,8 @@ public class Board extends Observable {
 	 * Returns true if one of the marks on the board has won the game, or the board is full.
 	 * @return true of X or O has won the game, or no more move can be made.
 	 */
-	public boolean gameOver() {
+	//@ ensures \result == (isFull() || hasWinner());
+	/*@ pure*/public boolean gameOver() {
 		return this.isFull() || this.hasWinner();
 	}
 	
@@ -530,7 +577,7 @@ public class Board extends Observable {
 	 * Returns a String representation of the input that can be given for the board, as well
 	 * as the current status of the board.
 	 */
-	public String toString() {
+	/*@ pure*/public String toString() {
 		
 		String string = "Numbering: \n \n";
 		
@@ -566,14 +613,16 @@ public class Board extends Observable {
 	/**
 	 * @return dimension of the board
 	 */
-	public int getDim() {
+	//@ ensures \result > 1;
+	/*@ pure */public int getDim() {
 		return dim;
 	}
 	
 	/**
 	 * @return size of the board
 	 */
-	public int getSize() {
+	//@ ensures \result >1;
+	/*@ pure */ public int getSize() {
 		return size;
 	}
 
@@ -581,7 +630,7 @@ public class Board extends Observable {
 	 * Calculates unique identifier for the board in it's current status.
 	 * @return string identifying the board in its current state.
 	 */
-	public String calculateID() {
+	/*@ pure */public String calculateID() {
 		String id = "";
 		for (int i = 0; i < size; i++) {
 			id += fields[i].toString();
@@ -589,17 +638,16 @@ public class Board extends Observable {
 		return id;
 	}
 
-	/*@
-		requires board != null & !board.isFull();
-		requires move < board.getDim() * board.getDim();
-	 */
+	
 	/**
 	 * Makes a move fall. e.g. gets the fallen position for a move.
 	 * @param move	the move in the x,y plane (index)
 	 * 
 	 * @return the index of the fallen place, or -1 if the vertical bar is full already and no move is possible here.
 	 */
-	public int fall(int move) {
+	//@	requires move < getDim() * getDim();
+	//@ requires isField(move);
+	/*@ pure*/public int fall(int move) {
 		int[] xyz = coordinates(move);
 		int zcoord = 0;
 		boolean valid = isValidMove(xyz[0], xyz[1], zcoord);

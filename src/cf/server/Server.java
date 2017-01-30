@@ -71,7 +71,7 @@ public class Server {
 	 */
 	public synchronized void addWaitingUser(int dim, ClientHandler handler) {
 		if (!waitingUsers.containsKey(dim)) {
-			waitingUsers.put(dim, new ArrayList<>());
+			waitingUsers.put(dim, new ArrayList<ClientHandler>());
 		}
 		waitingUsers.get(dim).add(handler);
 	}
