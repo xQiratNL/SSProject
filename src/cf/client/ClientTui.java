@@ -254,9 +254,13 @@ public class ClientTui implements Runnable {
             	Scanner s = new Scanner(input);
             	s.next(); // skip the text. Go to the int.
             	s.next();
-            	int d = s.nextInt();
-            	input = Protocol.PLAY +Protocol.DELIMITER+ Protocol.HUMAN +Protocol.DELIMITER +d;
-            	this.dimension = d;
+            	if (s.hasNextInt()) {
+            		int d = s.nextInt();
+            		input = Protocol.PLAY +Protocol.DELIMITER+ Protocol.HUMAN +Protocol.DELIMITER +d;
+            		this.dimension = d;
+            	} else {
+            		this.dimension = Protocol.DIM;
+            	}
             	s.close();
             } else if (input.equals("play human")) {
             	input = Protocol.PLAY +Protocol.DELIMITER+ Protocol.HUMAN +Protocol.DELIMITER;
@@ -264,18 +268,27 @@ public class ClientTui implements Runnable {
             	Scanner s = new Scanner(input);
             	s.next(); // skip the text. Go to the int.
             	s.next();
-            	int d = s.nextInt();
-            	input = Protocol.PLAY +Protocol.DELIMITER+ Protocol.COMPUTER +Protocol.DELIMITER +d;
-            	this.dimension = d;
+            	if (s.hasNextInt()) {
+            		int d = s.nextInt();
+            		input = Protocol.PLAY +Protocol.DELIMITER+ Protocol.COMPUTER +Protocol.DELIMITER +d;
+            		this.dimension = d;
+            	} else {
+            		this.dimension = Protocol.DIM;
+            	}
             	s.close();
             } else if (input.equals("play computer")) {
             	input = "PLAY" +Protocol.DELIMITER+ Protocol.COMPUTER +Protocol.DELIMITER;
             } else if (input.startsWith("move ")) {
             	Scanner s = new Scanner(input);
             	s.next(); // skip the text. Go to the int.
-            	int d = boardTui.fall(s.nextInt());
-            	int[] coords = boardTui.coordinates(d);
-            	input = Protocol.MAKEMOVE +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];            	
+            	if (s.hasNextInt()) {
+            		int d = boardTui.fall(s.nextInt());
+            		int[] coords = boardTui.coordinates(d);
+            		input = Protocol.MAKEMOVE +Protocol.DELIMITER + coords[0] + Protocol.DELIMITER + coords[1] + Protocol.DELIMITER + coords[2];            	
+            	} else {
+            		printLine("You didn't specify the index of the move. (Usage: move <index>)");
+            		input = null;
+            	}
             	s.close();
             } else if (input.startsWith("ready")) {
             	input = input.replaceFirst("ready", Protocol.READY);
