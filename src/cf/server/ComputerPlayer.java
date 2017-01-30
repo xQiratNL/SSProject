@@ -8,7 +8,6 @@ import cf.model.Strategy;
 public class ComputerPlayer extends Player {
 
 	private Strategy strategy;
-	private Mark mark;
 	
     // -- Constructor -----------------------------------------------
     /**
@@ -19,7 +18,6 @@ public class ComputerPlayer extends Player {
 	public ComputerPlayer(Mark mark, Strategy strategy) {
 		super(strategy.getStrategyName(), mark);
 		this.strategy = strategy;
-		this.mark = mark;
 	}
 	
 	/**
@@ -38,6 +36,6 @@ public class ComputerPlayer extends Player {
      * @return the player's choice
      */
 	public int determineMove(Board board) {
-		return board.fall(strategy.determineMove(board, mark));
+		return board.fall(strategy.determineMove(board, super.getMark()));
 	}
 }

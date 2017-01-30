@@ -139,6 +139,7 @@ public class Client implements Observer {
     			tui.addCommands("ready", "decline");
     			board = new Board(tui.dimension);
     			board.addObserver(this);
+    			board.reset();
     			tui.printLine("game started on a board with DIM " + tui.dimension);
     			tui.copyBoard(board);
     			tui.myMark = this.myMark;
