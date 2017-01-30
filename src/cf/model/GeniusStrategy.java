@@ -15,6 +15,7 @@ public class GeniusStrategy implements Strategy {
 	private int thinkTime;
 	private int bestMove;
 	private Thread calculatingThread;
+	private double bestMoveValue;
 	
 	/** 
 	 * Creates a new strategy with name Rutger/Tariq. This is the best strategy implemented.
@@ -35,10 +36,10 @@ public class GeniusStrategy implements Strategy {
 	
 	/**
 	 * Sets the maximum thinking time of this strategy.
-	 * @param t maximum time.
+	 * @param t maximum time in seconds.
 	 */
 	public void setThinkTime(int t) {
-		thinkTime = t;
+		thinkTime = t * 1000;
 	}
 	
 	@Override
@@ -62,7 +63,7 @@ public class GeniusStrategy implements Strategy {
 		calculatingThread = new Thread() {
 			public void run() {
 				try {
-					double bestMoveValue = Integer.MIN_VALUE;
+					bestMoveValue = Integer.MIN_VALUE;
 					for (int move = 0; move < board.getDim() * board.getDim(); move++) {
 						Board copyBoard = board.deepCopy();
 						int field = board.fall(move);
@@ -88,7 +89,11 @@ public class GeniusStrategy implements Strategy {
 		}
 		if (calculatingThread.isAlive()) {//thread didn't finish
 			calculatingThread.interrupt();//interrupt thread
-			return (new SmartStrategy()).determineMove(board, mark);
+			if (bestMoveValue >= 0.99) {
+				return (new SmartStrategy()).determineMove(board, mark);
+			} else {
+				return bestMove;
+			}
 		} else {//thread finished
 			return bestMove;
 		}
