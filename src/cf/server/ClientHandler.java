@@ -116,6 +116,7 @@ public class ClientHandler extends Thread {
 					break;
 				} else if (status == ClientStatus.IN_WAIT){
 					declineWait();
+					break;
 				} //else command entered at wrong time
 			case Protocol.MAKEMOVE:
 				if (status == ClientStatus.IN_GAME) {
@@ -136,7 +137,7 @@ public class ClientHandler extends Thread {
 				if (!(status == ClientStatus.CONNECTED)) {
 					chatUsers();
 					break;
-				} //els not yet username given
+				} //else not yet username given
 			case Protocol.GAMECHAT:
 				if (status == ClientStatus.IN_GAME) {
 					if (splitInput.length == 2) {
