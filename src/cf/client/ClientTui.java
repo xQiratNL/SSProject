@@ -23,7 +23,7 @@ public class ClientTui implements Runnable {
 	public boolean usernameSet = false;
 	public String username;
 	public Mark myMark;
-	public Set<String> availableCommands = new HashSet<>();
+	public Set<String> availableCommands = new HashSet<String>();
 	public int dimension = Protocol.DIM; // default dimension
 	private Board boardTui; // a copy of the board in Client to calculate fallen pieces.
 	public boolean isClientComputer = false;
@@ -43,7 +43,7 @@ public class ClientTui implements Runnable {
 	+ "help \t\t\t\t prints this message";
 	
     /*@
-		requires sock != null
+		requires sock != null;
     */
 	/**
 	 * Adds the socket to this clientTui.
@@ -59,10 +59,6 @@ public class ClientTui implements Runnable {
     	this.sock = sock;	
 	}
 	
-    /*@
-		ensures \result != null;
-		ensures \result instanceof Integer;
-     */
 	/**
      *	Get's input from the user to get a port number for the server
      */	
@@ -89,7 +85,6 @@ public class ClientTui implements Runnable {
 
     /*@
 		ensures \result != null;
-		ensures \result instanceof String;
      */
 	/**
      *	Get's input from the user to get a host for the server
