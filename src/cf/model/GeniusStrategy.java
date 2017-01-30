@@ -89,11 +89,7 @@ public class GeniusStrategy implements Strategy {
 		}
 		if (calculatingThread.isAlive()) {//thread didn't finish
 			calculatingThread.interrupt();//interrupt thread
-			if (bestMoveValue >= 0.99) {
-				return (new SmartStrategy()).determineMove(board, mark);
-			} else {
-				return bestMove;
-			}
+			return (new SmartStrategy()).determineMove(board, mark);
 		} else {//thread finished
 			return bestMove;
 		}
